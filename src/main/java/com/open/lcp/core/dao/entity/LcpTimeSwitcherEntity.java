@@ -1,18 +1,18 @@
-package com.open.lcp.core.api.entity;
+package com.open.lcp.core.dao.entity;
 
 import com.open.lcp.core.annotation.LcpRequired;
 
-public class LcpTimeSwitcher {
+public class LcpTimeSwitcherEntity {
 
-	@LcpRequired(value = true, min = 0, desc = "¿ª¹Ø±àºÅ")
+	@LcpRequired(value = true, min = 0, desc = "å¼€å…³ç¼–å·")
 	private int tsid;
-	@LcpRequired(value = false, desc = "¿ª¹ØÃû³Æ")
+	@LcpRequired(value = false, desc = "å¼€å…³åç§°")
 	private String tsname;
-	@LcpRequired(value = false, desc = "¿ª¹Ø¿ªÊ¼")
+	@LcpRequired(value = false, desc = "å¼€å…³å¼€å§‹")
 	private long tsbegin;
-	@LcpRequired(value = false, desc = "¿ª¹Ø½áÊø")
+	@LcpRequired(value = false, desc = "å¼€å…³ç»“æŸ")
 	private long tsend;
-	@LcpRequired(value = false, desc = "¿ª¹ØÆäËüÉèÖÃ")
+	@LcpRequired(value = false, desc = "å¼€å…³å…¶å®ƒè®¾ç½®")
 	private String tsext;
 
 	public int getTsid() {

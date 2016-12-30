@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * ������Ϣ
+ * Model的描述信息
  * 
  * @author hepengyuan
  */
@@ -17,7 +17,7 @@ public @interface LcpDesc {
 	String value();
 
 	/**
-	 * ��ʼ֧Ԯ�İ汾
+	 * 开始支援的版本
 	 * 
 	 * @return
 	 */

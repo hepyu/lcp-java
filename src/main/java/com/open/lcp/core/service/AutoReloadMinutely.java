@@ -1,32 +1,32 @@
 package com.open.lcp.core.service;
 
 public interface AutoReloadMinutely {
-
 	/**
-	 * ÊÇ·ñĞèÒª³õÊ¼load
+	 * æ˜¯å¦éœ€è¦åˆå§‹load
 	 * 
 	 * @return
 	 */
 	public boolean initLoad();
 
 	/**
-	 * Ã¿´ÎÊÇ·ñÔÊĞí±»µ÷¶È£¬·µ»ØtrueÔòµ÷ÓÃreload·½·¨¡£
+	 * æ¯æ¬¡æ˜¯å¦å…è®¸è¢«è°ƒåº¦ï¼Œè¿”å›trueåˆ™è°ƒç”¨reloadæ–¹æ³•ã€‚
 	 * 
 	 * @param hour
-	 *            µ±Ç°Ğ¡Ê±£º0-23
+	 *            å½“å‰å°æ—¶ï¼š0-23
 	 * @param minute
-	 *            µ±Ç°·ÖÖÓ£º0-59
+	 *            å½“å‰åˆ†é’Ÿï¼š0-59
 	 * @param minuteOfAll
-	 *            µ±Ç°×Ü·ÖÖÓÊı£º1970Äê¿ªÊ¼µÄ×Ü·ÖÖÓÊı
+	 *            å½“å‰æ€»åˆ†é’Ÿæ•°ï¼š1970å¹´å¼€å§‹çš„æ€»åˆ†é’Ÿæ•°
 	 * @return
 	 */
 	public boolean reloadable(int hour, int minute, long minuteOfAll);
 
 	/**
-	 * ÖØĞÂ×°ÔØ¡£
+	 * é‡æ–°è£…è½½ã€‚
 	 * 
-	 * @return ĞèÒªÊä³öµÄinfoÈÕÖ¾¡£nullÔòÎŞÈÕÖ¾¡£
+	 * @return éœ€è¦è¾“å‡ºçš„infoæ—¥å¿—ã€‚nullåˆ™æ— æ—¥å¿—ã€‚
 	 */
 	public String reload();
 
+	
 }

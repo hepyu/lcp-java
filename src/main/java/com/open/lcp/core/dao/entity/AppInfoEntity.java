@@ -1,10 +1,8 @@
-package com.open.lcp.core.api.info.impl;
+package com.open.lcp.core.dao.entity;
 
 import java.io.Serializable;
 
-import com.open.lcp.core.api.info.AppInfo;
-
-public class AppInfoImpl implements AppInfo, Serializable {
+public class AppInfoEntity implements Serializable {
 
 	private static final long serialVersionUID = -1119697844347595668L;
 	public static final int IS_0 = 0;

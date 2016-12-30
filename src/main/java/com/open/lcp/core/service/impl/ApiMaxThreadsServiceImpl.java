@@ -7,8 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.open.lcp.core.api.entity.ApiMaxThreads;
 import com.open.lcp.core.dao.AppInfoDao;
+import com.open.lcp.core.dao.entity.ApiMaxThreadsEntity;
 import com.open.lcp.core.service.ApiMaxThreadsService;
 import com.open.lcp.core.service.AutoReloadMinutely;
 
@@ -17,10 +17,10 @@ public class ApiMaxThreadsServiceImpl implements AutoReloadMinutely, ApiMaxThrea
 	@Autowired
 	private AppInfoDao appInfoDAO;
 
-	private Map<String, ApiMaxThreads> map = new HashMap<String, ApiMaxThreads>(0);
+	private Map<String, ApiMaxThreadsEntity> map = new HashMap<String, ApiMaxThreadsEntity>(0);
 
 	@Override
-	public ApiMaxThreads getMcpApiMaxThreads(String api) {
+	public ApiMaxThreadsEntity getMcpApiMaxThreads(String api) {
 		return map.get(api);
 	}
 
@@ -36,12 +36,12 @@ public class ApiMaxThreadsServiceImpl implements AutoReloadMinutely, ApiMaxThrea
 
 	@Override
 	public String reload() {
-		List<ApiMaxThreads> lsApi = appInfoDAO.getApiMaxThreads();
+		List<ApiMaxThreadsEntity> lsApi = appInfoDAO.getApiMaxThreads();
 		if (lsApi == null || lsApi.isEmpty()) {
 			return "empt";
 		}
-		Map<String, ApiMaxThreads> mapApi = new HashMap<String, ApiMaxThreads>(lsApi.size());
-		for (ApiMaxThreads api : lsApi) {
+		Map<String, ApiMaxThreadsEntity> mapApi = new HashMap<String, ApiMaxThreadsEntity>(lsApi.size());
+		for (ApiMaxThreadsEntity api : lsApi) {
 			api.setOutResp(api.getOutResp().trim());
 			final String keys = api.getKeysReq().trim();
 			if (keys.length() > 0) {

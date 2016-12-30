@@ -1,9 +1,11 @@
 package com.open.lcp.core.configuration;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.open.lcp.core.dao.AppInfoDao;
+
 /**
- * @Configuration:说明此类是配置文件，如DAOConfiguration之类，对应xml文件中的configuration.xml之类，
  * 
  * @author hepengyuan
  *
@@ -11,4 +13,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LcpDaoConfiguration {
 
+	@Bean
+	public AppInfoDao getAppInfoDao() {
+		return null;
+	}
 }

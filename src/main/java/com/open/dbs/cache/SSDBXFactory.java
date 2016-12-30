@@ -1,14 +1,15 @@
 package com.open.dbs.cache;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.I0Itec.zkclient.ZkClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.bchbc.dbs.env.cfg.DataChangeListener;
-import com.bchbc.dbs.zookeeper.ZKFinder;
+import com.mangocity.zk.ConfigChangeListener;
+import com.mangocity.zk.ConfigChangeSubscriber;
+import com.mangocity.zk.ZkConfigChangeSubscriberImpl;
 
 public class SSDBXFactory {
 
@@ -35,20 +36,24 @@ public class SSDBXFactory {
 				if (map == null) {
 					map = new ConcurrentHashMap<String, SSDBXImpl>();
 					final String path = getZKPath(source);
-					final ZkCacheCfg zkCacheCfg = ZKFinder.addDataChangeListener(path, new DataChangeListener<ZkCacheCfg>() {
+
+					// TODO ZkClient需要补充
+					ZkClient zkClient = new ZkClient("");
+					ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, path);
+					sub.subscribe(path, new ConfigChangeListener() {
 
 						@Override
-						public void onchange(ZkCacheCfg zkcfg) {
-							final List<CacheConfig> lsCfg = zkcfg.getServer();
-							if (lsCfg == null || lsCfg.size() != 1) {
-								logger.error("McpCacheXFactory: ZKFinder get error cfg@" + path);
-								return;
-							}
-							final CacheConfig cfg = lsCfg.get(0);
+						public void configChanged(String key, String value) {
+							
+							//TODO value需要包装秤CacheConfig
+							final CacheConfig cfg = new CacheConfig();
 							ssdbxMap.get(source).get(PREFIX_DEFAULE).getSSDBHolder().setSsdb(cfg);
+
 						}
-					}, ZkCacheCfg.class);
-					map.put(PREFIX_DEFAULE, new SSDBXImpl(zkCacheCfg.getServer().get(0), PREFIX_DEFAULE));
+					});
+
+					// TODO cacheConfig 需要补充
+					map.put(PREFIX_DEFAULE, new SSDBXImpl(new CacheConfig(), PREFIX_DEFAULE));
 					ssdbxMap.put(source, map);
 				}
 			}

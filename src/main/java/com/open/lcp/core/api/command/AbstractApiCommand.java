@@ -3,17 +3,17 @@ package com.open.lcp.core.api.command;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
-import com.open.lcp.core.api.entity.ApiFacadeMethod;
-import com.open.lcp.core.api.entity.ApiMaxThreads;
-import com.open.lcp.core.api.entity.ApiResult;
-import com.open.lcp.core.api.entity.ApiResultCode;
-import com.open.lcp.core.api.entity.BlockChecker;
-import com.open.lcp.core.api.entity.RequestChecker;
+import com.open.lcp.core.api.ApiFacadeMethod;
+import com.open.lcp.core.api.BlockChecker;
+import com.open.lcp.core.api.RequestChecker;
+import com.open.lcp.core.dao.entity.ApiMaxThreadsEntity;
+import com.open.lcp.core.facade.ApiResult;
+import com.open.lcp.core.facade.ApiResultCode;
 import com.open.lcp.core.service.ApiMaxThreadsService;
 import com.open.lcp.core.service.AppInitService;
 
@@ -24,10 +24,10 @@ public abstract class AbstractApiCommand implements ApiCommand {
 	 */
 	private static final Log logger = LogFactory.getLog(AbstractApiCommand.class);
 
-	/** µ±Ç°ÒÑ¾­×èÈûÊı */
+	/** å½“å‰å·²ç»é˜»å¡æ•° */
 	private static final Map<String, BlockChecker> mapBlockCheckers = new ConcurrentHashMap<String, BlockChecker>();
 
-	/** Í¬Ò»¸ö Ò»·ÖÖÓÖ®ÄÚidµÄÇëÇóÊıÁ¿ */
+	/** åŒä¸€ä¸ª ä¸€åˆ†é’Ÿä¹‹å†…idçš„è¯·æ±‚æ•°é‡ */
 	private static final Map<String, RequestChecker> mapRequestCheckers = new ConcurrentHashMap<String, RequestChecker>();
 
 	public static final ApiResult LACKOF_REQUIRED_PARAM = new ApiResult(ApiResultCode.E_SYS_PARAM);
@@ -46,23 +46,23 @@ public abstract class AbstractApiCommand implements ApiCommand {
 	// private static final Log statInterfaceLogger =
 	// LogFactory.getLog("mcp_stat_interface_log");
 
-	/** ×èÈûÊı¾¯½äÏß */
+	/** é˜»å¡æ•°è­¦æˆ’çº¿ */
 	private static int BLOCK_THREADS = 160;
 	private static int BLOCK_THREADS_WARN = 100;
 
-	/** Ò»¸öÓÃ»§Ã¿·ÖÖÓÇëÇóÊı */
+	/** ä¸€ä¸ªç”¨æˆ·æ¯åˆ†é’Ÿè¯·æ±‚æ•° */
 	private static int requestNumPerMinutes = 240;
 
-	/** Á½´Î×èÈûÈÕÖ¾¼äµÄ×îĞ¡Ê±¼ä */
-	private static int blockLogPeriod = 60 * 1000;// 1·ÖÖÓ
+	/** ä¸¤æ¬¡é˜»å¡æ—¥å¿—é—´çš„æœ€å°æ—¶é—´ */
+	private static int blockLogPeriod = 60 * 1000;// 1åˆ†é’Ÿ
 
 	@Autowired
 	private AppInitService appInitService;
 	@Autowired
-	private ApiMaxThreadsService mcpApiMaxThreadsService;
+	private ApiMaxThreadsService apiMaxThreadsService;
 
 	/**
-	 * ×ÓÀà²»¿ÉÖØĞ´
+	 * å­ç±»ä¸å¯é‡å†™
 	 */
 	@Override
 	public final ApiResult execute(ApiCommandContext context) {
@@ -72,7 +72,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 		if (null == apiResult) {
 			apiResult = checkRequestNumMethod(context);
 			if (null == apiResult) {
-				apiResult = checkBlockMethod(methodName, context);// ×èÈû¼ì²â
+				apiResult = checkBlockMethod(methodName, context);// é˜»å¡æ£€æµ‹
 			}
 		}
 		// apiResult = this.onExecute(context);
@@ -87,7 +87,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 	protected ApiResult beforeExecute(ApiCommandContext ctx) {
 		final ApiFacadeMethod apiFacadeMethod = CommandModelUtils.getApiFacadeMethod(ctx.getMethodName(), ctx.getV());
 		if (apiFacadeMethod.getLcpMethod() != null && apiFacadeMethod.getLcpMethod().loadAppInitData()//
-				&& !StringUtils.isEmpty(ctx.getDeviceId())) {// McpMethod·½Ê½Ö¸¶¨loadAppInitData£¬ÇÒdeviceIdÓĞĞ§
+				&& !StringUtils.isEmpty(ctx.getDeviceId())) {// McpMethodæ–¹å¼æŒ‡å®šloadAppInitDataï¼Œä¸”deviceIdæœ‰æ•ˆ
 			ctx.setAppInitInfo(appInitService.getAppInitInfo(ctx.getDeviceId()));
 		}
 		return null;
@@ -95,12 +95,12 @@ public abstract class AbstractApiCommand implements ApiCommand {
 
 	protected void afterExecute(ApiCommandContext context, ApiResult apiResult) {
 		// Map<String, String> stringParams = context.getStringParams();
-		// // µ÷ÓÃ½Ó¿ÚÊ±ÉÏ´«µÄ²ÎÊı×ª³ÉJSON´®
+		// // è°ƒç”¨æ¥å£æ—¶ä¸Šä¼ çš„å‚æ•°è½¬æˆJSONä¸²
 		// Map<String, Object> paramsMap = new HashMap<String, Object>();
 		// for (String key : stringParams.keySet()) {
 		// if (HttpConstants.platformParams.contains(key) ||
 		// StatLogUtil.statParams.contains(key)) {
-		// continue; // Ìø¹ıÆ½Ì¨¼¶²ÎÊıºÍÍ³¼Æ²ÎÊı
+		// continue; // è·³è¿‡å¹³å°çº§å‚æ•°å’Œç»Ÿè®¡å‚æ•°
 		// }
 		// String param = stringParams.get(key);
 		// Object obj = ParamsUtils.fromJson(param);
@@ -111,7 +111,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 	public abstract ApiResult onExecute(ApiCommandContext context);
 
 	/**
-	 * Í¬Ò»¸öidµÄÇëÇóÊıÁ¿
+	 * åŒä¸€ä¸ªidçš„è¯·æ±‚æ•°é‡
 	 * 
 	 * @param context
 	 */
@@ -143,7 +143,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 	}
 
 	/**
-	 * ¼ì²â×èÈû·½·¨
+	 * æ£€æµ‹é˜»å¡æ–¹æ³•
 	 * 
 	 * @param methodName
 	 */
@@ -161,14 +161,14 @@ public abstract class AbstractApiCommand implements ApiCommand {
 		int maxThreads = BLOCK_THREADS;
 		int warnThreads = BLOCK_THREADS_WARN;
 
-		final ApiMaxThreads apiMaxThreads = mcpApiMaxThreadsService.getMcpApiMaxThreads(nameAndVersion);
+		final ApiMaxThreadsEntity apiMaxThreads = apiMaxThreadsService.getMcpApiMaxThreads(nameAndVersion);
 		if (apiMaxThreads != null) {
 			maxThreads = apiMaxThreads.getMaxThreads();
 			warnThreads = maxThreads * 3 / 4;
 		}
 		try {
 			final int blocks = checker.blockCounter().incrementAndGet();
-			if (blocks > maxThreads) {// ´ïµ½¸ôÀëÏß
+			if (blocks > maxThreads) {// è¾¾åˆ°éš”ç¦»çº¿
 				if (apiMaxThreads != null) {
 					String jsonResult = apiMaxThreads.getOutResp();
 					if (!jsonResult.isEmpty()) {
@@ -191,7 +191,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 								jsonResult = StringUtils.replace(jsonResult, "{{" + pkey + "}}", value);
 							}
 						}
-						if (checker.afterLastBlockTime() > blockLogPeriod) {// Í¨Öª³¬ÏŞ
+						if (checker.afterLastBlockTime() > blockLogPeriod) {// é€šçŸ¥è¶…é™
 							checker.setLastBlockTime();
 							final String causeMessage = String.format(
 									"%s has %s threads, blocked and return default. sig[%s]", //
@@ -201,7 +201,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 						return new ApiResult(0, jsonResult);
 					}
 				}
-				if (checker.afterLastBlockTime() > blockLogPeriod) {// Í¨Öª³¬ÏŞ
+				if (checker.afterLastBlockTime() > blockLogPeriod) {// é€šçŸ¥è¶…é™
 					checker.setLastBlockTime();
 					final String causeMessage = String.format("%s has %s threads, blocked. sig[%s]", //
 							nameAndVersion, blocks, ctx.getSig());
@@ -209,8 +209,8 @@ public abstract class AbstractApiCommand implements ApiCommand {
 				}
 				return SYS_FAULT_ISOLATION;
 			}
-			if (blocks > warnThreads) {// ´ïµ½¸ôÀë¾¯¸æÏß
-				if (checker.afterLastWarnTime() > blockLogPeriod) {// Í¨Öª³¬ÏŞ
+			if (blocks > warnThreads) {// è¾¾åˆ°éš”ç¦»è­¦å‘Šçº¿
+				if (checker.afterLastWarnTime() > blockLogPeriod) {// é€šçŸ¥è¶…é™
 					checker.setLastWarnTime();
 					final String causeMessage = String.format("%s had %s threads > %s, near to block limit %s. sig[%s]", //
 							nameAndVersion, blocks, warnThreads, maxThreads, ctx.getSig());

@@ -1,4 +1,4 @@
-package com.open.lcp.core.api.info.impl;
+package com.open.lcp.core.dao.entity;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.springframework.util.StringUtils;
 
-public class AppAuthInfoImpl {
+public class AppAuthInfoEntity {
 	private int id, appId;
 	private String authMethod, authIps, addTime;
 	private Set<String> authIpSet;

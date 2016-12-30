@@ -1,9 +1,9 @@
 package com.open.lcp.core.service;
 
-import com.open.lcp.core.api.info.AppInitInfo;
+import com.open.lcp.core.dao.entity.AppInitInfoEntity;
 
 public interface AppInitService {
-	AppInitInfo getAppInitInfo(String deviceId);
+	AppInitInfoEntity getAppInitInfo(String deviceId);
 
-	boolean setAppInitInfo(AppInitInfo appInitInfo);
+	boolean setAppInitInfo(AppInitInfoEntity appInitInfo);
 }

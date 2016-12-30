@@ -1,9 +1,9 @@
 package com.open.lcp.core.api.command;
 
-import com.open.lcp.core.api.entity.ApiResult;
+import com.open.lcp.core.facade.ApiResult;
 
 /**
- * ÃüÁî½Ó¿Ú
+ * å‘½ä»¤æ¥å£
  */
 public interface ApiCommand {
 

@@ -9,13 +9,13 @@ import com.open.lcp.core.annotation.LcpRequired;
 @LcpDesc("通用操作结果")
 public class CommonResultResp {
 
-	/** 默认的成功返�? */
+	/** 默认的成功 */
 	public static final transient CommonResultResp SUCCESS = CommonResultResp.build(0);
 
-	/** 默认的失败返�? */
+	/** 默认的失败 */
 	public static final transient CommonResultResp FAILED = CommonResultResp.build(1);
 
-	@LcpRequired(value = true, desc = "操作结果�?0为成功，其它值为失败")
+	@LcpRequired(value = true, desc = "0为成功，其它值为失败")
 	private int result;
 
 	public int getResult() {

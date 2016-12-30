@@ -1,20 +1,15 @@
-package com.open.lcp.core.api.info.impl;
+package com.open.lcp.core.dao.entity;
 
 import java.io.Serializable;
 
-import com.open.lcp.core.api.info.UserInfo;
+import com.open.lcp.core.constant.Gender;
 
-public class UserInfoImpl implements UserInfo, Serializable {
+public class UserInfoEntity implements Serializable {
 
 	private static final long serialVersionUID = -3516154462903428228L;
-	private final Object user;
 	private long id;
 	private String name, nickName, portrait;
 	private Gender gender;
-
-	UserInfoImpl(Object user) {
-		this.user = user;
-	}
 
 	public long getId() {
 		return id;
@@ -54,12 +49,6 @@ public class UserInfoImpl implements UserInfo, Serializable {
 
 	public void setGender(Gender gender) {
 		this.gender = gender;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <U> U getExt() {
-		return (U) user;
 	}
 
 }

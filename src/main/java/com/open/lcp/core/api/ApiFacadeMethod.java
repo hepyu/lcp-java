@@ -1,4 +1,4 @@
-package com.open.lcp.core.api.entity;
+package com.open.lcp.core.api;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -7,7 +7,7 @@ import com.open.lcp.core.annotation.LcpMethod;
 import com.open.lcp.core.annotation.LcpReq;
 
 /**
- * 方法级接口定义
+ * 鏂规硶鎺ュ彛瀹氫箟
  * 
  * @author hepengyuan
  */

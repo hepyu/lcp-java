@@ -1,10 +1,9 @@
-package com.open.lcp.core.api.entity;
+package com.open.lcp.core.api;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RequestChecker {
-
-	public static final long PERIOD_REQ = 60 * 1000;// Ò»·ÖÖÓ
+	public static final long PERIOD_REQ = 60 * 1000;// ä¸€åˆ†é’Ÿ
 	private long beginTime = System.currentTimeMillis();
 	private long notifyTime = 0;
 
@@ -12,7 +11,7 @@ public class RequestChecker {
 
 	public int incAndGet() {
 		final long now = System.currentTimeMillis();
-		if (now - beginTime > PERIOD_REQ) {// ³¬ÏŞ
+		if (now - beginTime > PERIOD_REQ) {// è¶…é™
 			requestNum.set(1);
 			this.beginTime = now;
 			return 1;
@@ -30,5 +29,4 @@ public class RequestChecker {
 	public void notified() {
 		this.notifyTime = System.currentTimeMillis();
 	}
-
 }

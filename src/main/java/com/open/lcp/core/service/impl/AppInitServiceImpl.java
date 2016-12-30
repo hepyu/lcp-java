@@ -7,8 +7,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
+import com.open.dbs.cache.SSDBLoader;
 import com.open.dbs.cache.SSDBX;
-import com.open.lcp.core.api.info.AppInitInfo;
+import com.open.lcp.core.dao.AppInitInfoDao;
+import com.open.lcp.core.dao.entity.AppInitInfoEntity;
 import com.open.lcp.core.service.AppInitService;
 
 @Service
@@ -19,12 +21,12 @@ public class AppInitServiceImpl implements AppInitService {
 	
 	private SSDBX ssdbx = SSDBLoader.loadSSDBX("mcp_app_init");
 	@Resource
-	AppInitDao appInitDao;
+	AppInitInfoDao appInitDao;
 
 	@Override
-	public AppInitInfo getAppInitInfo(String deviceId) {
+	public AppInitInfoEntity getAppInitInfo(String deviceId) {
         try{
-            AppInitInfo appInitInfo = ssdbx.get(APP_INIT_KEY + deviceId, AppInitInfo.class);
+        	AppInitInfoEntity appInitInfo = ssdbx.get(APP_INIT_KEY + deviceId, AppInitInfoEntity.class);
             if (appInitInfo == null) {
                 appInitInfo = appInitDao.getAppInit(deviceId);
                 if(appInitInfo == null){
@@ -46,9 +48,9 @@ public class AppInitServiceImpl implements AppInitService {
 	}
 
 	@Override
-	public boolean setAppInitInfo(AppInitInfo appInitInfo) {
+	public boolean setAppInitInfo(AppInitInfoEntity appInitInfo) {
 		
-		AppInitInfo app = (AppInitInfo)appInitInfo;
+		AppInitInfoEntity app = (AppInitInfoEntity)appInitInfo;
 		if(logger.isDebugEnabled()){
 			logger.debug("app.init ------- "+app);
 		}

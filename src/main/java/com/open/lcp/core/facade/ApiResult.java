@@ -1,4 +1,4 @@
-package com.open.lcp.core.api.entity;
+package com.open.lcp.core.facade;
 
 import java.io.Serializable;
 

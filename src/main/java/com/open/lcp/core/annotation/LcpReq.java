@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * µ±Ç°½Ó¿Ú½öÓĞÒ»¸ö¼òµ¥ÀàĞÍ²ÎÊıÊ±£¬¿ÉÓÃ´Ë·½Ê½ÊµÏÖ¡£
+ * å½“å‰æ¥å£ä»…æœ‰ä¸€ä¸ªç®€å•ç±»å‹å‚æ•°æ—¶ï¼Œå¯ç”¨æ­¤æ–¹å¼å®ç°ã€‚
  * 
- * ×¢Òâ£º¿ÉÑ¡Ê±£¬¶ÔÏóÀàĞÍ£¨°üÀ¨Integer,Long,BooleanµÈ£©Ò»ÂÉÄ¬ÈÏÎªnull£¬»ùÀàÀàĞÍÎª0(int,byte,long,double,etc)»òfalse£¨boolean£©
+ * æ³¨æ„ï¼šå¯é€‰æ—¶ï¼Œå¯¹è±¡ç±»å‹ï¼ˆåŒ…æ‹¬Integer,Long,Booleanç­‰ï¼‰ä¸€å¾‹é»˜è®¤ä¸ºnullï¼ŒåŸºç±»ç±»å‹ä¸º0(int,byte,long,double,etc)æˆ–falseï¼ˆbooleanï¼‰
  * 
  * @author hepengyuan
  */
@@ -16,27 +16,27 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LcpReq {
 
-	/** ÊÇ·ñ±ØÑ¡£¬Ä¬ÈÏ±ØÑ¡ */
+	/** æ˜¯å¦å¿…é€‰ï¼Œé»˜è®¤å¿…é€‰ */
 	String name();
 
-	/** ÊÇ·ñ±ØÑ¡£¬Ä¬ÈÏ±ØÑ¡ */
+	/** æ˜¯å¦å¿…é€‰ï¼Œé»˜è®¤å¿…é€‰ */
 	boolean required();
 
-	/** ×Ö¶ÎÃèÊö */
+	/** å­—æ®µæè¿° */
 	String desc();
 
-	/** ÖµÓò£º×îĞ¡¡£minÖµÔÚmin»òmaxÖµÖĞÓĞÒ»¸ö²»Îª0Ê±ÓĞĞ§¡£ */
+	/** å€¼åŸŸï¼šæœ€å°ã€‚minå€¼åœ¨minæˆ–maxå€¼ä¸­æœ‰ä¸€ä¸ªä¸ä¸º0æ—¶æœ‰æ•ˆã€‚ */
 	long min() default 0;
 
-	/** ÖµÓò£º×î´ó¡£max½öÔÚ²»Ğ¡ÓÚminÖµÇÒ²»È«Îª0Ê±ÓĞĞ§¡£ */
+	/** å€¼åŸŸï¼šæœ€å¤§ã€‚maxä»…åœ¨ä¸å°äºminå€¼ä¸”ä¸å…¨ä¸º0æ—¶æœ‰æ•ˆã€‚ */
 	long max() default 0;
 
-	/** ´íÎóÂë£¬µ±Ğ£ÑéÊ§°ÜÊ±·µ»Ø¡£ */
+	/** é”™è¯¯ç ï¼Œå½“æ ¡éªŒå¤±è´¥æ—¶è¿”å›ã€‚ */
 	int errorCode() default 0;
 
-	/** ´íÎóÌáÊ¾£¬µ±Ğ£ÑéÊ§°ÜÊ±·µ»Ø¡£ */
+	/** é”™è¯¯æç¤ºï¼Œå½“æ ¡éªŒå¤±è´¥æ—¶è¿”å›ã€‚ */
 	String errorMsg() default "";
 
-	/** Èç¹ûÊÇ×Ö·û´®£¬ÊÇ·ñĞèÒªtrim£¬Ä¬ÈÏ²»trim£¬½öÔÚmin»òmaxÓĞÏŞÖÆÊ±ÉúĞ§ */
+	/** å¦‚æœæ˜¯å­—ç¬¦ä¸²ï¼Œæ˜¯å¦éœ€è¦trimï¼Œé»˜è®¤ä¸trimï¼Œä»…åœ¨minæˆ–maxæœ‰é™åˆ¶æ—¶ç”Ÿæ•ˆ */
 	boolean trim() default false;
 }

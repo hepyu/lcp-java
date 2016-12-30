@@ -8,12 +8,12 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
- * @ComponentScan : ¿ªÆôÉ¨Ãè£¬»áÉ¨Ãèµ±Ç°ÀàµÄ°ü¼°Æä×Ó°ü
- * @EnableAutoConfiguration : Õâ¸ö×¢½â¸æËßSpring
- *                          Boot¸ù¾İÌí¼ÓµÄjarÒÀÀµ²Â²âÄãÏëÈçºÎÅäÖÃSpring¡£ÓÉÓÚspring-boot-starter-webÌí¼ÓÁËTomcatºÍSpring
- *                          MVC£¬ËùÒÔauto-configuration½«¼Ù¶¨ÄãÕıÔÚ¿ª·¢Ò»¸öwebÓ¦ÓÃ£¬²¢¶ÔSpring½øĞĞÏàÓ¦µØÉèÖÃ¡£
- * @EnableCaching : ¿ªÆôspring-cache,
- *                ConcurrentHashMapÊÇÆä´æ´¢½á¹¹£¬ÓÉConcurrentHashMapFactoryBean´´½¨ºÍ¹ÜÀí.
+ * @ComponentScan : å¼€å¯æ‰«æï¼Œä¼šæ‰«æå½“å‰ç±»çš„åŒ…åŠå…¶å­åŒ…
+ * @EnableAutoConfiguration : è¿™ä¸ªæ³¨è§£å‘Šè¯‰Spring
+ *                          Bootæ ¹æ®æ·»åŠ çš„jarä¾èµ–çŒœæµ‹ä½ æƒ³å¦‚ä½•é…ç½®Springã€‚ç”±äºspring-boot-starter-webæ·»åŠ äº†Tomcatå’ŒSpring
+ *                          MVCï¼Œæ‰€ä»¥auto-configurationå°†å‡å®šä½ æ­£åœ¨å¼€å‘ä¸€ä¸ªwebåº”ç”¨ï¼Œå¹¶å¯¹Springè¿›è¡Œç›¸åº”åœ°è®¾ç½®ã€‚
+ * @EnableCaching : å¼€å¯spring-cache,
+ *                ConcurrentHashMapæ˜¯å…¶å­˜å‚¨ç»“æ„ï¼Œç”±ConcurrentHashMapFactoryBeanåˆ›å»ºå’Œç®¡ç†.
  * 
  * @author hepengyuan
  *

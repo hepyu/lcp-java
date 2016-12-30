@@ -4,13 +4,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
- * @EnableScheduling : ±ê×¢Æô¶¯¶¨Ê±ÈÎÎñ¡£ÉùÃ÷µ±Ç°ÀàÊÇ¶¨Ê±ÈÎÎñÅäÖÃÀà.
- * @Scheduled(fixedRate = 1000 * 30) : ¶¨ÒåÄ³¸ö¶¨Ê±ÈÎÎñ¡£
+ * @EnableScheduling : å¼€å¯è®¡åˆ’ä»»åŠ¡
+ * @Scheduled(fixedRate = 1000 * 30) : ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
  */
 @EnableScheduling
 public class LCPScheduler {
 
-	// Ã¿1·ÖÖÓÖ´ĞĞÒ»´Î
+	// ç§’ åˆ† æ—¶ æ—¥ æœˆ å¹´
 	@Scheduled(cron = "0 */1 *  * * * ")
 	public void ping() {
 		// TODO

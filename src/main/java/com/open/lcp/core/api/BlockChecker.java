@@ -1,13 +1,13 @@
-package com.open.lcp.core.api.entity;
+package com.open.lcp.core.api;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BlockChecker {
 
-	/** ×îºóÒ»´Î¾¯¸æÈÕÖ¾Ê±¼ä */
+	/** æœ€åä¸€æ¬¡è­¦å‘Šæ—¥å¿—æ—¶é—´ */
 	private long lastWarnTime = System.currentTimeMillis();
 
-	/** ×îºóÒ»´Îµ±Ç°×èÈûÈÕÖ¾Ê±¼ä */
+	/** æœ€åä¸€æ¬¡å½“å‰é˜»å¡æ—¥å¿—æ—¶é—´ */
 	private long lastBlockTime = System.currentTimeMillis();
 
 	private final AtomicInteger blocked = new AtomicInteger(0);

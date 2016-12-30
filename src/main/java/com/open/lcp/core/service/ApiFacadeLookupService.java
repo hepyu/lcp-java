@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.open.lcp.core.api.command.ApiCommand;
 
+
 public interface ApiFacadeLookupService {
 
 	/**
@@ -16,7 +17,7 @@ public interface ApiFacadeLookupService {
 	public ApiCommand lookupApiCommand(String methodValue, String version);
 
 	/**
-	 * ½Ó¿ÚÊÇ·ñÃâÊÚÈ¨£¬Ö±½Ó¿ª·Å¡£
+	 * æ¥å£æ˜¯å¦å…æˆæƒï¼Œç›´æ¥å¼€æ”¾ã€‚
 	 * 
 	 * @param methodValue
 	 * @param version
@@ -25,7 +26,7 @@ public interface ApiFacadeLookupService {
 	public boolean isOpen(String methodValue, String version);
 
 	/**
-	 * ÊÇ·ñĞèÒªµÇÂ¼
+	 * æ˜¯å¦éœ€è¦ç™»å½•
 	 * 
 	 * @param methodvalue
 	 * @return
@@ -33,21 +34,21 @@ public interface ApiFacadeLookupService {
 	public boolean isNeedLogin(String methodValue, String version);
 
 	/**
-	 * È¡ËùÓĞµÄ½Ó¿ÚÃû³ÆÁĞ±í
+	 * å–æ‰€æœ‰çš„æ¥å£åç§°åˆ—è¡¨
 	 * 
 	 * @return
 	 */
 	public Map<String, List<String>> getCommands();
 
 	/**
-	 * È¡µ±Ç°Ö§³ÖµÄ·½·¨¼°°æ±¾ÁĞ±í
+	 * å–å½“å‰æ”¯æŒçš„æ–¹æ³•åŠç‰ˆæœ¬åˆ—è¡¨
 	 * 
 	 * @return
 	 */
 	String[] getApiAndVerList();
 
 	/**
-	 * È¡µ±Ç°°æ±¾·½·¨µÄµ÷ÓÃ´ÎÊıºÏ¼Æ
+	 * å–å½“å‰ç‰ˆæœ¬æ–¹æ³•çš„è°ƒç”¨æ¬¡æ•°åˆè®¡
 	 * 
 	 * @param apiAndVer
 	 * @return
