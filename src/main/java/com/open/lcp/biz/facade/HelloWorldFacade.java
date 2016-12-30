@@ -2,8 +2,8 @@ package com.open.lcp.biz.facade;
 
 import org.springframework.stereotype.Component;
 
-import com.open.lcp.core.annotation.LcpMethod;
-import com.open.lcp.core.facade.ApiFacade;
+import com.open.lcp.framework.core.annotation.LcpMethod;
+import com.open.lcp.framework.core.facade.ApiFacade;
 
 @Component
 public class HelloWorldFacade implements ApiFacade {
