@@ -53,11 +53,37 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.3.5</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.xunlei</groupId> -->
-<!-- 			<artifactId>xunlei-jade</artifactId> -->
-<!-- 			<version>2.0.0-SNAPSHOT</version> -->
-<!-- 		</dependency> -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.5</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.5</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-jexl</groupId>
+			<artifactId>commons-jexl</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>com.xunlei</groupId> -->
+		<!-- <artifactId>xunlei-jade</artifactId> -->
+		<!-- <version>2.0.0-SNAPSHOT</version> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>ssdb4j</artifactId>
