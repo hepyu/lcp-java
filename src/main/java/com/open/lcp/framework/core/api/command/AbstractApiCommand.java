@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.open.lcp.framework.core.api.BlockChecker;
 import com.open.lcp.framework.core.api.RequestChecker;
-import com.open.lcp.framework.core.dao.entity.ApiMaxThreadsEntity;
+import com.open.lcp.framework.core.api.service.ApiMaxThreadsService;
+import com.open.lcp.framework.core.api.service.AppInitService;
+import com.open.lcp.framework.core.api.service.dao.entity.ApiMaxThreadsEntity;
 import com.open.lcp.framework.core.facade.ApiResult;
 import com.open.lcp.framework.core.facade.ApiResultCode;
-import com.open.lcp.framework.core.service.ApiMaxThreadsService;
-import com.open.lcp.framework.core.service.AppInitService;
 
 public abstract class AbstractApiCommand implements ApiCommand {
 

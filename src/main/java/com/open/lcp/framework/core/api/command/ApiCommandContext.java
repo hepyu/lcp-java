@@ -5,9 +5,9 @@ import java.util.Map;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
+import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
+import com.open.lcp.framework.core.api.service.dao.info.AppInitInfo;
 import com.open.lcp.framework.core.consts.LcpConstants;
-import com.open.lcp.framework.core.info.AppInfo;
-import com.open.lcp.framework.core.info.AppInitInfo;
 import com.open.lcp.framework.security.domain.UserInfo;
 import com.open.lcp.framework.security.service.UserAccountService;
 import com.open.lcp.framework.security.service.UserAccountService.UserType;

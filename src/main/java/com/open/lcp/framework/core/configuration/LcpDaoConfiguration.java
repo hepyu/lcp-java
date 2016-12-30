@@ -3,8 +3,8 @@ package com.open.lcp.framework.core.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.open.lcp.framework.core.dao.AppInfoDao;
-import com.open.lcp.framework.core.dao.AppInitInfoDao;
+import com.open.lcp.framework.core.api.service.dao.AppInfoDao;
+import com.open.lcp.framework.core.api.service.dao.AppInitInfoDao;
 
 /**
  * 
