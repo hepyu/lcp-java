@@ -84,7 +84,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 	}
 
 	protected ApiResult beforeExecute(ApiCommandContext ctx) {
-		final ApiFacadeMethod apiFacadeMethod = CommandModelUtils.getApiFacadeMethod(ctx.getMethodName(), ctx.getV());
+		final ApiFacadeMethod apiFacadeMethod = CommandModelHolder.getApiFacadeMethod(ctx.getMethodName(), ctx.getV());
 		if (apiFacadeMethod.getLcpMethod() != null && apiFacadeMethod.getLcpMethod().loadAppInitData()//
 				&& !StringUtils.isEmpty(ctx.getDeviceId())) {// McpMethod方式指定loadAppInitData，且deviceId有效
 			ctx.setAppInitInfo(appInitService.getAppInitInfo(ctx.getDeviceId()));
@@ -147,7 +147,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 	 * @param methodName
 	 */
 	private ApiResult checkBlockMethod(final String apiName, ApiCommandContext ctx) {
-		final ApiFacadeMethod apiFacadeMethod = CommandModelUtils.getApiFacadeMethod(apiName, ctx.getV());
+		final ApiFacadeMethod apiFacadeMethod = CommandModelHolder.getApiFacadeMethod(apiName, ctx.getV());
 		if (apiFacadeMethod == null) {
 			return SYS_UNKNOWN_METHOD;
 		}
