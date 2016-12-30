@@ -24,10 +24,19 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.open.dbs.cache.SSDBCounterByThread;
+import com.open.lcp.framework.core.api.LcpThreadLocal;
+import com.open.lcp.framework.core.api.command.ApiCommand;
+import com.open.lcp.framework.core.api.command.ApiCommandContext;
+import com.open.lcp.framework.core.api.command.RequestBaseContext;
 import com.open.lcp.framework.core.api.service.ApiCommandLookupService;
+import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
+import com.open.lcp.framework.core.consts.HttpConstants;
+import com.open.lcp.framework.core.consts.LcpConstants;
 import com.open.lcp.framework.core.facade.ApiResult;
 import com.open.lcp.framework.core.facade.ApiResultCode;
 import com.open.lcp.framework.security.service.UserAccountService;
+import com.open.lcp.framework.security.service.UserAccountService.UserType;
+import com.open.lcp.framework.util.LcpUtils;
 
 @Controller
 @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
@@ -89,8 +98,8 @@ public class ApiController {
 			{// 统计相关参数
 				// InetAddress addr = InetAddress.getLocalHost();
 				// serverIpLog = addr.getHostAddress().toString();
-				clientIp = McpUtils.getRemoteAddr(request);
-				clientPort = McpUtils.getRemotePort(request);
+				clientIp = LcpUtils.getRemoteAddr(request);
+				clientPort = LcpUtils.getRemotePort(request);
 				userAgentLog = request.getHeader("User-Agent");
 			}
 			// 构造参数
@@ -114,24 +123,24 @@ public class ApiController {
 					return ERR_REQUIRED_PARAM;
 				}
 			}
-			final Map<String, String> requestParamMap = McpUtils.fillParamMap(request);
+			final Map<String, String> requestParamMap = LcpUtils.fillParamMap(request);
 			if (btsBody != null && btsBody.length > 0) {// 有postbody时的处理
 				final String byteBodyHash = DigestUtils.md5Hex(btsBody).toLowerCase();
 				// String byteBodyHash =
 				// HexUtil.byteArrayToHexString(DigestUtils.md5(btsBody)).toLowerCase();
-				final String oldOctet = requestParamMap.get(McpConstants.PARAM_OCTET_STREAM);
+				final String oldOctet = requestParamMap.get(LcpConstants.PARAM_OCTET_STREAM);
 				if (oldOctet != null) {
 					if (!oldOctet.equals(byteBodyHash)) {
 						return ERR_SYS_PARAM;
 					}
 				} else {
-					requestParamMap.put(McpConstants.PARAM_OCTET_STREAM, byteBodyHash);
+					requestParamMap.put(LcpConstants.PARAM_OCTET_STREAM, byteBodyHash);
 				}
 			}
-			request.setAttribute(McpConstants.REQ_ATTR_PerSMAP, requestParamMap);
+			request.setAttribute(LcpConstants.REQ_ATTR_PerSMAP, requestParamMap);
 
 			// 解析uri到method名字，优先判断
-			String methodName = McpUtils.getCmdMethodFromURI(requestBaseContext.getRequestURI());
+			String methodName = LcpUtils.getCmdMethodFromURI(requestBaseContext.getRequestURI());
 			{
 				if (methodName == null) {// URL中没有时，从参数中取一次容错。
 					methodName = requestParamMap.get(HttpConstants.PARAM_METHOD);
@@ -142,22 +151,22 @@ public class ApiController {
 					return apiResult;
 				}
 			}
-			request.setAttribute(McpConstants.REQ_API_METHOD_NAME, methodName);
-			final String queryString = McpUtils.buildQueryString(requestParamMap);
+			request.setAttribute(LcpConstants.REQ_API_METHOD_NAME, methodName);
+			final String queryString = LcpUtils.buildQueryString(requestParamMap);
 			if (StringUtils.isNotBlank(queryString)) {
 				urlFull = httpReqURI + "?" + queryString;
 			} else {
 				urlFull = httpReqURI;
 			}
 			requestBaseContext.setRequestParamMap(requestParamMap);
-			final String version = requestParamMap.get(McpConstants.PARAM_V);
+			final String version = requestParamMap.get(LcpConstants.PARAM_V);
 			final ApiCommand apiCommand = commandLookupService.lookupApiCommand(methodName, version);
 			if (apiCommand == null) {
 				// apiCommand is unknown
 				apiResult.setCode(ApiResultCode.E_SYS_UNKNOWN_METHOD);
 				return apiResult;
 			}
-			final Map<String, String> httpHeads = McpUtils.getHttpHeads(request);
+			final Map<String, String> httpHeads = LcpUtils.getHttpHeads(request);
 			// 校验平台级参数的合法性
 			if (!this.validateBaseRequiredParams(httpHeads, requestBaseContext, apiResult, methodName)) {
 				return apiResult;
@@ -214,12 +223,12 @@ public class ApiController {
 				context.addStatExt("clientIp", clientIp);
 				context.addStatExt("clientPort", clientPort);
 			}
-			final String blCode = context.getMcpAppInfo().getBlCode();
+			final String blCode = context.getLcpAppInfo().getBlCode();
 			if (blCode != null && blCode.length() > 0) {
 				context.addStatExt("blCode", blCode);
 			}
-			context.addStatExt("os", context.getMcpAppInfo().getAppOsId());
-			McpThreadLocal.thCommandContext.set(context);
+			context.addStatExt("os", context.getLcpAppInfo().getAppOsId());
+			LcpThreadLocal.thCommandContext.set(context);
 			apiResult = apiCommand.execute(context);
 			return apiResult;
 		} catch (MaxUploadSizeExceededException m) {
@@ -309,7 +318,7 @@ public class ApiController {
 		final String t = requestParamMap.get(HttpConstants.PARAM_TICKET);
 		final String xlt = requestParamMap.get(HttpConstants.PARAM_XUNLEI_TICKET);
 		final String xluid = requestParamMap.get(HttpConstants.PARAM_XUNLEI_UID);
-		final String version = requestParamMap.get(McpConstants.PARAM_V);
+		final String version = requestParamMap.get(LcpConstants.PARAM_V);
 		requestBaseContext.setTicket(t);
 		if (StringUtils.isNotEmpty(t)) {
 			CheckTicket ticket = null;
@@ -366,7 +375,7 @@ public class ApiController {
 				}
 			} else {
 				final long userId = u;
-				requestBaseContext.setUser(UserType.Xunlei, userId);
+				requestBaseContext.setUser(UserType.user, userId);
 				// requestBaseContext.setTicket(xlt);
 			}
 		} else { // 无t票时，只用app的secretKey
@@ -378,11 +387,11 @@ public class ApiController {
 		}
 		final String secretKey = requestBaseContext.getSecretKey();
 		if (secretKey != null) {// 成功得到密钥后才验sig值
-			String normalizedString = McpUtils.generateNormalizedString(httpHeads, requestParamMap);
+			String normalizedString = LcpUtils.generateNormalizedString(httpHeads, requestParamMap);
 			if (requestBaseContext.getApiV() > 1) {
 				normalizedString = requestBaseContext.getRequestURI() + normalizedString;
 			}
-			String requiredSig = McpUtils.generateSignature(normalizedString, secretKey);
+			String requiredSig = LcpUtils.generateSignature(normalizedString, secretKey);
 			if (!StringUtils.equalsIgnoreCase(sig, requiredSig)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug(String.format("%s: sig[%s] error. requiredSig[%s] normalString:[%s]", methodName, sig,

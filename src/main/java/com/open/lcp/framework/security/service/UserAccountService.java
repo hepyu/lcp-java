@@ -10,7 +10,7 @@ public interface UserAccountService {
 	public UserInfo getUserInfo(Long xlUserId);
 
 	public enum UserType {
-		admin(0);
+		admin(0), user(1);
 
 		private int type;
 
