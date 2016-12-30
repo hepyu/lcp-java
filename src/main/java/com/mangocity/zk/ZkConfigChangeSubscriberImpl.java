@@ -22,16 +22,13 @@ public class ZkConfigChangeSubscriberImpl implements ConfigChangeSubscriber {
 	}
 
 	public void subscribe(String key, ConfigChangeListener listener) {
-		String path = ZkUtils.getZkPath(this.rootNode, key);///zkSample/conf/test1.properties
+		String path = ZkUtils.getZkPath(this.rootNode, key);/// zkSample/conf/test1.properties
 		if (!this.zkClient.exists(path)) {
 			throw new RuntimeException(
-					"配置("
-							+ path
-							+ ")不存在, 必须先定义配置才能监听配置的变化, 请检查配置的key是否正确, 如果确认配置key正确, 那么需要保证先使用配置发布命令发布配置! ");
+					"配置(" + path + ")不存在, 必须先定义配置才能监听配置的变化, 请检查配置的key是否正确, 如果确认配置key正确, 那么需要保证先使用配置发布命令发布配置! ");
 		}
 
-		this.zkClient.subscribeDataChanges(path, new DataListenerAdapter(
-				listener));
+		this.zkClient.subscribeDataChanges(path, new DataListenerAdapter(listener));
 	}
 
 	/**
@@ -41,8 +38,7 @@ public class ZkConfigChangeSubscriberImpl implements ConfigChangeSubscriber {
 	 * @param value
 	 * @param configListener
 	 */
-	private void fireConfigChanged(String path, String value,
-			ConfigChangeListener configListener) {
+	private void fireConfigChanged(String path, String value, ConfigChangeListener configListener) {
 		configListener.configChanged(getKey(path), value);
 	}
 
@@ -83,8 +79,7 @@ public class ZkConfigChangeSubscriberImpl implements ConfigChangeSubscriber {
 
 		public void handleDataChange(String s, Object obj) throws Exception {
 			System.out.println("IZkDataListener handleDataChange dataPath: " + s + " ,data: " + obj);
-			ZkConfigChangeSubscriberImpl.this.fireConfigChanged(s,
-					(String) obj, this.configListener);
+			ZkConfigChangeSubscriberImpl.this.fireConfigChanged(s, (String) obj, this.configListener);
 		}
 
 		public void handleDataDeleted(String s) throws Exception {

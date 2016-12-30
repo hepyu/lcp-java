@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.I0Itec.zkclient.ZkClient;
+import org.I0Itec.zkclient.serialize.SerializableSerializer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,19 +39,23 @@ public class SSDBXFactory {
 					final String path = getZKPath(source);
 
 					// TODO ZkClient需要补充
-					ZkClient zkClient = new ZkClient("");
-					ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, path);
-					sub.subscribe(path, new ConfigChangeListener() {
+					// String ZKServers = "183.60.209.51:2181,10.1.3.155:2181";
+					String ZKServers = "183.60.209.51:2181";
+
+					ZkClient zkClient = new ZkClient(ZKServers, 10000, 10000, new SerializableSerializer());
+					ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, ZK_ROOT);
+					sub.subscribe(source, new ConfigChangeListener() {
 
 						@Override
 						public void configChanged(String key, String value) {
-							
-							//TODO value需要包装秤CacheConfig
+
+							// TODO value需要包装秤CacheConfig
 							final CacheConfig cfg = new CacheConfig();
 							ssdbxMap.get(source).get(PREFIX_DEFAULE).getSSDBHolder().setSsdb(cfg);
 
 						}
 					});
+					// String initValue = sub.getInitValue(source);
 
 					// TODO cacheConfig 需要补充
 					map.put(PREFIX_DEFAULE, new SSDBXImpl(new CacheConfig(), PREFIX_DEFAULE));

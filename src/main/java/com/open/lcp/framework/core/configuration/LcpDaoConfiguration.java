@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.open.lcp.framework.core.dao.AppInfoDao;
+import com.open.lcp.framework.core.dao.AppInitInfoDao;
 
 /**
  * 
@@ -14,7 +15,13 @@ import com.open.lcp.framework.core.dao.AppInfoDao;
 public class LcpDaoConfiguration {
 
 	@Bean
-	public AppInfoDao getAppInfoDao() {
+	public AppInfoDao getAppInfoDao() throws Exception {
 		return null;
 	}
+
+	@Bean
+	public AppInitInfoDao getAppInitInfoDao() throws Exception {
+		return null;
+	}
+
 }
