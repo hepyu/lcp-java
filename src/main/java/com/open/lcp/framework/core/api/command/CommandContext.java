@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 import com.open.lcp.framework.core.api.service.dao.info.AppInitInfo;
-import com.open.passport.service.impl.dto.UserAccountDto;
+import com.open.lcp.passport.service.impl.dto.UserAccountDto;
 
 /**
  * 接口执行时的上下文信息

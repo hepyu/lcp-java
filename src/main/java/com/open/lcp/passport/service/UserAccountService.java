@@ -1,10 +1,10 @@
-package com.open.passport.service;
+package com.open.lcp.passport.service;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.open.lcp.framework.security.CheckTicket;
-import com.open.passport.service.impl.dto.UserAccountDto;
+import com.open.lcp.passport.service.impl.dto.UserAccountDto;
 
 public interface UserAccountService {
 

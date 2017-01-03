@@ -37,8 +37,8 @@ import com.open.lcp.framework.core.facade.ApiResult;
 import com.open.lcp.framework.core.facade.ApiResultCode;
 import com.open.lcp.framework.security.CheckTicket;
 import com.open.lcp.framework.util.LcpUtils;
-import com.open.passport.service.UserAccountService;
-import com.open.passport.service.UserAccountService.UserType;
+import com.open.lcp.passport.service.UserAccountService;
+import com.open.lcp.passport.service.UserAccountService.UserType;
 
 @Controller
 @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })

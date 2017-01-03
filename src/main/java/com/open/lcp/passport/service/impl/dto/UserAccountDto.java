@@ -1,4 +1,4 @@
-package com.open.passport.service.impl.dto;
+package com.open.lcp.passport.service.impl.dto;
 
 import java.io.Serializable;
 import java.util.Date;

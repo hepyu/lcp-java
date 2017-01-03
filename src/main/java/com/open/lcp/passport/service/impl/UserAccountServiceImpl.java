@@ -1,10 +1,10 @@
-package com.open.passport.service.impl;
+package com.open.lcp.passport.service.impl;
 
 import org.springframework.stereotype.Service;
 
 import com.open.lcp.framework.security.CheckTicket;
-import com.open.passport.service.UserAccountService;
-import com.open.passport.service.impl.dto.UserAccountDto;
+import com.open.lcp.passport.service.UserAccountService;
+import com.open.lcp.passport.service.impl.dto.UserAccountDto;
 
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
