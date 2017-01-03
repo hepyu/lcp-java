@@ -4,6 +4,6 @@ import com.open.lcp.framework.core.api.service.dao.entity.ApiMaxThreadsEntity;
 
 public interface ApiMaxThreadsService {
 
-	ApiMaxThreadsEntity getMcpApiMaxThreads(String api);
+	ApiMaxThreadsEntity getLcpApiMaxThreads(String api);
 
 }

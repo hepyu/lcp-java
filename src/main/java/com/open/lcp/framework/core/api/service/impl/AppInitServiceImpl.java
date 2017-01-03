@@ -19,7 +19,7 @@ public class AppInitServiceImpl implements AppInitService {
 	private static final Log logger = LogFactory.getLog(AppInitServiceImpl.class);
 	private static final String APP_INIT_KEY = "app-init-";
 
-	private SSDBX ssdbx = EnvFinder.loadSSDBX("mcp_app_init");
+	private SSDBX ssdbx = EnvFinder.loadSSDBX("lcp_app_init");
 
 	@Resource
 	AppInitInfoDao appInitDao;

@@ -29,7 +29,7 @@ import com.open.lcp.framework.core.api.command.ApiCommand;
 import com.open.lcp.framework.core.api.command.ApiCommandContext;
 import com.open.lcp.framework.core.api.command.RequestBaseContext;
 import com.open.lcp.framework.core.api.service.ApiCommandLookupService;
-import com.open.lcp.framework.core.api.service.ApiInfoService;
+import com.open.lcp.framework.core.api.service.AppInfoService;
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 import com.open.lcp.framework.core.consts.HttpConstants;
 import com.open.lcp.framework.core.consts.LcpConstants;
@@ -63,7 +63,7 @@ public class ApiController {
 	public static final ApiResult ERR_REQUIRED_PARAM = new ApiResult(ApiResultCode.E_SYS_PARAM);
 	public static final ApiResult ERR_SYS_PARAM = new ApiResult(ApiResultCode.E_SYS_PARAM);
 	@Autowired
-	private ApiInfoService apiInfoService;
+	private AppInfoService appInfoService;
 	@Autowired
 	private ApiCommandLookupService commandLookupService;
 
@@ -187,7 +187,7 @@ public class ApiController {
 			// TODO：流量控制
 			// 检查客户端app是否对这个方法有权限
 			if (!commandLookupService.isOpen(methodName, version)) {
-				if (!apiInfoService.isAllowedApiMethod(requestBaseContext.getAppInfo().getAppId(), methodName,
+				if (!appInfoService.isAllowedApiMethod(requestBaseContext.getAppInfo().getAppId(), methodName,
 						clientIp)) {
 					apiResult.setCode(ApiResultCode.E_SYS_PERMISSION_DENY);
 					return apiResult;
@@ -298,7 +298,7 @@ public class ApiController {
 			RequestBaseContext requestBaseContext, ApiResult apiResult, final String methodName) throws Exception {
 		Map<String, String> requestParamMap = requestBaseContext.getRequestParamMap();
 		final int appId = NumberUtils.toInt(requestParamMap.get(HttpConstants.PARAM_APP_ID));
-		final AppInfo appInfo = apiInfoService.getAppInfo(appId);
+		final AppInfo appInfo = appInfoService.getAppInfo(appId);
 		// 接入信息无效
 		if (appInfo == null) {
 			apiResult.setCode(ApiResultCode.E_SYS_INVALID_APP_ID);

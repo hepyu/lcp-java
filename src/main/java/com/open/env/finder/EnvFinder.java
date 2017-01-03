@@ -13,4 +13,9 @@ public class EnvFinder {
 		return SSDBLoader.loadSSDBX(source, prefix);
 	}
 
+	public static String getProfile() {
+		// TODO
+		return "dev";
+	}
+
 }

@@ -7,6 +7,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 
+import com.open.env.finder.EnvFinder;
+
 /**
  * @ComponentScan : 开启扫描，会扫描当前类的包及其子包
  * @EnableAutoConfiguration : 这个注解告诉Spring
@@ -29,8 +31,8 @@ public class ApiMain {
 		// System.setProperty("adpre", "1");
 		// }
 		// }
-		// final String proFileName = XunleiEnvFinder.getProfile();
-		// System.setProperty("spring.profiles.active", proFileName);
+		final String proFileName = EnvFinder.getProfile();
+		System.setProperty("spring.profiles.active", proFileName);
 		// logger.info(
 		// String.format("ApiMain: start @ %s, profile: %s",
 		// XunleiEnvFinder.getIpcfg().toString(), proFileName));

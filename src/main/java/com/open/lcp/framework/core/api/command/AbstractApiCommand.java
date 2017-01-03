@@ -160,7 +160,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 		int maxThreads = BLOCK_THREADS;
 		int warnThreads = BLOCK_THREADS_WARN;
 
-		final ApiMaxThreadsEntity apiMaxThreads = apiMaxThreadsService.getMcpApiMaxThreads(nameAndVersion);
+		final ApiMaxThreadsEntity apiMaxThreads = apiMaxThreadsService.getLcpApiMaxThreads(nameAndVersion);
 		if (apiMaxThreads != null) {
 			maxThreads = apiMaxThreads.getMaxThreads();
 			warnThreads = maxThreads * 3 / 4;

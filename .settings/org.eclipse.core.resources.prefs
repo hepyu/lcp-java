@@ -3,6 +3,7 @@ encoding//src/main/java/com/open/lcp/ApiMain.java=UTF-8
 encoding//src/main/java/com/open/lcp/biz/schedule/LCPScheduler.java=UTF-8
 encoding//src/main/java/com/open/lcp/framework/core/annotation/LcpMethod.java=UTF-8
 encoding//src/main/java/com/open/lcp/framework/core/api/command/ApiCommandContext.java=UTF-8
+encoding//src/main/java/com/open/lcp/framework/core/configuration/AsyncThreadPoolConfiguration.java=UTF-8
 encoding//src/main/java/com/open/lcp/framework/core/facade/ApiResultCode.java=UTF-8
 encoding//src/main/java/com/open/lcp/framework/core/facade/CommonResultResp.java=UTF-8
 encoding/<project>=UTF-8

@@ -1,6 +1,6 @@
-package com.open.lcp.framework.core.api.service;
+package com.open.lcp.framework.core.loader;
 
-public interface AutoReloadMinutely {
+public interface TimerLoader {
 	/**
 	 * 是否需要初始load
 	 * 

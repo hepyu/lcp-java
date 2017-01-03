@@ -16,7 +16,8 @@ public class SSDBXFactory {
 	// private static final Log logger = LogFactory.getLog(SSDBXFactory.class);
 
 	private static final Map<String, Map<String, SSDBXImpl>> ssdbxMap = new ConcurrentHashMap<String, Map<String, SSDBXImpl>>();
-	private static final String ZK_ROOT = "/com/bchbc/zk/ssdb/";
+	
+	private static final String ZK_ROOT = "/com/lcp/ssdb/";
 
 	// private static String getZKPath(String source) {
 	// return ZK_ROOT + source;
@@ -37,8 +38,8 @@ public class SSDBXFactory {
 					// final String path = getZKPath(source);
 
 					// TODO ZkClient需要补充
-					// String ZKServers = "183.60.209.51:2181,10.1.3.155:2181";
-					String ZKServers = "183.60.209.51:2181";
+					// String ZKServers = "ip1:2181,ip2:2181";
+					String ZKServers = "123.57.204.187:2181";
 
 					ZkClient zkClient = new ZkClient(ZKServers, 10000, 10000, new SerializableSerializer());
 					ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, ZK_ROOT);
