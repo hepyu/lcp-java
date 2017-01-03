@@ -1,9 +1,9 @@
-package com.open.lcp.framework.security.domain;
+package com.open.passport.service.impl.dto;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class UserInfo implements Serializable{
+public class UserAccountDto implements Serializable{
 
 	/**
 	 * 

@@ -1,0 +1,24 @@
+package com.open.passport.service.impl;
+
+import org.springframework.stereotype.Service;
+
+import com.open.lcp.framework.security.CheckTicket;
+import com.open.passport.service.UserAccountService;
+import com.open.passport.service.impl.dto.UserAccountDto;
+
+@Service
+public class UserAccountServiceImpl implements UserAccountService {
+
+	@Override
+	public UserAccountDto getUserInfo(Long xlUserId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CheckTicket validateTicket(String t) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

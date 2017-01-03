@@ -3,7 +3,7 @@ package com.open.lcp.framework.core.api.command;
 import java.util.Map;
 
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
-import com.open.lcp.framework.security.service.UserAccountService.UserType;
+import com.open.passport.service.UserAccountService.UserType;
 
 /**
  * 请求相关的基础数据

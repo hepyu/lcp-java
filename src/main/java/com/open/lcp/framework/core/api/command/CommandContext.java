@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 import com.open.lcp.framework.core.api.service.dao.info.AppInitInfo;
-import com.open.lcp.framework.security.domain.UserInfo;
+import com.open.passport.service.impl.dto.UserAccountDto;
 
 /**
  * 接口执行时的上下文信息
@@ -20,7 +20,7 @@ public interface CommandContext {
 	/** 登录的userId */
 	public long getUserId();
 
-	public UserInfo getUserInfo();
+	public UserAccountDto getUserInfo();
 
 	public AppInfo getAppInfo();
 

@@ -1,13 +1,16 @@
-package com.open.lcp.framework.security.service;
+package com.open.passport.service;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.open.lcp.framework.security.domain.UserInfo;
+import com.open.lcp.framework.security.CheckTicket;
+import com.open.passport.service.impl.dto.UserAccountDto;
 
 public interface UserAccountService {
 
-	public UserInfo getUserInfo(Long xlUserId);
+	public UserAccountDto getUserInfo(Long xlUserId);
+
+	public CheckTicket validateTicket(String t);
 
 	public enum UserType {
 		admin(0), user(1);

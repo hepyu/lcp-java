@@ -6,7 +6,9 @@ import java.util.Set;
 
 import org.springframework.util.StringUtils;
 
-public class AppAuthInfoEntity {
+import com.open.lcp.framework.core.api.service.dao.info.AppAuthInfo;
+
+public class AppAuthInfoEntity implements AppAuthInfo {
 	private int id, appId;
 	private String authMethod, authIps, addTime;
 	private Set<String> authIpSet;

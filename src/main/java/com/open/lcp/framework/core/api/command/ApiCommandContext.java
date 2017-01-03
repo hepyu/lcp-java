@@ -8,9 +8,9 @@ import org.apache.commons.lang.math.NumberUtils;
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 import com.open.lcp.framework.core.api.service.dao.info.AppInitInfo;
 import com.open.lcp.framework.core.consts.LcpConstants;
-import com.open.lcp.framework.security.domain.UserInfo;
-import com.open.lcp.framework.security.service.UserAccountService;
-import com.open.lcp.framework.security.service.UserAccountService.UserType;
+import com.open.passport.service.UserAccountService;
+import com.open.passport.service.UserAccountService.UserType;
+import com.open.passport.service.impl.dto.UserAccountDto;
 
 public class ApiCommandContext implements CommandContext {
 	private static final String KEY_EXT_STAT_USERID = "userId";
@@ -335,10 +335,10 @@ public class ApiCommandContext implements CommandContext {
 		return this.v;
 	}
 
-	private UserInfo userInfo = null;
+	private UserAccountDto userInfo = null;
 
 	@Override
-	public UserInfo getUserInfo() {
+	public UserAccountDto getUserInfo() {
 		if (this.userId <= 0) {
 			return null;
 		}

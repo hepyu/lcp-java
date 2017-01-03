@@ -5,8 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.serialize.SerializableSerializer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.mangocity.zk.ConfigChangeListener;
 import com.mangocity.zk.ConfigChangeSubscriber;
@@ -15,14 +13,14 @@ import com.mangocity.zk.ZkConfigChangeSubscriberImpl;
 public class SSDBXFactory {
 
 	private static final String PREFIX_DEFAULE = "";
-	private static final Log logger = LogFactory.getLog(SSDBXFactory.class);
+	// private static final Log logger = LogFactory.getLog(SSDBXFactory.class);
 
 	private static final Map<String, Map<String, SSDBXImpl>> ssdbxMap = new ConcurrentHashMap<String, Map<String, SSDBXImpl>>();
-	private static final String ZK_ROOT = "/com/bchbc/zk/ssdb/";// "/com/bchbc/dbs/cache/";
+	private static final String ZK_ROOT = "/com/bchbc/zk/ssdb/";
 
-	private static String getZKPath(String source) {
-		return ZK_ROOT + source;
-	}
+	// private static String getZKPath(String source) {
+	// return ZK_ROOT + source;
+	// }
 
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
@@ -36,7 +34,7 @@ public class SSDBXFactory {
 				map = ssdbxMap.get(source);
 				if (map == null) {
 					map = new ConcurrentHashMap<String, SSDBXImpl>();
-					final String path = getZKPath(source);
+					// final String path = getZKPath(source);
 
 					// TODO ZkClient需要补充
 					// String ZKServers = "183.60.209.51:2181,10.1.3.155:2181";

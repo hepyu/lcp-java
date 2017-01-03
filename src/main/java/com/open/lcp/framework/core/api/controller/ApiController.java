@@ -29,14 +29,16 @@ import com.open.lcp.framework.core.api.command.ApiCommand;
 import com.open.lcp.framework.core.api.command.ApiCommandContext;
 import com.open.lcp.framework.core.api.command.RequestBaseContext;
 import com.open.lcp.framework.core.api.service.ApiCommandLookupService;
+import com.open.lcp.framework.core.api.service.ApiInfoService;
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 import com.open.lcp.framework.core.consts.HttpConstants;
 import com.open.lcp.framework.core.consts.LcpConstants;
 import com.open.lcp.framework.core.facade.ApiResult;
 import com.open.lcp.framework.core.facade.ApiResultCode;
-import com.open.lcp.framework.security.service.UserAccountService;
-import com.open.lcp.framework.security.service.UserAccountService.UserType;
+import com.open.lcp.framework.security.CheckTicket;
 import com.open.lcp.framework.util.LcpUtils;
+import com.open.passport.service.UserAccountService;
+import com.open.passport.service.UserAccountService.UserType;
 
 @Controller
 @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
@@ -61,11 +63,9 @@ public class ApiController {
 	public static final ApiResult ERR_REQUIRED_PARAM = new ApiResult(ApiResultCode.E_SYS_PARAM);
 	public static final ApiResult ERR_SYS_PARAM = new ApiResult(ApiResultCode.E_SYS_PARAM);
 	@Autowired
-	private MobileClientAppService mobileClientAppService;
+	private ApiInfoService apiInfoService;
 	@Autowired
 	private ApiCommandLookupService commandLookupService;
-	@Autowired
-	private AccountApi accountApi;
 
 	@Autowired
 	private UserAccountService userAccountService;
@@ -187,7 +187,7 @@ public class ApiController {
 			// TODO：流量控制
 			// 检查客户端app是否对这个方法有权限
 			if (!commandLookupService.isOpen(methodName, version)) {
-				if (!mobileClientAppService.isAllowedApiMethod(requestBaseContext.getAppInfo().getAppId(), methodName,
+				if (!apiInfoService.isAllowedApiMethod(requestBaseContext.getAppInfo().getAppId(), methodName,
 						clientIp)) {
 					apiResult.setCode(ApiResultCode.E_SYS_PERMISSION_DENY);
 					return apiResult;
@@ -223,11 +223,11 @@ public class ApiController {
 				context.addStatExt("clientIp", clientIp);
 				context.addStatExt("clientPort", clientPort);
 			}
-			final String blCode = context.getLcpAppInfo().getBlCode();
+			final String blCode = context.getAppInfo().getBlCode();
 			if (blCode != null && blCode.length() > 0) {
 				context.addStatExt("blCode", blCode);
 			}
-			context.addStatExt("os", context.getLcpAppInfo().getAppOsId());
+			context.addStatExt("os", context.getAppInfo().getAppOsId());
 			LcpThreadLocal.thCommandContext.set(context);
 			apiResult = apiCommand.execute(context);
 			return apiResult;
@@ -298,7 +298,7 @@ public class ApiController {
 			RequestBaseContext requestBaseContext, ApiResult apiResult, final String methodName) throws Exception {
 		Map<String, String> requestParamMap = requestBaseContext.getRequestParamMap();
 		final int appId = NumberUtils.toInt(requestParamMap.get(HttpConstants.PARAM_APP_ID));
-		final AppInfo appInfo = mobileClientAppService.getAppInfo(appId);
+		final AppInfo appInfo = apiInfoService.getAppInfo(appId);
 		// 接入信息无效
 		if (appInfo == null) {
 			apiResult.setCode(ApiResultCode.E_SYS_INVALID_APP_ID);
@@ -316,19 +316,17 @@ public class ApiController {
 		}
 		// t票处理
 		final String t = requestParamMap.get(HttpConstants.PARAM_TICKET);
-		final String xlt = requestParamMap.get(HttpConstants.PARAM_XUNLEI_TICKET);
-		final String xluid = requestParamMap.get(HttpConstants.PARAM_XUNLEI_UID);
 		final String version = requestParamMap.get(LcpConstants.PARAM_V);
 		requestBaseContext.setTicket(t);
 		if (StringUtils.isNotEmpty(t)) {
 			CheckTicket ticket = null;
 			try {
-				ticket = accountApi.validateTicket(t);
+				ticket = userAccountService.validateTicket(t);
 			} catch (Exception e) {
 				logger.error(String.format("accountApi.validateTicket(%s) sig:%s", t, sig), e); //$NON-NLS-1$
 			}
-			if (ticket != null && ticket.getXlUserId() != null && ticket.getXlUserId() > 0) {
-				requestBaseContext.setUser(UserType.Ra2, ticket.getXlUserId());
+			if (ticket != null && ticket.getUserId() != null && ticket.getUserId() > 0) {
+				requestBaseContext.setUser(UserType.user, ticket.getUserId());
 				final String userSecretKey = ticket.getUserSecretKey();// TOTO:缺密钥
 				if (userSecretKey == null || userSecretKey.isEmpty()) {// 兼容可能偶现的取密钥失败
 					requestBaseContext.setSecretKey(null);
@@ -346,37 +344,6 @@ public class ApiController {
 			} else {// 无需登录时，兼容登录信息失效。
 				logger.warn(String.format("%s[%s] sig:%s t login failed. anonymity and continue.", methodName, version,
 						sig));
-			}
-		} else if (StringUtils.isNotEmpty(xlt)) {
-			Long u = null;
-			final String clientIp = requestBaseContext.getClientIp();
-			try {
-				final String proFileName = XunleiEnvFinder.getProfile();
-				if (proFileName.equals("t16")) {
-					if (StringUtils.isNotEmpty(xluid)) {
-						u = Long.valueOf(xluid);
-					}
-				} else {
-					u = accountApi.validateMobileThunderUser(xluid, xlt, clientIp);
-				}
-
-			} catch (Exception e) {
-				logger.error(String.format("accountApi.validateMobileThunderUser(%s,%s,%s) sig:%s", //
-						xluid, xlt, clientIp, sig), e);
-			}
-			if (u == null || u == 0) {
-				if (this.commandLookupService.isNeedLogin(methodName, version)) {// 必须登录时，抛票错误。
-					apiResult.setCode(ApiResultCode.E_SYS_INVALID_TICKET);
-					return false;
-				} else {// 无需登录时，兼容登录信息失效。
-					logger.warn(String.format(
-							"%s[%s] accountApi.validateMobileThunderUser(%s,%s,%s) sig:%s xlt login failed. anonymity and continue.", //
-							methodName, version, xluid, xlt, clientIp, sig));
-				}
-			} else {
-				final long userId = u;
-				requestBaseContext.setUser(UserType.user, userId);
-				// requestBaseContext.setTicket(xlt);
 			}
 		} else { // 无t票时，只用app的secretKey
 			if (this.commandLookupService.isNeedLogin(methodName, version)) {
