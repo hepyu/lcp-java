@@ -1,10 +1,10 @@
-package com.open.lcp.dao;
+package com.open.lcp.framework.core.api.service.dao;
 
 import java.util.List;
 
 import com.open.jade.jade.annotation.DAO;
 import com.open.jade.jade.annotation.SQL;
-import com.open.lcp.dao.entity.LcpIgnoreMethodLogEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.LcpIgnoreMethodLogEntity;
 
 @DAO(catalog = "lcp")
 public interface IgnoreMethodLogDAO {

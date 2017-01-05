@@ -11,11 +11,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.open.lcp.dao.AppInfoDAO;
-import com.open.lcp.dao.entity.AppAuthInfoEntity;
-import com.open.lcp.dao.entity.AppInfoEntity;
-import com.open.lcp.dao.info.AppAuthInfo;
-import com.open.lcp.dao.info.AppInfo;
+import com.open.lcp.framework.core.api.service.dao.AppInfoDAO;
+import com.open.lcp.framework.core.api.service.dao.entity.AppAuthInfoEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.AppInfoEntity;
+import com.open.lcp.framework.core.api.service.dao.info.AppAuthInfo;
+import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 import com.open.lcp.framework.core.loader.AppInfoTimerLoader;
 import com.open.lcp.framework.core.loader.TimerLoader;
 import com.open.lcp.framework.util.LcpUtils;

@@ -1,4 +1,4 @@
-package com.open.lcp.dao.entity;
+package com.open.lcp.framework.core.api.service.dao.entity;
 
 import com.open.lcp.framework.core.annotation.LcpRequired;
 

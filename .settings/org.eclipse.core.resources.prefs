@@ -1,6 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/main/java/com/open/ApiMain.java=UTF-8
-encoding//src/main/java/com/open/lcp/biz/schedule/LCPScheduler.java=UTF-8
+encoding//src/main/java/com/open/lcp/biz/schedule/BizScheduler.java=UTF-8
 encoding//src/main/java/com/open/lcp/framework/core/annotation/LcpMethod.java=UTF-8
 encoding//src/main/java/com/open/lcp/framework/core/api/command/ApiCommandContext.java=UTF-8
 encoding//src/main/java/com/open/lcp/framework/core/configuration/AsyncThreadPoolConfiguration.java=UTF-8

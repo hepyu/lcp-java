@@ -1,8 +1,8 @@
-package com.open.lcp.dao.entity;
+package com.open.lcp.framework.core.api.service.dao.entity;
 
 import java.io.Serializable;
 
-import com.open.lcp.dao.info.AppInitInfo;
+import com.open.lcp.framework.core.api.service.dao.info.AppInitInfo;
 
 public class AppInitInfoEntity implements Serializable, AppInitInfo {
 

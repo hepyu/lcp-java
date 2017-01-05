@@ -7,11 +7,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
-import com.open.dbs.cache.SSDBX;
+import com.open.dbs.cache.ssdb.SSDBX;
 import com.open.env.finder.EnvFinder;
-import com.open.lcp.dao.AppInitInfoDAO;
-import com.open.lcp.dao.entity.AppInitInfoEntity;
 import com.open.lcp.framework.core.api.service.AppInitService;
+import com.open.lcp.framework.core.api.service.dao.AppInitInfoDAO;
+import com.open.lcp.framework.core.api.service.dao.entity.AppInitInfoEntity;
 
 @Service
 public class AppInitServiceImpl implements AppInitService {

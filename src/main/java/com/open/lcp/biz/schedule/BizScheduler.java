@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
  * @Scheduled(fixedRate = 1000 * 30) : ����ĳ����ʱ����
  */
 @EnableScheduling
-public class LCPScheduler {
+public class BizScheduler {
 
 	// 秒 分 时 日 月 年
 	@Scheduled(cron = "0 */1 *  * * * ")

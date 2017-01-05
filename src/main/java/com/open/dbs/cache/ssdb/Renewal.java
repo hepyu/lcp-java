@@ -1,4 +1,4 @@
-package com.open.dbs.cache;
+package com.open.dbs.cache.ssdb;
 
 class Renewal<V> {
 	public Renewal(long tick, V v) {

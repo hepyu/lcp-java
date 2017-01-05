@@ -33,7 +33,7 @@ public class ApiMain {
 		// }
 		final String proFileName = EnvFinder.getProfile();
 		System.setProperty("spring.profiles.active", proFileName);
-		System.setProperty("com.open.lcp.dao.*", "1");
+		// System.setProperty("com.open.lcp.dao.*", "1");
 		// logger.info(
 		// String.format("ApiMain: start @ %s, profile: %s",
 		// XunleiEnvFinder.getIpcfg().toString(), proFileName));

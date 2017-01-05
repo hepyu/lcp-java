@@ -1,6 +1,6 @@
 package com.open.lcp.framework.core.api.service;
 
-import com.open.lcp.dao.entity.ApiMaxThreadsEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.ApiMaxThreadsEntity;
 
 public interface ApiMaxThreadsService {
 

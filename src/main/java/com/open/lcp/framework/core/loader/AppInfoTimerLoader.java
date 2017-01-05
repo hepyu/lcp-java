@@ -2,8 +2,8 @@ package com.open.lcp.framework.core.loader;
 
 import java.util.List;
 
-import com.open.lcp.dao.info.AppAuthInfo;
-import com.open.lcp.dao.info.AppInfo;
+import com.open.lcp.framework.core.api.service.dao.info.AppAuthInfo;
+import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 
 public interface AppInfoTimerLoader extends TimerLoader {
 

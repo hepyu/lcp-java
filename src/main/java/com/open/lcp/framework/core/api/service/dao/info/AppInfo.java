@@ -1,4 +1,4 @@
-package com.open.lcp.dao.info;
+package com.open.lcp.framework.core.api.service.dao.info;
 
 public interface AppInfo {
 

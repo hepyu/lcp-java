@@ -1,8 +1,8 @@
-package com.open.lcp.dao;
+package com.open.lcp.framework.core.api.service.dao;
 
 import com.open.jade.jade.annotation.DAO;
 import com.open.jade.jade.annotation.SQL;
-import com.open.lcp.dao.entity.AppInitInfoEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.AppInitInfoEntity;
 
 @DAO(catalog = "lcp")
 public interface AppInitInfoDAO {

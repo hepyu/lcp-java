@@ -2,7 +2,7 @@ package com.open.lcp.framework.core.api.command;
 
 import java.util.Map;
 
-import com.open.lcp.dao.info.AppInfo;
+import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 import com.open.lcp.passport.service.UserAccountService.UserType;
 
 /**

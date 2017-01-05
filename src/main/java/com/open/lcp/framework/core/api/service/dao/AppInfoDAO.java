@@ -1,14 +1,14 @@
-package com.open.lcp.dao;
+package com.open.lcp.framework.core.api.service.dao;
 
 import java.util.List;
 
 import com.open.jade.jade.annotation.DAO;
 import com.open.jade.jade.annotation.SQL;
-import com.open.lcp.dao.entity.ApiMaxThreadsEntity;
-import com.open.lcp.dao.entity.AppAuthInfoEntity;
-import com.open.lcp.dao.entity.AppInfoEntity;
-import com.open.lcp.dao.entity.LcpTimeSwitcherEntity;
-import com.open.lcp.dao.info.AppInfo;
+import com.open.lcp.framework.core.api.service.dao.entity.ApiMaxThreadsEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.AppAuthInfoEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.AppInfoEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.LcpTimeSwitcherEntity;
+import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 
 @DAO(catalog = "lcp")
 public interface AppInfoDAO {
