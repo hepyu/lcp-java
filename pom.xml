@@ -84,6 +84,11 @@
 			<version>3.2.1</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.zookeeper</groupId>
 			<artifactId>zookeeper</artifactId>
 			<version>3.4.9</version>
@@ -143,6 +148,12 @@
 			<groupId>org.nutz</groupId>
 			<artifactId>ssdb4j</artifactId>
 			<version>9.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.26</version>
 		</dependency>
 
 	</dependencies>

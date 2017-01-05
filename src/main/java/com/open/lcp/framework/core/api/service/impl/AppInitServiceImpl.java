@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.open.dbs.cache.SSDBX;
 import com.open.env.finder.EnvFinder;
+import com.open.lcp.dao.AppInitInfoDAO;
+import com.open.lcp.dao.entity.AppInitInfoEntity;
 import com.open.lcp.framework.core.api.service.AppInitService;
-import com.open.lcp.framework.core.api.service.dao.AppInitInfoDao;
-import com.open.lcp.framework.core.api.service.dao.entity.AppInitInfoEntity;
 
 @Service
 public class AppInitServiceImpl implements AppInitService {
@@ -22,7 +22,7 @@ public class AppInitServiceImpl implements AppInitService {
 	private SSDBX ssdbx = EnvFinder.loadSSDBX("lcp_app_init");
 
 	@Resource
-	AppInitInfoDao appInitDao;
+	AppInitInfoDAO appInitDao;
 
 	@Override
 	public AppInitInfoEntity getAppInitInfo(String deviceId) {

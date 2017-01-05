@@ -11,11 +11,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.open.lcp.framework.core.api.service.dao.AppInfoDao;
-import com.open.lcp.framework.core.api.service.dao.entity.AppAuthInfoEntity;
-import com.open.lcp.framework.core.api.service.dao.entity.AppInfoEntity;
-import com.open.lcp.framework.core.api.service.dao.info.AppAuthInfo;
-import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
+import com.open.lcp.dao.AppInfoDAO;
+import com.open.lcp.dao.entity.AppAuthInfoEntity;
+import com.open.lcp.dao.entity.AppInfoEntity;
+import com.open.lcp.dao.info.AppAuthInfo;
+import com.open.lcp.dao.info.AppInfo;
 import com.open.lcp.framework.core.loader.AppInfoTimerLoader;
 import com.open.lcp.framework.core.loader.TimerLoader;
 import com.open.lcp.framework.util.LcpUtils;
@@ -30,17 +30,17 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 	private Map<Integer, List<AppAuthInfo>> appAuthMap = null;
 
 	@Autowired
-	private AppInfoDao appInfoDao;
+	private AppInfoDAO appInfoDAO;
 
 	private void loadApp() {
 		logger.info("loadApp start");
 		long startTime = System.currentTimeMillis();
-		List<AppInfoEntity> appInfos = appInfoDao.getAppList();
+		List<AppInfoEntity> appInfos = appInfoDAO.getAppList();
 
 		Map<Integer, AppInfo> appIdAppInfoMap = new HashMap<Integer, AppInfo>();
 		Map<Integer, List<AppAuthInfo>> appAuthMap = new HashMap<Integer, List<AppAuthInfo>>();
 
-		List<AppAuthInfoEntity> allAuths = appInfoDao.loadAllAuthorities();
+		List<AppAuthInfoEntity> allAuths = appInfoDAO.loadAllAuthorities();
 		for (AppAuthInfo auth : allAuths) {
 			int appId = auth.getAppId();
 			if (!appAuthMap.containsKey(appId)) {

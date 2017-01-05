@@ -8,11 +8,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.open.lcp.dao.entity.ApiMaxThreadsEntity;
 import com.open.lcp.framework.core.api.BlockChecker;
 import com.open.lcp.framework.core.api.RequestChecker;
 import com.open.lcp.framework.core.api.service.ApiMaxThreadsService;
 import com.open.lcp.framework.core.api.service.AppInitService;
-import com.open.lcp.framework.core.api.service.dao.entity.ApiMaxThreadsEntity;
 import com.open.lcp.framework.core.facade.ApiResult;
 import com.open.lcp.framework.core.facade.ApiResultCode;
 
