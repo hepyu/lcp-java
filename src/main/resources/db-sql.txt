@@ -62,3 +62,9 @@ CREATE TABLE `app_init_info` (
   `imei_md5` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`device_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `lcp_sys_config_ignore_log_method` (
+  `method_name` varchar(100) NOT NULL,
+  `ctime` bigint(20) NOT NULL,
+  PRIMARY KEY (`method_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

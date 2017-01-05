@@ -9,7 +9,7 @@ public class AppInfoEntity implements Serializable, AppInfo {
 	private static final long serialVersionUID = -1119697844347595668L;
 	public static final int IS_0 = 0;
 	public static final int IS_1 = 1;
-	private int appId, appPlatformId, appOsId, isPoint, isShortMsg;
+	private int appId, appPlatformId, appOsId, isPoint, isShortMsg, isUseHttps;
 	private String appName, appSecretKey, appPackageName, addTime, blCode, responsible, recommendPlatform;
 
 	public int getAppId() {
@@ -106,6 +106,14 @@ public class AppInfoEntity implements Serializable, AppInfo {
 
 	public void setRecommendPlatform(String recommendPlatform) {
 		this.recommendPlatform = recommendPlatform;
+	}
+
+	public int getIsUseHttps() {
+		return isUseHttps;
+	}
+
+	public void setIsUseHttps(int isUseHttps) {
+		this.isUseHttps = isUseHttps;
 	}
 
 }
