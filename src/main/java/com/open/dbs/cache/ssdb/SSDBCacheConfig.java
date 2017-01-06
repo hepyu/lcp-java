@@ -2,10 +2,14 @@ package com.open.dbs.cache.ssdb;
 
 import org.apache.commons.pool.impl.GenericObjectPool.Config;
 
-public class CacheConfig {
+public class SSDBCacheConfig {
+
 	private String ip, auth;
+
 	private int port;
+
 	private int timeout;
+
 	private Config cfg;
 
 	public String getIp() {

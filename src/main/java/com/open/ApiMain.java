@@ -25,13 +25,13 @@ import com.open.env.finder.EnvFinder;
 @EnableCaching
 public class ApiMain {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		// for (int i = 0; i < args.length; i++) {
 		// if ("adpre".equals(args[i])) {
 		// System.setProperty("adpre", "1");
 		// }
 		// }
-		final String proFileName = EnvFinder.getProfile();
+		final String proFileName = EnvFinder.findProfile().name();
 		System.setProperty("spring.profiles.active", proFileName);
 		// System.setProperty("com.open.lcp.dao.*", "1");
 		// logger.info(

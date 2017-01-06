@@ -12,7 +12,7 @@ import com.open.jade.jade.dataaccess.DataSourceHolder;
 import com.open.jade.jade.statement.StatementMetaData;
 
 @Configuration
-public class LCPDataSourceConfiguration {
+public class DataSourceConfiguration {
 
 	// <bean id="jade.dataSource.com.chen.dao"
 	// class="org.apache.commons.dbcp.BasicDataSource"

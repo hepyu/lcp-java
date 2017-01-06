@@ -15,12 +15,12 @@ class SSDBHolder {
 		return ssdb;
 	}
 
-	public SSDBHolder(CacheConfig cfg, JsonObjectConv jsonConv) {
+	public SSDBHolder(SSDBCacheConfig cfg, JsonObjectConv jsonConv) {
 		this.setSsdb(cfg);
 		this.jsonConv = jsonConv;
 	}
 
-	public void setSsdb(CacheConfig cfg) {
+	public void setSsdb(SSDBCacheConfig cfg) {
 		SSDB old = this.ssdb;
 		final byte[] auth = (cfg.getAuth() == null || cfg.getAuth().isEmpty()) ? null : (cfg.getAuth().getBytes());
 		this.ssdb = SSDBs.pool(cfg.getIp(), cfg.getPort(), cfg.getTimeout(), cfg.getCfg(), auth);
