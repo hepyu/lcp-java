@@ -23,7 +23,7 @@ public class HostHolder {
 	private static List<String> productHosts;
 
 	static {
-		ZkClient zkClient = new ZkClient(EnvFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
+		ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
 
 			@Override
 			public byte[] serialize(Object paramObject) throws ZkMarshallingError {

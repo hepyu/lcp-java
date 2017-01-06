@@ -17,7 +17,7 @@ public class SSDBXImpl implements SSDBX {
 
 	private final byte[] prefix;
 
-	public SSDBXImpl(SSDBCacheConfig cfg, String prefix) {
+	public SSDBXImpl(ZKSSDBConfig cfg, String prefix) {
 		this.ssdbHolder = new SSDBHolder(cfg, jsonConv);
 		this.prefix = prefix == null ? new byte[0] : prefix.getBytes(Charset.forName("utf-8"));
 	}

@@ -2,14 +2,16 @@ package com.open.dbs.cache.ssdb;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkMarshallingError;
 import org.I0Itec.zkclient.serialize.ZkSerializer;
+
 import com.google.gson.Gson;
 import com.mangocity.zk.ConfigChangeListener;
 import com.mangocity.zk.ConfigChangeSubscriber;
 import com.mangocity.zk.ZkConfigChangeSubscriberImpl;
-import com.open.env.finder.EnvFinder;
+import com.open.env.finder.ZKFinder;
 
 public class SSDBXFactory {
 
@@ -25,7 +27,7 @@ public class SSDBXFactory {
 			prefix = PREFIX_DEFAULE;
 		}
 
-		final String ssdbZkRoot = EnvFinder.findSSDBZKRoot();
+		final String ssdbZkRoot = ZKFinder.findSSDBZKRoot();
 		Map<String, SSDBXImpl> map = ssdbxMap.get(source);
 		if (map == null) {
 			synchronized (LOCK_OF_NEWPATH) {
@@ -33,7 +35,7 @@ public class SSDBXFactory {
 				if (map == null) {
 					map = new ConcurrentHashMap<String, SSDBXImpl>();
 
-					ZkClient zkClient = new ZkClient(EnvFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
+					ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
 
 						@Override
 						public byte[] serialize(Object paramObject) throws ZkMarshallingError {
@@ -52,7 +54,7 @@ public class SSDBXFactory {
 						@Override
 						public void configChanged(String key, String value) {
 
-							SSDBCacheConfig ssdbConfig = loadSSDBCacheConfig(value);
+							ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(value);
 							ssdbxMap.get(source).get(PREFIX_DEFAULE).getSSDBHolder().setSsdb(ssdbConfig);
 
 						}
@@ -60,7 +62,7 @@ public class SSDBXFactory {
 					// String initValue = sub.getInitValue(source);
 
 					// {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
-					SSDBCacheConfig ssdbConfig = loadSSDBCacheConfig(zkClient, ssdbZkRoot, source);
+					ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(zkClient, ssdbZkRoot, source);
 					map.put(PREFIX_DEFAULE, new SSDBXImpl(ssdbConfig, PREFIX_DEFAULE));
 					ssdbxMap.put(source, map);
 				}
@@ -74,14 +76,14 @@ public class SSDBXFactory {
 		return h;
 	}
 
-	private static SSDBCacheConfig loadSSDBCacheConfig(ZkClient zkClient, String ssdbZkRoot, String key) {
+	private static ZKSSDBConfig loadSSDBCacheConfig(ZkClient zkClient, String ssdbZkRoot, String key) {
 		String ssdbStr = zkClient.readData(ssdbZkRoot + "/" + key);
 		return loadSSDBCacheConfig(ssdbStr);
 	}
 
-	private static SSDBCacheConfig loadSSDBCacheConfig(String jsonStr) {
+	private static ZKSSDBConfig loadSSDBCacheConfig(String jsonStr) {
 		Gson gson = new Gson();
-		SSDBCacheConfig ssdbConfig = gson.fromJson(jsonStr, SSDBCacheConfig.class);
+		ZKSSDBConfig ssdbConfig = gson.fromJson(jsonStr, ZKSSDBConfig.class);
 		return ssdbConfig;
 	}
 

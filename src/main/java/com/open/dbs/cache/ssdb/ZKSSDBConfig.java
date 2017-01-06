@@ -2,7 +2,7 @@ package com.open.dbs.cache.ssdb;
 
 import org.apache.commons.pool.impl.GenericObjectPool.Config;
 
-public class SSDBCacheConfig {
+public class ZKSSDBConfig {
 
 	private String ip, auth;
 
