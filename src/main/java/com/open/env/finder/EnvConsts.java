@@ -1,8 +1,5 @@
 package com.open.env.finder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class EnvConsts {
 
 	// 1.zookeeper hosts

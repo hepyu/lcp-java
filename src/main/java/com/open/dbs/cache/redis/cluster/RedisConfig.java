@@ -1,4 +1,4 @@
-package com.open.dbs.cache.redis;
+package com.open.dbs.cache.redis.cluster;
 
 public class RedisConfig {
 	private int timeout;

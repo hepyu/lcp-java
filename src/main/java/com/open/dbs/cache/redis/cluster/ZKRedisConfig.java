@@ -1,4 +1,4 @@
-package com.open.dbs.cache.redis;
+package com.open.dbs.cache.redis.cluster;
 
 import java.util.List;
 

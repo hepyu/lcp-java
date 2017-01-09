@@ -8,13 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
+
+import com.open.dbs.cache.redis.cluster.RedisX;
+import com.open.dbs.cache.redis.cluster.RedisXFactory;
+import com.open.dbs.cache.redis.cluster.RedisXImpl;
+
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPoolConfig;
-
-import com.open.dbs.cache.redis.RedisX;
-import com.open.dbs.cache.redis.RedisXFactory;
-import com.open.dbs.cache.redis.RedisXImpl;
 
 @Configuration
 public class RedisClusterConfig {
