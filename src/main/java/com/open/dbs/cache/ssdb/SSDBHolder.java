@@ -6,6 +6,8 @@ import org.nutz.ssdb4j.SSDBs;
 import org.nutz.ssdb4j.impl.SimpleClient;
 import org.nutz.ssdb4j.spi.SSDB;
 
+import com.open.common.JsonObjectConv;
+
 class SSDBHolder {
 	private final JsonObjectConv jsonConv;
 
@@ -16,11 +18,11 @@ class SSDBHolder {
 	}
 
 	public SSDBHolder(ZKSSDBConfig cfg, JsonObjectConv jsonConv) {
-		this.setSsdb(cfg);
+		this.setSSDBConfig(cfg);
 		this.jsonConv = jsonConv;
 	}
 
-	public void setSsdb(ZKSSDBConfig cfg) {
+	public void setSSDBConfig(ZKSSDBConfig cfg) {
 		SSDB old = this.ssdb;
 		final byte[] auth = (cfg.getAuth() == null || cfg.getAuth().isEmpty()) ? null : (cfg.getAuth().getBytes());
 		this.ssdb = SSDBs.pool(cfg.getIp(), cfg.getPort(), cfg.getTimeout(), cfg.getCfg(), auth);

@@ -1,4 +1,4 @@
-package com.open.dbs.cache.ssdb;
+package com.open.common;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;

@@ -10,21 +10,28 @@ import org.nutz.ssdb4j.spi.Cmd;
 import org.nutz.ssdb4j.spi.Response;
 import org.nutz.ssdb4j.spi.SSDB;
 
+import com.open.common.JsonObjectConv;
+
 public class SSDBXImpl implements SSDBX {
 
 	public static final JsonObjectConv jsonConv = new JsonObjectConv();
 	private final SSDBHolder ssdbHolder;
 
-	private final byte[] prefix;
+	private final byte[] mixKey;
 
-	public SSDBXImpl(ZKSSDBConfig cfg, String prefix) {
+	public SSDBXImpl(ZKSSDBConfig cfg) {
 		this.ssdbHolder = new SSDBHolder(cfg, jsonConv);
-		this.prefix = prefix == null ? new byte[0] : prefix.getBytes(Charset.forName("utf-8"));
+		this.mixKey = new byte[0];
 	}
 
-	private SSDBXImpl(SSDBHolder ssdbHolder, String prefix) {
+	public SSDBXImpl(ZKSSDBConfig cfg, String mixKey) {
+		this.ssdbHolder = new SSDBHolder(cfg, jsonConv);
+		this.mixKey = mixKey == null ? new byte[0] : mixKey.getBytes(Charset.forName("utf-8"));
+	}
+
+	private SSDBXImpl(SSDBHolder ssdbHolder, String mixKey) {
 		this.ssdbHolder = ssdbHolder;
-		this.prefix = prefix == null ? new byte[0] : prefix.getBytes(Charset.forName("utf-8"));
+		this.mixKey = mixKey == null ? new byte[0] : mixKey.getBytes(Charset.forName("utf-8"));
 	}
 
 	SSDBXImpl clone(String prefix) {
@@ -35,7 +42,7 @@ public class SSDBXImpl implements SSDBX {
 		return this.ssdbHolder;
 	}
 
-	public SSDB ssdb() {
+	private SSDB ssdb() {
 		return ssdbHolder.getSsdb();
 	}
 
@@ -43,26 +50,27 @@ public class SSDBXImpl implements SSDBX {
 	// if (prefix.length == 0) {
 	// return jsonConv.toObject(data, clazz);
 	// }
-	// return jsonConv.toObject(data, prefix.length, data.length - prefix.length, clazz);
+	// return jsonConv.toObject(data, prefix.length, data.length -
+	// prefix.length, clazz);
 	// }
 
 	private <K> byte[] mixkey(K k) {
 		SSDBCounterByThread.inc();
 		byte[] bts = jsonConv.bytes(k);
-		if (prefix.length == 0) {
+		if (mixKey.length == 0) {
 			return bts;
 		}
-		byte[] rtnBts = merger(prefix, bts);
+		byte[] rtnBts = merger(mixKey, bts);
 		return rtnBts;
 	}
 
 	private <K> byte[][] mixkeys(K[] keys) {
-		if (prefix.length == 0) {
+		if (mixKey.length == 0) {
 			return jsonConv.bytess((Object[]) keys);
 		}
 		byte[][] btsKeys = jsonConv.bytess((Object[]) keys);
 		for (int i = 0; i < btsKeys.length; i++) {
-			btsKeys[i] = this.merger(prefix, btsKeys[i]);
+			btsKeys[i] = this.merger(mixKey, btsKeys[i]);
 		}
 		return btsKeys;
 
@@ -125,7 +133,8 @@ public class SSDBXImpl implements SSDBX {
 		Iterator<byte[]> it = datas.iterator();
 		while (it.hasNext()) {
 			byte[] data = it.next();
-			map.put(jsonConv.toObject(data, prefix.length, data.length - prefix.length, clazzK), jsonConv.toObject(it.next(), clazzV));
+			map.put(jsonConv.toObject(data, mixKey.length, data.length - mixKey.length, clazzK),
+					jsonConv.toObject(it.next(), clazzV));
 		}
 		return map;
 	}
@@ -349,7 +358,8 @@ public class SSDBXImpl implements SSDBX {
 
 	@Override
 	public <K, V> Map<V, Long> zrange(K key, int offset, int limit, Class<V> clazz) {
-		Response resp = ssdb().req(Cmd.zrange, mixkey(key), jsonConv.bytes(Integer.toString(offset)), jsonConv.bytes(Integer.toString(limit)));
+		Response resp = ssdb().req(Cmd.zrange, mixkey(key), jsonConv.bytes(Integer.toString(offset)),
+				jsonConv.bytes(Integer.toString(limit)));
 		List<byte[]> ds = this.getRespData(resp);
 		if (ds == null) {
 			return null;
@@ -359,7 +369,8 @@ public class SSDBXImpl implements SSDBX {
 
 	@Override
 	public <K, V> Map<V, Long> zrrange(K key, int offset, int limit, Class<V> clazz) {
-		Response resp = ssdb().req(Cmd.zrrange, mixkey(key), jsonConv.bytes(Integer.toString(offset)), jsonConv.bytes(Integer.toString(limit)));
+		Response resp = ssdb().req(Cmd.zrrange, mixkey(key), jsonConv.bytes(Integer.toString(offset)),
+				jsonConv.bytes(Integer.toString(limit)));
 		List<byte[]> ds = this.getRespData(resp);
 		if (ds == null) {
 			return null;
@@ -421,11 +432,13 @@ public class SSDBXImpl implements SSDBX {
 
 	@Override
 	public <K> long zremrangebyrank(K key, int start, int end) {
-		return toLong(ssdb().req(Cmd.zremrangebyrank, mixkey(key), jsonConv.bytes(String.valueOf(start)), jsonConv.bytes(String.valueOf(end))));
+		return toLong(ssdb().req(Cmd.zremrangebyrank, mixkey(key), jsonConv.bytes(String.valueOf(start)),
+				jsonConv.bytes(String.valueOf(end))));
 	}
 
 	@Override
-	public <K, V> Map<V, Long> zscan(K key, V value_start, String score_start, String score_end, long limit, Class<V> clazz) {
+	public <K, V> Map<V, Long> zscan(K key, V value_start, String score_start, String score_end, long limit,
+			Class<V> clazz) {
 		Response resp = ssdb().req(Cmd.zscan//
 				, mixkey(key)//
 				, jsonConv.bytes(value_start)//
@@ -439,7 +452,8 @@ public class SSDBXImpl implements SSDBX {
 	}
 
 	@Override
-	public <K, V> Map<V, Long> zrscan(K key, V value_start, String score_start, String score_end, long limit, Class<V> clazz) {
+	public <K, V> Map<V, Long> zrscan(K key, V value_start, String score_start, String score_end, long limit,
+			Class<V> clazz) {
 		Response resp = ssdb().req(Cmd.zrscan//
 				, mixkey(key)//
 				, jsonConv.bytes(value_start)//

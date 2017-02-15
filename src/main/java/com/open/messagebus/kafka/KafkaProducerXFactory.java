@@ -1,4 +1,4 @@
-package com.open.dbs.cache.ssdb;
+package com.open.messagebus.kafka;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,20 +13,20 @@ import com.mangocity.zk.ConfigChangeSubscriber;
 import com.mangocity.zk.ZkConfigChangeSubscriberImpl;
 import com.open.env.finder.ZKFinder;
 
-public class SSDBXFactory {
+public class KafkaProducerXFactory {
 
 	// private static final Log logger = LogFactory.getLog(SSDBXFactory.class);
 
-	private static final Map<String, SSDBXImpl> ssdbxMap = new ConcurrentHashMap<String, SSDBXImpl>();
+	private static final Map<String, KafkaProducerXImpl<String, String>> kafkaxMap = new ConcurrentHashMap<String, KafkaProducerXImpl<String, String>>();
 
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
-	public static SSDBX getSSDBX(final String instanceName) {
-		final String ssdbZkRoot = ZKFinder.findSSDBZKRoot();
-		SSDBXImpl ssdbxImpl = ssdbxMap.get(instanceName);
-		if (ssdbxImpl == null) {
-			synchronized (LOCK_OF_NEWPATH) {
+	public static KafkaProducerX<String, String> getKafkaProducerX(final String source) {
 
+		final String ssdbZkRoot = ZKFinder.findSSDBZKRoot();
+		KafkaProducerXImpl<String, String> producer = kafkaxMap.get(source);
+		if (producer == null) {
+			synchronized (LOCK_OF_NEWPATH) {
 				ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
 
 					@Override
@@ -41,35 +41,36 @@ public class SSDBXFactory {
 				});
 
 				ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, ssdbZkRoot);
-				sub.subscribe(instanceName, new ConfigChangeListener() {
+				sub.subscribe(source, new ConfigChangeListener() {
 
 					@Override
 					public void configChanged(String key, String value) {
 
-						ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(value);
-						ssdbxMap.get(instanceName).getSSDBHolder().setSSDBConfig(ssdbConfig);
+						ZKKafkaProducerConfig producerConfig = loadKafkaProducerConfig(value);
+						kafkaxMap.get(source).getKafkaProducerHolder().setProducerConfig(producerConfig);
 
 					}
 				});
 				// String initValue = sub.getInitValue(source);
 
 				// {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
-				ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(zkClient, ssdbZkRoot, instanceName);
-				ssdbxMap.put(instanceName, new SSDBXImpl(ssdbConfig));
+				ZKKafkaProducerConfig producerConfig = loadKafkaConfig(zkClient, ssdbZkRoot, source);
+				kafkaxMap.put(source, new KafkaProducerXImpl<String, String>(producerConfig));
 			}
 		}
-		return ssdbxMap.get(instanceName);
+
+		return kafkaxMap.get(source);
 	}
 
-	private static ZKSSDBConfig loadSSDBCacheConfig(ZkClient zkClient, String ssdbZkRoot, String key) {
-		String ssdbStr = zkClient.readData(ssdbZkRoot + "/" + key);
-		return loadSSDBCacheConfig(ssdbStr);
+	private static ZKKafkaProducerConfig loadKafkaConfig(ZkClient zkClient, String ssdbZkRoot, String key) {
+		String kafkaStr = zkClient.readData(ssdbZkRoot + "/" + key);
+		return loadKafkaProducerConfig(kafkaStr);
 	}
 
-	private static ZKSSDBConfig loadSSDBCacheConfig(String jsonStr) {
+	private static ZKKafkaProducerConfig loadKafkaProducerConfig(String jsonStr) {
 		Gson gson = new Gson();
-		ZKSSDBConfig ssdbConfig = gson.fromJson(jsonStr, ZKSSDBConfig.class);
-		return ssdbConfig;
+		ZKKafkaProducerConfig zkKafkaConfig = gson.fromJson(jsonStr, ZKKafkaProducerConfig.class);
+		return zkKafkaConfig;
 	}
 
 }

@@ -143,9 +143,14 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_2.10</artifactId>
-			<version>0.8.2.2</version>
+			<artifactId>kafka-clients</artifactId>
+			<version>0.10.1.1</version>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.kafka</groupId> -->
+<!-- 			<artifactId>kafka_2.10</artifactId> -->
+<!-- 			<version>0.8.2.2</version> -->
+<!-- 		</dependency> -->
 
 
 

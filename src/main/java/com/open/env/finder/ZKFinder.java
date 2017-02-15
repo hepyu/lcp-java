@@ -17,11 +17,7 @@ public class ZKFinder {
 	}
 
 	public static SSDBX findSSDBX(String source) {
-		return SSDBLoader.loadSSDBX(source, null);
-	}
-
-	public static SSDBX findSSDBX(String source, String prefix) {
-		return SSDBLoader.loadSSDBX(source, prefix);
+		return SSDBLoader.loadSSDBX(source);
 	}
 
 	// 3.find redis

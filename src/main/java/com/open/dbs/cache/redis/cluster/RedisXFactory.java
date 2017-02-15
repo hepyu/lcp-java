@@ -23,18 +23,13 @@ public class RedisXFactory {
 
 	private static final Object INIT_REDISIMPL_MAP = new Object();
 
-	private static final String PREFIX_DEFAULE = "";
-
-	public static RedisX loadRedisX(final String source, String prefix) {
-		if (prefix == null) {
-			prefix = PREFIX_DEFAULE;
-		}
+	public static RedisX loadRedisX(final String instanceName) {
 
 		final String redisZKRoot = ZKFinder.findRedisZKRoot();
-		RedisX instance = redisMap.get(source);
+		RedisX instance = redisMap.get(instanceName);
 		if (instance == null) {
 			synchronized (INIT_REDISIMPL_MAP) {
-				instance = redisMap.get(source);
+				instance = redisMap.get(instanceName);
 				if (instance == null) {
 					ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
 
@@ -50,19 +45,19 @@ public class RedisXFactory {
 					});
 
 					ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, redisZKRoot);
-					sub.subscribe(source, new ConfigChangeListener() {
+					sub.subscribe(instanceName, new ConfigChangeListener() {
 
 						@Override
 						public void configChanged(String key, String value) {
 
 							ZKRedisConfig redisConfig = loadZKRedisConfig(value);
-							redisMap.get(source).getHolder().setJedisCluster(redisConfig.getServer().get(0));
+							redisMap.get(instanceName).getHolder().setJedisCluster(redisConfig.getServer().get(0));
 
 						}
 					});
 
-					ZKRedisConfig redisConfig = loadZKRedisConfig(zkClient, redisZKRoot, source);
-					redisMap.put(source, new RedisXImpl(redisConfig.getServer().get(0)));
+					ZKRedisConfig redisConfig = loadZKRedisConfig(zkClient, redisZKRoot, instanceName);
+					redisMap.put(instanceName, new RedisXImpl(redisConfig.getServer().get(0)));
 				}
 			}
 		}
@@ -73,7 +68,7 @@ public class RedisXFactory {
 			}
 		}
 
-		return redisMap.get(source);
+		return redisMap.get(instanceName);
 	}
 
 	private static ZKRedisConfig loadZKRedisConfig(ZkClient zkClient, String ssdbZkRoot, String key) {

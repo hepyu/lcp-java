@@ -1,4 +1,4 @@
-package com.open.dbs.cache.ssdb;
+package com.open.messagebus.kafka;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkMarshallingError;
 import org.I0Itec.zkclient.serialize.ZkSerializer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import com.google.gson.Gson;
 import com.mangocity.zk.ConfigChangeListener;
@@ -13,20 +14,21 @@ import com.mangocity.zk.ConfigChangeSubscriber;
 import com.mangocity.zk.ZkConfigChangeSubscriberImpl;
 import com.open.env.finder.ZKFinder;
 
-public class SSDBXFactory {
+public class KafkaConsumerXFactory {
 
 	// private static final Log logger = LogFactory.getLog(SSDBXFactory.class);
 
-	private static final Map<String, SSDBXImpl> ssdbxMap = new ConcurrentHashMap<String, SSDBXImpl>();
+	private static final Map<String, KafkaConsumerXImpl<String, String>> kafkaxMap = new ConcurrentHashMap<String, KafkaConsumerXImpl<String, String>>();
 
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
-	public static SSDBX getSSDBX(final String instanceName) {
-		final String ssdbZkRoot = ZKFinder.findSSDBZKRoot();
-		SSDBXImpl ssdbxImpl = ssdbxMap.get(instanceName);
-		if (ssdbxImpl == null) {
-			synchronized (LOCK_OF_NEWPATH) {
+	static KafkaConsumerX<String, String> getKafkaConsumerX(final String instanceName,
+			final KafkaMessageExecutor<String, String> executor) {
 
+		final String ssdbZkRoot = ZKFinder.findSSDBZKRoot();
+		KafkaConsumerXImpl<String, String> producer = kafkaxMap.get(instanceName);
+		if (producer == null) {
+			synchronized (LOCK_OF_NEWPATH) {
 				ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
 
 					@Override
@@ -46,30 +48,36 @@ public class SSDBXFactory {
 					@Override
 					public void configChanged(String key, String value) {
 
-						ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(value);
-						ssdbxMap.get(instanceName).getSSDBHolder().setSSDBConfig(ssdbConfig);
+						ZKKafkaConsumerConfig consumerConfig = loadKafkaConsumerConfig(value);
+						kafkaxMap.get(instanceName).getKafkaConsumerHolder().setConsumerConfig(consumerConfig);
 
 					}
 				});
 				// String initValue = sub.getInitValue(source);
 
 				// {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
-				ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(zkClient, ssdbZkRoot, instanceName);
-				ssdbxMap.put(instanceName, new SSDBXImpl(ssdbConfig));
+				ZKKafkaConsumerConfig consumerConfig = loadKafkaConsumerConfig(zkClient, ssdbZkRoot, instanceName);
+				kafkaxMap.put(instanceName, new KafkaConsumerXImpl<String, String>(consumerConfig) {
+					@Override
+					public void doMessage(ConsumerRecord<String, String> consumerRecord) {
+						executor.doMessage(consumerRecord);
+					}
+				});
 			}
 		}
-		return ssdbxMap.get(instanceName);
+
+		return kafkaxMap.get(instanceName);
 	}
 
-	private static ZKSSDBConfig loadSSDBCacheConfig(ZkClient zkClient, String ssdbZkRoot, String key) {
-		String ssdbStr = zkClient.readData(ssdbZkRoot + "/" + key);
-		return loadSSDBCacheConfig(ssdbStr);
+	private static ZKKafkaConsumerConfig loadKafkaConsumerConfig(ZkClient zkClient, String ssdbZkRoot, String key) {
+		String kafkaStr = zkClient.readData(ssdbZkRoot + "/" + key);
+		return loadKafkaConsumerConfig(kafkaStr);
 	}
 
-	private static ZKSSDBConfig loadSSDBCacheConfig(String jsonStr) {
+	private static ZKKafkaConsumerConfig loadKafkaConsumerConfig(String jsonStr) {
 		Gson gson = new Gson();
-		ZKSSDBConfig ssdbConfig = gson.fromJson(jsonStr, ZKSSDBConfig.class);
-		return ssdbConfig;
+		ZKKafkaConsumerConfig zkKafkaConfig = gson.fromJson(jsonStr, ZKKafkaConsumerConfig.class);
+		return zkKafkaConfig;
 	}
 
 }

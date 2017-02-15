@@ -20,21 +20,21 @@ import redis.clients.jedis.JedisPoolConfig;
 @Configuration
 public class RedisClusterConfig {
 
-	//@Value("${expression.redis.pool.max-idle}")
+	// @Value("${expression.redis.pool.max-idle}")
 	private int maxIdle;
 
-	//@Value("${expression.redis.pool.min-idle}")
+	// @Value("${expression.redis.pool.min-idle}")
 	private int minIdle;
 
-	//@Value("${expression.redis.pool.max-active}")
+	// @Value("${expression.redis.pool.max-active}")
 	private int maxActive;
 
-	//@Value("${expression.redis.pool.max-wait}")
+	// @Value("${expression.redis.pool.max-wait}")
 	private long maxWait;
 
 	private List<HostAndPort> redisHostList;
 
-	//@Value("${mcp.redis.server}")
+	// @Value("${mcp.redis.server}")
 	public void setRedisHosts(String redisHosts) {
 		redisHostList = new ArrayList<HostAndPort>();
 		if (StringUtils.isEmpty(redisHosts)) {
@@ -77,6 +77,6 @@ public class RedisClusterConfig {
 
 	@Bean(name = "redisCluster1")
 	public RedisX getRedisCluster1() {
-		return RedisXFactory.loadRedisX("redis_cluster_1", null);
+		return RedisXFactory.loadRedisX("redis_cluster_1");
 	}
 }
