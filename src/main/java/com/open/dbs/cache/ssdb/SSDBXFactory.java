@@ -26,36 +26,37 @@ public class SSDBXFactory {
 		SSDBXImpl ssdbxImpl = ssdbxMap.get(instanceName);
 		if (ssdbxImpl == null) {
 			synchronized (LOCK_OF_NEWPATH) {
+				if (ssdbxImpl == null) {
+					ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
 
-				ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
+						@Override
+						public byte[] serialize(Object paramObject) throws ZkMarshallingError {
+							return paramObject == null ? null : paramObject.toString().getBytes();
+						}
 
-					@Override
-					public byte[] serialize(Object paramObject) throws ZkMarshallingError {
-						return paramObject == null ? null : paramObject.toString().getBytes();
-					}
+						@Override
+						public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
+							return new String(paramArrayOfByte);
+						}
+					});
 
-					@Override
-					public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
-						return new String(paramArrayOfByte);
-					}
-				});
+					ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, ssdbZkRoot);
+					sub.subscribe(instanceName, new ConfigChangeListener() {
 
-				ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, ssdbZkRoot);
-				sub.subscribe(instanceName, new ConfigChangeListener() {
+						@Override
+						public void configChanged(String key, String value) {
 
-					@Override
-					public void configChanged(String key, String value) {
+							ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(value);
+							ssdbxMap.get(instanceName).getSSDBHolder().setSSDBConfig(ssdbConfig);
 
-						ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(value);
-						ssdbxMap.get(instanceName).getSSDBHolder().setSSDBConfig(ssdbConfig);
+						}
+					});
+					// String initValue = sub.getInitValue(source);
 
-					}
-				});
-				// String initValue = sub.getInitValue(source);
-
-				// {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
-				ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(zkClient, ssdbZkRoot, instanceName);
-				ssdbxMap.put(instanceName, new SSDBXImpl(ssdbConfig));
+					// {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
+					ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(zkClient, ssdbZkRoot, instanceName);
+					ssdbxMap.put(instanceName, new SSDBXImpl(ssdbConfig));
+				}
 			}
 		}
 		return ssdbxMap.get(instanceName);

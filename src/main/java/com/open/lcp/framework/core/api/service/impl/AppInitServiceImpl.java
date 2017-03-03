@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.open.dbs.cache.ssdb.SSDBX;
 import com.open.env.finder.ZKFinder;
+import com.open.lcp.ResourceEnum;
 import com.open.lcp.framework.core.api.service.AppInitService;
 import com.open.lcp.framework.core.api.service.dao.AppInitInfoDAO;
 import com.open.lcp.framework.core.api.service.dao.entity.AppInitInfoEntity;
@@ -19,7 +20,7 @@ public class AppInitServiceImpl implements AppInitService {
 	private static final Log logger = LogFactory.getLog(AppInitServiceImpl.class);
 	private static final String APP_INIT_KEY = "app-init-";
 
-	private SSDBX ssdbx = ZKFinder.findSSDBX("lcp_app_init");
+	private SSDBX ssdbx = ZKFinder.findSSDB(ResourceEnum.ssdb_lcp_app_init.resourceName());
 
 	@Resource
 	AppInitInfoDAO appInitDao;

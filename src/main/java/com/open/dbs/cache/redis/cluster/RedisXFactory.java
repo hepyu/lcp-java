@@ -29,35 +29,37 @@ public class RedisXFactory {
 		RedisX instance = redisMap.get(instanceName);
 		if (instance == null) {
 			synchronized (INIT_REDISIMPL_MAP) {
-				instance = redisMap.get(instanceName);
 				if (instance == null) {
-					ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
+					instance = redisMap.get(instanceName);
+					if (instance == null) {
+						ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
 
-						@Override
-						public byte[] serialize(Object paramObject) throws ZkMarshallingError {
-							return paramObject == null ? null : paramObject.toString().getBytes();
-						}
+							@Override
+							public byte[] serialize(Object paramObject) throws ZkMarshallingError {
+								return paramObject == null ? null : paramObject.toString().getBytes();
+							}
 
-						@Override
-						public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
-							return new String(paramArrayOfByte);
-						}
-					});
+							@Override
+							public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
+								return new String(paramArrayOfByte);
+							}
+						});
 
-					ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, redisZKRoot);
-					sub.subscribe(instanceName, new ConfigChangeListener() {
+						ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, redisZKRoot);
+						sub.subscribe(instanceName, new ConfigChangeListener() {
 
-						@Override
-						public void configChanged(String key, String value) {
+							@Override
+							public void configChanged(String key, String value) {
 
-							ZKRedisConfig redisConfig = loadZKRedisConfig(value);
-							redisMap.get(instanceName).getHolder().setJedisCluster(redisConfig.getServer().get(0));
+								ZKRedisConfig redisConfig = loadZKRedisConfig(value);
+								redisMap.get(instanceName).getHolder().setJedisCluster(redisConfig.getServer().get(0));
 
-						}
-					});
+							}
+						});
 
-					ZKRedisConfig redisConfig = loadZKRedisConfig(zkClient, redisZKRoot, instanceName);
-					redisMap.put(instanceName, new RedisXImpl(redisConfig.getServer().get(0)));
+						ZKRedisConfig redisConfig = loadZKRedisConfig(zkClient, redisZKRoot, instanceName);
+						redisMap.put(instanceName, new RedisXImpl(redisConfig.getServer().get(0)));
+					}
 				}
 			}
 		}
