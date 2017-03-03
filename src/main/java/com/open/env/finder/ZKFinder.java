@@ -26,4 +26,9 @@ public class ZKFinder {
 		return EnvConsts.ENV_ROOT + "/" + EnvFinder.findProfile().name() + "/redis";
 	}
 
+	// 4.find kafka
+
+	public static String findKafkaZKRoot() {
+		return EnvConsts.ENV_ROOT + "/" + EnvFinder.findProfile().name() + "/kafka";
+	}
 }
