@@ -21,8 +21,12 @@ public class HostHolder {
 	private static List<String> preHosts;
 
 	private static List<String> productHosts;
+	
+	private static volatile boolean hasPrepared = false;
+	
+	private static Object LOCK = new Object();
 
-	static {
+	private static void load(){
 		ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
 
 			@Override
@@ -41,6 +45,19 @@ public class HostHolder {
 			boolean isExist = zkClient.exists(envRoot + "/" + EnvConsts.KEY_HOSTS);
 			if (!isExist) {
 				continue;
+			}
+			
+			String value = zkClient.readData(envRoot + "/" + EnvConsts.KEY_HOSTS);
+			Gson gson = new Gson();
+			HostsConfig hostsConfig = gson.fromJson(value, HostsConfig.class);
+			if (envEnum == EnvEnum.dev) {
+				devHosts = hostsConfig.getHosts();
+			} else if (envEnum == EnvEnum.test) {
+				testHosts = hostsConfig.getHosts();
+			} else if (envEnum == EnvEnum.pre) {
+				preHosts = hostsConfig.getHosts();
+			} else if (envEnum == EnvEnum.product) {
+				productHosts = hostsConfig.getHosts();
 			}
 
 			ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, envRoot);
@@ -61,9 +78,18 @@ public class HostHolder {
 				}
 			});
 		}
+		
+		hasPrepared = true;
 	}
 
-	public static EnvEnum findProfile(String host) {
+	public static EnvEnum findProfile(String host) throws Exception{
+		if(!hasPrepared){
+			synchronized (HostHolder.class) {
+				if(!hasPrepared){
+					load();
+				}
+			}
+		}
 		if (devHosts.contains(host)) {
 			return EnvEnum.dev;
 		} else if (testHosts.contains(host)) {
