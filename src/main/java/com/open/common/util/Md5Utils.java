@@ -1,4 +1,4 @@
-package com.open.lcp.framework.util;
+package com.open.common.util;
 
 import java.security.MessageDigest;
 

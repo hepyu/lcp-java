@@ -1,4 +1,4 @@
-package com.open.lcp.framework.util;
+package com.open.common.util;
 
 import java.util.ArrayList;
 
@@ -9,13 +9,13 @@ public class JsonFormatUtil {
 	}
 
 	/**
-	 * json字符串的格式化
+	 * json�ַ����ĸ�ʽ��
 	 * 
 	 * @author peiyuxin
 	 * @param json
-	 *            需要格式的json串
-	 * @param fillStringUnit每一层之前的占位符号比如空格
-	 *            制表符
+	 *            ��Ҫ��ʽ��json��
+	 * @param fillStringUnitÿһ��֮ǰ��ռλ���ű���ո�
+	 *            �Ʊ��
 	 * @return
 	 */
 	public static String formatJson(String json, String fillStringUnit) {
@@ -27,7 +27,7 @@ public class JsonFormatUtil {
 		ArrayList<String> tokenList = new ArrayList<String>();
 		{
 			String jsonTemp = json;
-			// 预读取
+			// 预读�?
 			while (jsonTemp.length() > 0) {
 				String token = getToken(jsonTemp);
 				jsonTemp = jsonTemp.substring(token.length());
@@ -97,7 +97,6 @@ public class JsonFormatUtil {
 			}
 
 			buf.append(token);
-			// 左对齐
 			if (i < tokenList.size() - 1 && tokenList.get(i + 1).equals(":")) {
 				int fillLength = fixedLenth - token.getBytes().length;
 				if (fillLength > 0) {

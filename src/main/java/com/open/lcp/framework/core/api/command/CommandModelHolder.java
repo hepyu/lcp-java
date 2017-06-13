@@ -15,9 +15,8 @@ import com.open.lcp.framework.core.annotation.LcpMethod;
 import com.open.lcp.framework.core.annotation.LcpReq;
 
 /**
- * CommandModel加载的工具类，已经改为支持无参接口和仅一个参数的接口。
  * 
- * @author Marshal(shuai.ma@renren-inc.com) Initial Created at 2013-10-29
+ * @author 
  */
 public class CommandModelHolder {
 	private final static Map<Class<?>, List<ApiFacadeMethod>> methodModelMap = new ConcurrentHashMap<Class<?>, List<ApiFacadeMethod>>();
@@ -52,7 +51,7 @@ public class CommandModelHolder {
 	}
 
 	/**
-	 * 取方法级注解，支持无参接口和仅一个参数的接口。
+	 * 鍙栨柟娉曠骇娉ㄨВ锛屾敮鎸佹棤鍙傛帴鍙ｅ拰浠呬竴涓弬鏁扮殑鎺ュ彛銆�
 	 * 
 	 * @param o
 	 * @return
@@ -82,12 +81,12 @@ public class CommandModelHolder {
 					// continue;
 				}
 				Class<?>[] ps = m.getParameterTypes();
-				if (ps.length > 2) {// 超出两个入参一定是错的。最多只支持一个Req（对象或单值）和一个ctx
+				if (ps.length > 2) {// 瓒呭嚭涓や釜鍏ュ弬涓�瀹氭槸閿欑殑銆傛渶澶氬彧鏀寔涓�涓猂eq锛堝璞℃垨鍗曞�硷級鍜屼竴涓猚tx
 					throw new RuntimeException(String.format("McpMethod load error: %s ps more than 2 @%s.%s",
 							ps.length, clazz.getName(), m.getName()));
 				}
 
-				if (ps.length == 2) {// 双参的第二个必须是ctx
+				if (ps.length == 2) {// 鍙屽弬鐨勭浜屼釜蹇呴』鏄痗tx
 					if (ps[1] != CommandContext.class && ps[1] != ApiCommandContext.class) {
 						throw new RuntimeException(
 								String.format("McpMethod load error: 2/%s ps is not CommandContext @%s.%s", ps.length,
@@ -104,9 +103,9 @@ public class CommandModelHolder {
 				// Assert.notNull(null, errorMsg);
 				// continue;
 				// }
-				// if (m.getReturnType() == void.class) continue;//现在支持void
-				Class<?> req = null;// 无参时，此数据为null
-				LcpReq lcpReq = null;// 首参直接指定时，此值为非null
+				// if (m.getReturnType() == void.class) continue;//鐜板湪鏀寔void
+				Class<?> req = null;// 鏃犲弬鏃讹紝姝ゆ暟鎹负null
+				LcpReq lcpReq = null;// 棣栧弬鐩存帴鎸囧畾鏃讹紝姝ゅ�间负闈瀗ull
 				Type lcpReqType = null;
 				if (ps.length == 2 || (ps.length == 1 && !isCtx(ps[0]))) {
 					req = ps[0];

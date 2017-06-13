@@ -15,18 +15,13 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.open.common.util.StringToListUtils;
 import com.open.lcp.framework.core.annotation.LcpReq;
 import com.open.lcp.framework.core.annotation.LcpRequired;
 import com.open.lcp.framework.core.api.command.CommandContext;
 import com.open.lcp.framework.util.LcpMixEncUtils;
-import com.open.lcp.framework.util.StringToListUtils;
 import com.open.lcp.framework.core.annotation.LcpRequired.Struct;
 
-/**
- * 对象转换工具
- * 
- * @author Marshal(imdeep@gmail.com) Initial Created at 2013-10-25
- */
 public class ModelCastHolder {
 
 	/**
@@ -36,13 +31,6 @@ public class ModelCastHolder {
 
 	private static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
-	/**
-	 * 从map转成新对象
-	 * 
-	 * @param paramMap
-	 * @param targetClazz
-	 * @return
-	 */
 	public static <T> T mappingNew(Map<String, ?> paramMap, Class<T> targetClazz) {
 		if (paramMap == null)
 			return null;
@@ -66,12 +54,11 @@ public class ModelCastHolder {
 		return null;
 	}
 
-	/** 单个参数独立注解时的情况 */
 	public static <T> Object mappingParameter(Map<String, ?> paramMap, LcpReq lcpReq, Type t) {
 		if (paramMap == null || lcpReq == null) {
 			return null;
 		}
-		if (!paramMap.containsKey(lcpReq.name())) {// 无参时：非必选返回默认，必选返回null
+		if (!paramMap.containsKey(lcpReq.name())) {// 鏃犲弬鏃讹細闈炲繀閫夎繑鍥為粯璁わ紝蹇呴�夎繑鍥瀗ull
 			if (!lcpReq.required())
 				return getDefaultValue(t);
 			return null;
@@ -147,7 +134,7 @@ public class ModelCastHolder {
 		if (clazz != null) {
 			componentType = clazz.getComponentType();
 		}
-		if (clazz != null && componentType != null) {// 是数组
+		if (clazz != null && componentType != null) {// 鏄暟缁�
 			Class<?> type = componentType;
 			if (type == Integer.class) {
 				return StringToListUtils.toIntList(value).toArray(new Integer[0]);
@@ -160,7 +147,7 @@ public class ModelCastHolder {
 			} else if (type == long.class) {
 				return StringToListUtils.toLongArray(value);
 			}
-		} else if (t instanceof ParameterizedType) {// 泛型
+		} else if (t instanceof ParameterizedType) {// 娉涘瀷
 			ParameterizedType pt = (ParameterizedType) t;
 			Class<?> type = (Class<?>) (pt.getActualTypeArguments()[0]);
 			if (type == Integer.class) {
@@ -189,7 +176,7 @@ public class ModelCastHolder {
 	}
 
 	/**
-	 * 用map中的数据补充目标对象
+	 * 鐢╩ap涓殑鏁版嵁琛ュ厖鐩爣瀵硅薄
 	 * 
 	 * @param paramMap
 	 * @param targetObj
@@ -241,11 +228,11 @@ public class ModelCastHolder {
 						}
 					}
 					Class<?> componentType = f.getType().getComponentType();
-					if (struct == Struct.JSON) {// Json解析
+					if (struct == Struct.JSON) {// Json瑙ｆ瀽
 						paramMap.remove(f.getName());
 						f.setAccessible(true);
 						try {
-							if (!value.startsWith("{") && !value.startsWith("[")) {// json结构自动兼容
+							if (!value.startsWith("{") && !value.startsWith("[")) {// json缁撴瀯鑷姩鍏煎
 								if (req != null && req.aes()) {
 									final byte[] aeskey = LcpThreadLocal.thCommandContext.get().getAesKey();
 									value = LcpMixEncUtils.AesGzDecode(value, aeskey);
@@ -265,7 +252,7 @@ public class ModelCastHolder {
 									"mapping(Map<String,Object>, T) gson.fromJson name[%s], value[%s] sig[%s]",
 									f.getName(), value, sig), e);
 						}
-					} else if (componentType != null) {// 是数组
+					} else if (componentType != null) {// 鏄暟缁�
 						paramMap.remove(f.getName());
 						f.setAccessible(true);
 						Class<?> type = componentType;
@@ -280,7 +267,7 @@ public class ModelCastHolder {
 						} else if (type == long.class) {
 							f.set(targetObj, StringToListUtils.toLongArray(value));
 						}
-					} else if (f.getGenericType() instanceof ParameterizedType) {// 泛型
+					} else if (f.getGenericType() instanceof ParameterizedType) {// 娉涘瀷
 						Type[] actualTypes = ((ParameterizedType) f.getGenericType()).getActualTypeArguments();
 						if (actualTypes.length == 1) {
 							paramMap.remove(f.getName());
@@ -308,7 +295,7 @@ public class ModelCastHolder {
 	}
 
 	/**
-	 * 原对象转成指定的新对象实例
+	 * 鍘熷璞¤浆鎴愭寚瀹氱殑鏂板璞″疄渚�
 	 * 
 	 * @param o
 	 * @param clazzN
@@ -329,7 +316,7 @@ public class ModelCastHolder {
 	}
 
 	/**
-	 * 原对象转成指定的对象
+	 * 鍘熷璞¤浆鎴愭寚瀹氱殑瀵硅薄
 	 * 
 	 * @param o
 	 * @param n
@@ -354,7 +341,7 @@ public class ModelCastHolder {
 	}
 
 	/**
-	 * 原List转换为新的List
+	 * 鍘烲ist杞崲涓烘柊鐨凩ist
 	 * 
 	 * @param os
 	 * @param clazzN
@@ -365,7 +352,7 @@ public class ModelCastHolder {
 	}
 
 	/**
-	 * 原数组转换为新的List
+	 * 鍘熸暟缁勮浆鎹负鏂扮殑List
 	 * 
 	 * @param os
 	 * @param clazzN
@@ -376,7 +363,7 @@ public class ModelCastHolder {
 	}
 
 	/**
-	 * 原List转换为新的List，并增加转换后的自定义处理
+	 * 鍘烲ist杞崲涓烘柊鐨凩ist锛屽苟澧炲姞杞崲鍚庣殑鑷畾涔夊鐞�
 	 * 
 	 * @param os
 	 * @param clazzN
@@ -406,7 +393,7 @@ public class ModelCastHolder {
 	}
 
 	/**
-	 * 原List转换为新的List，并增加转换后的自定义处理
+	 * 鍘烲ist杞崲涓烘柊鐨凩ist锛屽苟澧炲姞杞崲鍚庣殑鑷畾涔夊鐞�
 	 * 
 	 * @param os
 	 * @param clazzN
@@ -441,7 +428,7 @@ public class ModelCastHolder {
 	}
 
 	/**
-	 * 把map中的value按sorted列表中的key顺序返回
+	 * 鎶妋ap涓殑value鎸塻orted鍒楄〃涓殑key椤哄簭杩斿洖
 	 * 
 	 * @param sorted
 	 * @param map

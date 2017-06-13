@@ -1,4 +1,4 @@
-package com.open.lcp.framework.util;
+package com.open.common.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,7 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * <p>
- * AES加密解密工具包
+ * AES加密解密工具�?
  * </p>
  *
  * @date 2012-5-18
@@ -28,14 +28,14 @@ public class AESUtils {
 	// public static void main(String[] args) throws Exception {
 	// final byte[] key = DigestUtils.md5("bbmCaaacHJnLTydddKrLLUGLddagYRA");
 	//
-	// String source = "这是一行测试AES加密/解密的文字，你看完也等于没看，是不是啊？！";
+	// String source = "这是�?行测试AES加密/解密的文字，你看完也等于没看，是不是啊？�?";
 	// System.err.println("原文:\t" + source);
 	// byte[] inputData = source.getBytes();
 	// inputData = AESUtils.encrypt(inputData, key);
-	// System.err.println("加密后:\t" + Base64Utils.encode(inputData));
+	// System.err.println("加密�?:\t" + Base64Utils.encode(inputData));
 	// byte[] outputData = AESUtils.decrypt(inputData, key);
 	// String outputStr = new String(outputData);
-	// System.err.println("解密后:\t" + outputStr);
+	// System.err.println("解密�?:\t" + outputStr);
 	//
 	// }
 

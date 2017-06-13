@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import com.open.common.util.AESUtils;
+import com.open.common.util.Base64Utils;
+
 public class LcpMixEncUtils {
 	/**
-	 * 提供给app.init接口用，imei和mac的解密。
+	 * 鎻愪緵缁檃pp.init鎺ュ彛鐢紝imei鍜宮ac鐨勮В瀵嗐��
 	 * 
-	 * 先base64 decode，然后用key的md5后的16byte来解密，得到的byte[]直接new String。
+	 * 鍏坆ase64 decode锛岀劧鍚庣敤key鐨刴d5鍚庣殑16byte鏉ヨВ瀵嗭紝寰楀埌鐨刡yte[]鐩存帴new String銆�
 	 * 
 	 * @param srcBase64
 	 * @param key
@@ -28,10 +31,10 @@ public class LcpMixEncUtils {
 	}
 
 	/**
-	 * 提供给app.init接口用，imei和mac的加密
+	 * 鎻愪緵缁檃pp.init鎺ュ彛鐢紝imei鍜宮ac鐨勫姞瀵�
 	 * 
 	 * @param content
-	 *            原文 mac去掉冒号和减号，转成大写
+	 *            鍘熸枃 mac鍘绘帀鍐掑彿鍜屽噺鍙凤紝杞垚澶у啓
 	 * @param key
 	 * @return
 	 */

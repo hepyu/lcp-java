@@ -1,10 +1,10 @@
-package com.open.lcp.framework.util;
+package com.open.common.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 字符串转数组的工具类，以,或;分隔
+ * 字符串转数组的工具类，以,�?;分隔
  * 
  * @author
  */

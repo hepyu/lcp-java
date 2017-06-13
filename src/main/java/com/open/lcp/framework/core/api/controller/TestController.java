@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-import com.open.lcp.framework.util.HttpUtil;
-import com.open.lcp.framework.util.JsonFormatUtil;
+import com.open.common.util.HttpUtil;
+import com.open.common.util.JsonFormatUtil;
 import com.open.lcp.framework.util.LcpUtils;
 
 /**

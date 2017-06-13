@@ -2,13 +2,9 @@ package com.open.lcp.framework.core.api.command;
 
 import java.util.Map;
 
+import com.open.common.enums.UserType;
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
-import com.open.lcp.passport.service.UserAccountService.UserType;
 
-/**
- * 请求相关的基础数据
- * 
- */
 public class RequestBaseContext {
 	private UserType userType;
 	private final int apiV;

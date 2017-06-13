@@ -25,6 +25,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.open.common.util.AESUtils;
+import com.open.common.util.Base64Utils;
 import com.open.lcp.framework.core.consts.HttpConstants;
 
 public class LcpUtils {
@@ -55,7 +57,7 @@ public class LcpUtils {
 	}
 
 	/**
-	 * 生成密钥
+	 * 鐢熸垚瀵嗛挜
 	 * 
 	 * @return
 	 */
@@ -66,9 +68,9 @@ public class LcpUtils {
 	}
 
 	/**
-	 * 提供给app.init接口用，imei和mac的解密。
+	 * 鎻愪緵缁檃pp.init鎺ュ彛鐢紝imei鍜宮ac鐨勮В瀵嗐��
 	 * 
-	 * 先base64 decode，然后用key的md5后的16byte来解密，得到的byte[]直接new String。
+	 * 鍏坆ase64 decode锛岀劧鍚庣敤key鐨刴d5鍚庣殑16byte鏉ヨВ瀵嗭紝寰楀埌鐨刡yte[]鐩存帴new String銆�
 	 * 
 	 * @param srcBase64
 	 * @param key
@@ -86,10 +88,10 @@ public class LcpUtils {
 	}
 
 	/**
-	 * 提供给app.init接口用，imei和mac的加密
+	 * 鎻愪緵缁檃pp.init鎺ュ彛鐢紝imei鍜宮ac鐨勫姞瀵�
 	 * 
 	 * @param content
-	 *            原文 mac去掉冒号和减号，转成大写
+	 *            鍘熸枃 mac鍘绘帀鍐掑彿鍜屽噺鍙凤紝杞垚澶у啓
 	 * @param key
 	 * @return
 	 */
@@ -116,14 +118,14 @@ public class LcpUtils {
 	}
 
 	/**
-	 * 填充http参数
+	 * 濉厖http鍙傛暟
 	 * 
 	 * @param request
 	 * @return
 	 */
 	public static Map<String, String> fillParamMap(HttpServletRequest request) {
 		Map<String, String> requestParamsMap = new HashMap<String, String>();
-		// 填充header
+		// 濉厖header
 		// String clientIp = McpUtils.getRemoteAddr(request);
 		// String userAgent = request.getHeader("user-agent");
 		// String language = request.getHeader("Accept-Language");
@@ -131,7 +133,7 @@ public class LcpUtils {
 		// requestParamsMap.put(HttpConstants.CLIENT_IP, clientIp);
 		// requestParamsMap.put(HttpConstants.USER_AGENT, userAgent);
 		// requestParamsMap.put(HttpConstants.LANGUAGE, language);
-		// 填充请求参数
+		// 濉厖璇锋眰鍙傛暟
 		Enumeration<String> e = request.getParameterNames();
 
 		while (e.hasMoreElements()) {
@@ -175,7 +177,7 @@ public class LcpUtils {
 	}
 
 	/**
-	 * 获得http输出格式
+	 * 鑾峰緱http杈撳嚭鏍煎紡
 	 * 
 	 * @param requestParamMap
 	 * @return
@@ -220,7 +222,7 @@ public class LcpUtils {
 	}
 
 	/**
-	 * 左匹配，右边以*结尾代表模糊匹配。admin相关的接口，不允许通过全匹配的*（只有一个*）授权。
+	 * 宸﹀尮閰嶏紝鍙宠竟浠�*缁撳熬浠ｈ〃妯＄硦鍖归厤銆俛dmin鐩稿叧鐨勬帴鍙ｏ紝涓嶅厑璁搁�氳繃鍏ㄥ尮閰嶇殑*锛堝彧鏈変竴涓�*锛夋巿鏉冦��
 	 * 
 	 * @param srcMethodName
 	 * @param wildcardMethodName
@@ -228,16 +230,16 @@ public class LcpUtils {
 	 */
 	public static boolean leftMatch(String srcMethodName, String wildcardMethodName) {
 		if (srcMethodName == null && wildcardMethodName == null) {
-			return true;// 全是null，确实匹配。
+			return true;// 鍏ㄦ槸null锛岀‘瀹炲尮閰嶃��
 		}
 		if (srcMethodName == null || wildcardMethodName == null) {
-			return false;// 有一个是null，不匹配。
+			return false;// 鏈変竴涓槸null锛屼笉鍖归厤銆�
 		}
 		if (srcMethodName.length() == 0 && wildcardMethodName.length() == 0) {
-			return true;// 全是空串，确实匹配。
+			return true;// 鍏ㄦ槸绌轰覆锛岀‘瀹炲尮閰嶃��
 		}
 		if (wildcardMethodName.length() == 0) {
-			return false;// 匹配串是空串，不匹配。
+			return false;// 鍖归厤涓叉槸绌轰覆锛屼笉鍖归厤銆�
 		}
 		if (srcMethodName.startsWith("admin.") && wildcardMethodName.equals("*")) {
 			return false;
@@ -250,7 +252,7 @@ public class LcpUtils {
 	}
 
 	/**
-	 * 用Gson的fromJson转换
+	 * 鐢℅son鐨刦romJson杞崲
 	 * 
 	 * @param <T>
 	 * @param json
@@ -265,7 +267,7 @@ public class LcpUtils {
 	}
 
 	/**
-	 * 对http请求参数作字典排序，拼接字符串
+	 * 瀵筯ttp璇锋眰鍙傛暟浣滃瓧鍏告帓搴忥紝鎷兼帴瀛楃涓�
 	 * 
 	 * @param paramMap
 	 * @param sigParamKey
@@ -284,7 +286,7 @@ public class LcpUtils {
 			}
 			sb.append(paramKey).append('=').append(paramMap.get(paramKey));
 		}
-		if (isHeadError) {// 对http head异常做兼容
+		if (isHeadError) {// 瀵筯ttp head寮傚父鍋氬吋瀹�
 			params = paramMap.keySet();
 			sortedParams = new ArrayList<String>(params);
 			Collections.sort(sortedParams);
@@ -345,7 +347,7 @@ public class LcpUtils {
 	}
 
 	/**
-	 * 取x -froward
+	 * 鍙杧 -froward
 	 * 
 	 * @param request
 	 * @return
@@ -366,7 +368,7 @@ public class LcpUtils {
 	}
 
 	/**
-	 * 取客户端的真实IP，考虑了反向代理等因素的干扰
+	 * 鍙栧鎴风鐨勭湡瀹濱P锛岃�冭檻浜嗗弽鍚戜唬鐞嗙瓑鍥犵礌鐨勫共鎵�
 	 * 
 	 * @param request
 	 * @return
@@ -417,26 +419,27 @@ public class LcpUtils {
 	}
 
 	/**
-	 * 从X-Forwarded-For头部中获取客户端的真实IP。 X-Forwarded-For并不是RFC定义的标准HTTP请求Header
-	 * ，可以参考http://en.wikipedia.org/wiki/X-Forwarded-For
+	 * 浠嶺-Forwarded-For澶撮儴涓幏鍙栧鎴风鐨勭湡瀹濱P銆�
+	 * X-Forwarded-For骞朵笉鏄疪FC瀹氫箟鐨勬爣鍑咹TTP璇锋眰Header
+	 * 锛屽彲浠ュ弬鑰僪ttp://en.wikipedia.org/wiki/X-Forwarded-For
 	 * 
 	 * @param xff
-	 *            X-Forwarded-For头部的值
-	 * @return 如果能够解析到client IP，则返回表示该IP的字符串，否则返回null
+	 *            X-Forwarded-For澶撮儴鐨勫��
+	 * @return 濡傛灉鑳藉瑙ｆ瀽鍒癱lient IP锛屽垯杩斿洖琛ㄧず璇P鐨勫瓧绗︿覆锛屽惁鍒欒繑鍥瀗ull
 	 */
 	private static String resolveClientIPFromXFF(String xff) {
 		if (xff == null || xff.length() == 0) {
 			return null;
 		}
 		String[] ss = xff.split(",");
-		for (int i = ss.length - 1; i >= 0; i--) {// x-forward-for链反向遍历
+		for (int i = ss.length - 1; i >= 0; i--) {// x-forward-for閾惧弽鍚戦亶鍘�
 			String ip = ss[i].trim();
-			if (isValidIP(ip) && !isNativeIP(ip)) { // 判断ip是否合法，是否是公司机房ip
+			if (isValidIP(ip) && !isNativeIP(ip)) { // 鍒ゆ柇ip鏄惁鍚堟硶锛屾槸鍚︽槸鍏徃鏈烘埧ip
 				return ip;
 			}
 		}
 
-		// 如果反向遍历没有找到格式正确的外网IP，那就正向遍历找到第一个格式合法的IP
+		// 濡傛灉鍙嶅悜閬嶅巻娌℃湁鎵惧埌鏍煎紡姝ｇ‘鐨勫缃慖P锛岄偅灏辨鍚戦亶鍘嗘壘鍒扮涓�涓牸寮忓悎娉曠殑IP
 		for (int i = 0; i < ss.length; i++) {
 			String ip = ss[i].trim();
 			if (isValidIP(ip)) {
@@ -447,7 +450,7 @@ public class LcpUtils {
 	}
 
 	/**
-	 * 是否公司内部IP
+	 * 鏄惁鍏徃鍐呴儴IP
 	 * 
 	 * @param ip
 	 * @return
@@ -482,8 +485,8 @@ public class LcpUtils {
 			ia = InetAddress.getLocalHost();
 			String localname = ia.getHostName();
 			String localip = ia.getHostAddress();
-			System.out.println("本机名称是：" + localname);
-			System.out.println("本机的ip是 ：" + localip);
+			System.out.println("鏈満鍚嶇О鏄細" + localname);
+			System.out.println("鏈満鐨刬p鏄� 锛�" + localip);
 			return localip;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -517,7 +520,7 @@ public class LcpUtils {
 			return null;
 		}
 		if (result instanceof String && ((String) result).startsWith("{")) {
-			// 兼容 AutoLoadCommand 直接输出json
+			// 鍏煎 AutoLoadCommand 鐩存帴杈撳嚭json
 			return (String) result;
 		}
 		return gson.toJson(buildObjResult(result));
@@ -529,11 +532,11 @@ public class LcpUtils {
 			return null;
 		}
 		if (result instanceof String && ((String) result).startsWith("{")) {
-			// 兼容 AutoLoadCommand 直接输出json
+			// 鍏煎 AutoLoadCommand 鐩存帴杈撳嚭json
 			return result;
 		}
 		if (result instanceof Boolean) {
-			// 输出形式的统一，0表示true(success),1表示false(failure)
+			// 杈撳嚭褰㈠紡鐨勭粺涓�锛�0琛ㄧずtrue(success),1琛ㄧずfalse(failure)
 			result = (Boolean) result ? 0 : 1;
 		}
 		if (result instanceof Integer || result instanceof Long || result instanceof String) {

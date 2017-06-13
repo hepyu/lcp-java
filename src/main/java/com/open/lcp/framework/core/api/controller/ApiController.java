@@ -22,8 +22,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.open.dbs.cache.ssdb.SSDBCounterByThread;
+import com.open.common.enums.UserType;
 import com.open.lcp.framework.core.api.LcpThreadLocal;
 import com.open.lcp.framework.core.api.command.ApiCommand;
 import com.open.lcp.framework.core.api.command.ApiCommandContext;
@@ -38,7 +38,6 @@ import com.open.lcp.framework.core.facade.ApiResultCode;
 import com.open.lcp.framework.security.CheckTicket;
 import com.open.lcp.framework.util.LcpUtils;
 import com.open.lcp.passport.service.UserAccountService;
-import com.open.lcp.passport.service.UserAccountService.UserType;
 
 @Controller
 @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
@@ -95,14 +94,14 @@ public class ApiController {
 		ApiResult apiResult = new ApiResult();
 		ApiCommandContext context = null;
 		try {
-			{// 统计相关参数
+			{// 缁熻鐩稿叧鍙傛暟
 				// InetAddress addr = InetAddress.getLocalHost();
 				// serverIpLog = addr.getHostAddress().toString();
 				clientIp = LcpUtils.getRemoteAddr(request);
 				clientPort = LcpUtils.getRemotePort(request);
 				userAgentLog = request.getHeader("User-Agent");
 			}
-			// 构造参数
+			// 鏋勯�犲弬鏁�
 			final String httpMethod = request.getMethod().toUpperCase();
 			final String httpReqURI = request.getRequestURI();
 			final RequestBaseContext requestBaseContext = new RequestBaseContext(apiV, curTime, httpMethod, httpReqURI,
@@ -116,7 +115,7 @@ public class ApiController {
 				ServletInputStream in = request.getInputStream();
 				while ((c = in.read(btsBody, index, btsBody.length - index)) > 0)
 					index += c;
-				if (btsBody.length != index) {// 出错
+				if (btsBody.length != index) {// 鍑洪敊
 					logger.info(String.format("octet-stream error of %s, loaded %s, not content length %s",
 							request.getRequestURI(), index, btsBody.length));
 					btsBody = null;
@@ -124,7 +123,7 @@ public class ApiController {
 				}
 			}
 			final Map<String, String> requestParamMap = LcpUtils.fillParamMap(request);
-			if (btsBody != null && btsBody.length > 0) {// 有postbody时的处理
+			if (btsBody != null && btsBody.length > 0) {// 鏈塸ostbody鏃剁殑澶勭悊
 				final String byteBodyHash = DigestUtils.md5Hex(btsBody).toLowerCase();
 				// String byteBodyHash =
 				// HexUtil.byteArrayToHexString(DigestUtils.md5(btsBody)).toLowerCase();
@@ -139,14 +138,14 @@ public class ApiController {
 			}
 			request.setAttribute(LcpConstants.REQ_ATTR_PerSMAP, requestParamMap);
 
-			// 解析uri到method名字，优先判断
+			// 瑙ｆ瀽uri鍒癿ethod鍚嶅瓧锛屼紭鍏堝垽鏂�
 			String methodName = LcpUtils.getCmdMethodFromURI(requestBaseContext.getRequestURI());
 			{
-				if (methodName == null) {// URL中没有时，从参数中取一次容错。
+				if (methodName == null) {// URL涓病鏈夋椂锛屼粠鍙傛暟涓彇涓�娆″閿欍��
 					methodName = requestParamMap.get(HttpConstants.PARAM_METHOD);
 				}
 				methodNameLog = methodName;
-				if (StringUtils.isEmpty(methodName)) { // 没有方法名
+				if (StringUtils.isEmpty(methodName)) { // 娌℃湁鏂规硶鍚�
 					apiResult.setCode(ApiResultCode.E_SYS_UNKNOWN_METHOD);
 					return apiResult;
 				}
@@ -167,25 +166,25 @@ public class ApiController {
 				return apiResult;
 			}
 			final Map<String, String> httpHeads = LcpUtils.getHttpHeads(request);
-			// 校验平台级参数的合法性
+			// 鏍￠獙骞冲彴绾у弬鏁扮殑鍚堟硶鎬�
 			if (!this.validateBaseRequiredParams(httpHeads, requestBaseContext, apiResult, methodName)) {
 				return apiResult;
 			}
-			// 防重发
+			// 闃查噸鍙�
 			if (!this.validateRequestFrequency(requestBaseContext, apiResult)) {
 				return apiResult;
 			}
-			// 是否需要登录
+			// 鏄惁闇�瑕佺櫥褰�
 			userIdLog = requestBaseContext.getUserId();
 			if (requestBaseContext.getUserId() == 0 && this.commandLookupService.isNeedLogin(methodName, version)) {
 				apiResult.setCode(ApiResultCode.E_SYS_INVALID_TICKET);
 				return apiResult;
 			}
-			// 权限校验
-			// TODO：如果需要登录，对user用户身份的检查，例如是否封禁等等
-			// TODO：antispam的检查
-			// TODO：流量控制
-			// 检查客户端app是否对这个方法有权限
+			// 鏉冮檺鏍￠獙
+			// TODO锛氬鏋滈渶瑕佺櫥褰曪紝瀵箄ser鐢ㄦ埛韬唤鐨勬鏌ワ紝渚嬪鏄惁灏佺绛夌瓑
+			// TODO锛歛ntispam鐨勬鏌�
+			// TODO锛氭祦閲忔帶鍒�
+			// 妫�鏌ュ鎴风app鏄惁瀵硅繖涓柟娉曟湁鏉冮檺
 			if (!commandLookupService.isOpen(methodName, version)) {
 				if (!appInfoService.isAllowedApiMethod(requestBaseContext.getAppInfo().getAppId(), methodName,
 						clientIp)) {
@@ -193,7 +192,7 @@ public class ApiController {
 					return apiResult;
 				}
 			}
-			// 封装command参数
+			// 灏佽command鍙傛暟
 			Map<String, Object> binaryParams = null;
 			if (request instanceof MultipartHttpServletRequest) {
 				MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
@@ -243,20 +242,20 @@ public class ApiController {
 			logger.error("CommandController handleRequestInternal", e);
 			apiResult = new ApiResult();
 			apiResult.setCode(ApiResultCode.E_SYS_UNKNOWN);
-		} finally { // log统计
+		} finally { // log缁熻
 			final long time = System.currentTimeMillis();
 			final long costTime = time - curTime;
 			final String methodName = StringUtils.defaultString(request.getMethod());
 			try {
 				final String httpAccessLogMsg = String.format(httpAccessLogFormat//
-						, time + "" // 时间
+						, time + "" // 鏃堕棿
 						, urlFull // url
 						, userIdLog + "" // userId
 						, methodName // http method
 						, StringUtils.defaultString(userAgentLog) // http agent
 						, StringUtils.defaultString(clientIp) // clientIp
 						, StringUtils.defaultString(methodNameLog) // mcpMethodName
-						, costTime + "" // 消耗的时间
+						, costTime + "" // 娑堣�楃殑鏃堕棿
 						, apiResult.getCode() + "");
 				httpAccessLogger.error(httpAccessLogMsg);
 				// // this.checkServerQuality(costTime);
@@ -285,7 +284,7 @@ public class ApiController {
 	}
 
 	/**
-	 * 校验平台基本参数
+	 * 鏍￠獙骞冲彴鍩烘湰鍙傛暟
 	 * 
 	 * @param requestParamMap
 	 * @param response
@@ -299,7 +298,7 @@ public class ApiController {
 		Map<String, String> requestParamMap = requestBaseContext.getRequestParamMap();
 		final int appId = NumberUtils.toInt(requestParamMap.get(HttpConstants.PARAM_APP_ID));
 		final AppInfo appInfo = appInfoService.getAppInfo(appId);
-		// 接入信息无效
+		// 鎺ュ叆淇℃伅鏃犳晥
 		if (appInfo == null) {
 			apiResult.setCode(ApiResultCode.E_SYS_INVALID_APP_ID);
 			return false;
@@ -314,7 +313,7 @@ public class ApiController {
 			apiResult.setCode(ApiResultCode.E_SYS_INVALID_SIG);
 			return false;
 		}
-		// t票处理
+		// t绁ㄥ鐞�
 		final String t = requestParamMap.get(HttpConstants.PARAM_TICKET);
 		final String version = requestParamMap.get(LcpConstants.PARAM_V);
 		requestBaseContext.setTicket(t);
@@ -327,8 +326,8 @@ public class ApiController {
 			}
 			if (ticket != null && ticket.getUserId() != null && ticket.getUserId() > 0) {
 				requestBaseContext.setUser(UserType.user, ticket.getUserId());
-				final String userSecretKey = ticket.getUserSecretKey();// TOTO:缺密钥
-				if (userSecretKey == null || userSecretKey.isEmpty()) {// 兼容可能偶现的取密钥失败
+				final String userSecretKey = ticket.getUserSecretKey();// TOTO:缂哄瘑閽�
+				if (userSecretKey == null || userSecretKey.isEmpty()) {// 鍏煎鍙兘鍋剁幇鐨勫彇瀵嗛挜澶辫触
 					requestBaseContext.setSecretKey(null);
 				} else {
 					requestBaseContext.setSecretKey(requestBaseContext.getAppInfo().getAppSecretKey() + userSecretKey);
@@ -338,14 +337,14 @@ public class ApiController {
 							this.getClass().getName(), requestBaseContext.getUserId(),
 							requestBaseContext.getSecretKey()));
 				}
-			} else if (this.commandLookupService.isNeedLogin(methodName, version)) {// 需要登录时，报票错误。
+			} else if (this.commandLookupService.isNeedLogin(methodName, version)) {// 闇�瑕佺櫥褰曟椂锛屾姤绁ㄩ敊璇��
 				apiResult.setCode(ApiResultCode.E_SYS_INVALID_TICKET);
 				return false;
-			} else {// 无需登录时，兼容登录信息失效。
+			} else {// 鏃犻渶鐧诲綍鏃讹紝鍏煎鐧诲綍淇℃伅澶辨晥銆�
 				logger.warn(String.format("%s[%s] sig:%s t login failed. anonymity and continue.", methodName, version,
 						sig));
 			}
-		} else { // 无t票时，只用app的secretKey
+		} else { // 鏃爐绁ㄦ椂锛屽彧鐢╝pp鐨剆ecretKey
 			if (this.commandLookupService.isNeedLogin(methodName, version)) {
 				apiResult.setCode(ApiResultCode.E_SYS_TICKET_NOT_EXIST);
 				return false;
@@ -353,7 +352,7 @@ public class ApiController {
 			requestBaseContext.setSecretKey(requestBaseContext.getAppInfo().getAppSecretKey());
 		}
 		final String secretKey = requestBaseContext.getSecretKey();
-		if (secretKey != null) {// 成功得到密钥后才验sig值
+		if (secretKey != null) {// 鎴愬姛寰楀埌瀵嗛挜鍚庢墠楠宻ig鍊�
 			String normalizedString = LcpUtils.generateNormalizedString(httpHeads, requestParamMap);
 			if (requestBaseContext.getApiV() > 1) {
 				normalizedString = requestBaseContext.getRequestURI() + normalizedString;
@@ -375,7 +374,7 @@ public class ApiController {
 			new ConcurrentHashMap<String, Boolean>());
 
 	/**
-	 * 防重发机制, 根据sig判断
+	 * 闃查噸鍙戞満鍒�, 鏍规嵁sig鍒ゆ柇
 	 * 
 	 * @param requestParamMap
 	 * @param response
@@ -387,20 +386,20 @@ public class ApiController {
 	private boolean validateRequestFrequency(RequestBaseContext requestBaseContext, ApiResult apiResult)
 			throws Exception {
 		Map<String, String> requestParamMap = requestBaseContext.getRequestParamMap();
-		// 防重发机制, 根据sig判断
+		// 闃查噸鍙戞満鍒�, 鏍规嵁sig鍒ゆ柇
 		final long userId = requestBaseContext.getUserId();
 		final String reqSig = requestParamMap.get(HttpConstants.PARAM_SIG);
-		final long timeOf10s = System.currentTimeMillis() / 10000;// 十秒为单位
+		final long timeOf10s = System.currentTimeMillis() / 10000;// 鍗佺涓哄崟浣�
 		final String sig = String.format("%s.%s@%s", userId, reqSig, timeOf10s);
 		try {
 			ConcurrentHashMap<String, Boolean> sigMap = SRF_SIG.get();
-			if (sigMap == null) {// 空的时候，直接返回成功
+			if (sigMap == null) {// 绌虹殑鏃跺�欙紝鐩存帴杩斿洖鎴愬姛
 				sigMap = new ConcurrentHashMap<String, Boolean>();
 				SRF_SIG = new WeakReference<ConcurrentHashMap<String, Boolean>>(sigMap);
 				logger.warn("CommandController.validateRequestFrequency: WeakReference empty.");
 			} else {
 				Boolean b = sigMap.get(sig);
-				if (b != null) { // 是重发的请求，用户访问过于频繁
+				if (b != null) { // 鏄噸鍙戠殑璇锋眰锛岀敤鎴疯闂繃浜庨绻�
 					apiResult.setCode(ApiResultCode.E_SYS_REQUEST_TOO_FAST);
 					logger.warn(String.format("sig repeat: %s, abort.", sig));
 					return false;
