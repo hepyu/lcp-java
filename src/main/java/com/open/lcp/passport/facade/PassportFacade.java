@@ -21,6 +21,6 @@ public class PassportFacade implements ApiFacade {
 
 	@LcpMethod(name = "passport.login.mobile", ver = "1.0", desc = "手机号登录")
 	public String loginMobile(CommandContext context) {
-		return "helloworld";
+		userAccountService.
 	}
 }

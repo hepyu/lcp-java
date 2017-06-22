@@ -3,11 +3,12 @@ package com.open.lcp.passport.service.impl;
 import org.springframework.stereotype.Service;
 
 import com.open.lcp.framework.security.CheckTicket;
+import com.open.lcp.passport.service.AbstractPassportAccount;
 import com.open.lcp.passport.service.UserAccountService;
 import com.open.lcp.passport.service.impl.dto.UserAccountDto;
 
 @Service
-public class UserAccountServiceImpl implements UserAccountService {
+public class UserAccountServiceImpl extends AbstractPassportAccount implements UserAccountService {
 
 	@Override
 	public UserAccountDto getUserInfo(Long xlUserId) {
