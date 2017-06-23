@@ -13,18 +13,18 @@ import com.open.common.enums.UserType;
 import com.open.common.util.HttpUtil;
 import com.open.lcp.passport.PassportException;
 import com.open.lcp.passport.UserAccountType;
-import com.open.lcp.passport.sdk.PassportAccountPortrait;
+import com.open.lcp.passport.sdk.ThirdAccountSDKPortrait;
 
-@Component("qqPassportAccountSDK")
-public class QQPassportAccountSDK extends AbstractPassportAccountSDK {
+@Component("qqThirdAccountSDK")
+public class QQThirdAccountSDK extends AbstractThirdAccountSDK {
 
-	private static final Log logger = LogFactory.getLog(QQPassportAccountSDK.class);
+	private static final Log logger = LogFactory.getLog(QQThirdAccountSDK.class);
 
 	@Autowired
 	protected CloseableHttpClient httpClient;
 
 	@Override
-	public PassportAccountPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken,
+	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken,
 			String bisType) throws PassportException {
 
 		try {
@@ -71,8 +71,8 @@ public class QQPassportAccountSDK extends AbstractPassportAccountSDK {
 					temp.setNickname("nickName");
 				}
 
-				PassportAccountPortrait dto = new PassportAccountPortrait();
-				dto.setHeadIconURL(temp.getFigureurl_qq_1());
+				ThirdAccountSDKPortrait dto = new ThirdAccountSDKPortrait();
+				dto.setAvatar(temp.getFigureurl_qq_1());
 				dto.setNickname(temp.getNickname());
 				dto.setUsername(temp.getNickname());
 				dto.setUserType(UserType.valueOf(UserAccountType.qq.category()));

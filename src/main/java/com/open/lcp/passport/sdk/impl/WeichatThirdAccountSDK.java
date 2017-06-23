@@ -18,18 +18,18 @@ import com.open.common.enums.Gender;
 import com.open.common.enums.UserType;
 import com.open.lcp.passport.PassportException;
 import com.open.lcp.passport.UserAccountType;
-import com.open.lcp.passport.sdk.PassportAccountPortrait;
+import com.open.lcp.passport.sdk.ThirdAccountSDKPortrait;
 
-@Component("weichatPassportAccountSDK")
-public class WeichatPassportAccountSDK extends AbstractPassportAccountSDK {
+@Component("weichatThirdAccountSDK")
+public class WeichatThirdAccountSDK extends AbstractThirdAccountSDK {
 
-	private static final Log logger = LogFactory.getLog(WeichatPassportAccountSDK.class);
+	private static final Log logger = LogFactory.getLog(WeichatThirdAccountSDK.class);
 
 	@Autowired
 	protected CloseableHttpClient httpClient;
 
 	@Override
-	public PassportAccountPortrait validateAndObtainUserPortrait(String appId, String openId, String accessToken,
+	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String appId, String openId, String accessToken,
 			String type) throws PassportException {
 
 		StringBuilder sb = new StringBuilder();
@@ -55,8 +55,8 @@ public class WeichatPassportAccountSDK extends AbstractPassportAccountSDK {
 				temp.setNickname("nickName");
 			}
 
-			PassportAccountPortrait dto = new PassportAccountPortrait();
-			dto.setHeadIconURL(temp.getHeadimgurl());
+			ThirdAccountSDKPortrait dto = new ThirdAccountSDKPortrait();
+			dto.setAvatar(temp.getHeadimgurl());
 			dto.setNickname(temp.getNickname());
 			dto.setGender(Gender.get(temp.getSex()));
 			dto.setUsername(temp.getNickname());

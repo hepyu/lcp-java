@@ -4,7 +4,7 @@ import java.net.InetAddress;
 
 public class EnvFinder {
 
-	public static EnvEnum findProfile() {
+	public static EnvEnum getProfile() {
 		try {
 			InetAddress addr = InetAddress.getLocalHost();
 			String ipPrefix = addr.getHostAddress();

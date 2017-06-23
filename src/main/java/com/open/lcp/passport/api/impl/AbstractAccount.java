@@ -2,36 +2,34 @@ package com.open.lcp.passport.api.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
+import com.open.common.enums.Gender;
+import com.open.common.util.IPUtil;
+import com.open.lcp.passport.PassportConfig;
+import com.open.lcp.passport.PassportException;
+import com.open.lcp.passport.UserAccountType;
+import com.open.lcp.passport.cache.PassportCache;
+import com.open.lcp.passport.dto.BindAccountResultDTO;
+import com.open.lcp.passport.sdk.ThirdAccountSDK;
+import com.open.lcp.passport.sdk.ThirdAccountSDKPortrait;
+import com.open.lcp.passport.service.AccountInfoService;
+import com.open.lcp.passport.service.AccountTicketService;
+import com.open.lcp.passport.service.dao.PassportOAuthAccountDao;
+import com.open.lcp.passport.service.dao.PassportUserAccountDao;
+import com.open.lcp.passport.service.dao.entity.PassportOAuthAccountEntity;
+import com.open.lcp.passport.service.dao.entity.PassportUserAccountEntity;
+import com.open.lcp.passport.storage.AccountAvatarStorage;
+import com.open.lcp.passport.storage.impl.QiniuConfig;
 import com.open.lcp.passport.ticket.Ticket;
 import com.open.lcp.passport.ticket.TicketManager;
-import com.xunlei.xlmc.passport.PassportConfig;
-import com.xunlei.xlmc.passport.SexEnum;
-import com.xunlei.xlmc.passport.UserAccountTypeEnum;
-import com.xunlei.xlmc.passport.api.PassportApiException;
-import com.xunlei.xlmc.passport.bean.BindAccountResult;
-import com.xunlei.xlmc.passport.cache.PassportCache;
-import com.xunlei.xlmc.passport.common.http.CommonHttpClient;
-import com.xunlei.xlmc.passport.component.safecenter.SafeChecker;
-import com.xunlei.xlmc.passport.component.storage.PassportStorage;
-import com.xunlei.xlmc.passport.component.storage.impl.QiniuConfig;
-import com.xunlei.xlmc.passport.sdk.UserAccountSDK;
-import com.xunlei.xlmc.passport.sdk.UserPortrait;
-import com.xunlei.xlmc.passport.service.PassportAccountService;
-import com.xunlei.xlmc.passport.service.dao.PassportOAuthAccountDao;
-import com.xunlei.xlmc.passport.service.dao.PassportUserAccountDao;
-import com.xunlei.xlmc.passport.service.dao.entity.PassportOAuthAccountEntity;
-import com.xunlei.xlmc.passport.service.dao.entity.PassportUserAccountEntity;
-import com.xunlei.xlmc.passport.util.IPUtil;
-import com.xunlei.xlmc.passport.util.NickNameUtil;
-import com.xunlei.xlmc.passport.util.PlaceholderHeadIconUtil;
+import com.open.lcp.passport.util.NickNameUtil;
+import com.open.lcp.passport.util.PlaceholderAvatarUtil;
 
 public abstract class AbstractAccount {
 
@@ -43,36 +41,30 @@ public abstract class AbstractAccount {
 	@Autowired
 	private TicketManager ticketManager;
 
-	@Autowired
-	private SafeChecker safeChecker;
+	@Resource(name = "weichatThirdAccountSDK")
+	private ThirdAccountSDK weichatThirdAccountSDK;
 
-	@Resource(name = "xunleiUserCenterSDK")
-	private UserAccountSDK xunleiUserCenterSDK;
+	@Resource(name = "xiaomiThirdAccountSDK")
+	private ThirdAccountSDK xiaomiThirdAccountSDK;
 
-	@Resource(name = "weichatUserSDK")
-	private UserAccountSDK weichatUserSDK;
+	@Resource(name = "mobileThirdAccountSDK")
+	private ThirdAccountSDK mobileThirdAccountSDK;
 
-	@Resource(name = "xiaomiUserSDK")
-	private UserAccountSDK xiaomiUserSDK;
+	@Resource(name = "weiboThirdAccountSDK")
+	private ThirdAccountSDK weiboThirdAccountSDK;
 
-	@Resource(name = "mobileUserAccountSDK")
-	private UserAccountSDK mobilAccountSDK;
-
-	@Resource(name = "mobileThunderSDK")
-	private UserAccountSDK mobileThunderSDK;
-
-	@Resource(name = "weiboUserSDK")
-	private UserAccountSDK weiboUserSDK;
-
-	@Resource(name = "qqUserSDK")
-	private UserAccountSDK qqUserSDK;
+	@Resource(name = "qqThirdAccountSDK")
+	private ThirdAccountSDK qqThirdAccountSDK;
 
 	@Autowired
-	private PassportStorage passportStorage;
+	private AccountAvatarStorage accountAvatarStorage;
 
 	// service层有可能有缓存和业务逻辑
 	@Autowired
-	private PassportAccountService passportAccountService;
+	private AccountTicketService accountTicketService;
+
+	@Autowired
+	private AccountInfoService accountInfoService;
 
 	// dao层都是简单的CRUD，并且没有缓存
 	@Autowired
@@ -87,8 +79,8 @@ public abstract class AbstractAccount {
 	@Autowired
 	private PassportConfig passportConfig;
 
-	@Resource(name = "OKHttpClientImpl")
-	private CommonHttpClient commonHttpClient;
+	@Autowired
+	private CloseableHttpClient closeableHttpClient;
 
 	protected boolean checkMobileCode(String mobile, String code) {
 		// TODO
@@ -99,30 +91,30 @@ public abstract class AbstractAccount {
 
 	static {
 		passportCodeNotErrorList = new ArrayList<Integer>();
-		passportCodeNotErrorList.add(PassportApiException.EXCEPTION_BIND_ACCOUNT_HAS_EXIST_OR_SAME_TYPE_HAS_EXIST);
-		passportCodeNotErrorList.add(PassportApiException.EXCEPTION_MOBILE_CODE_INVALID);
-		passportCodeNotErrorList.add(PassportApiException.EXCEPTION_MOBILE_CODE_TYPE_INVALID);
+		passportCodeNotErrorList.add(PassportException.EXCEPTION_BIND_ACCOUNT_HAS_EXIST_OR_SAME_TYPE_HAS_EXIST);
+		passportCodeNotErrorList.add(PassportException.EXCEPTION_MOBILE_CODE_INVALID);
+		passportCodeNotErrorList.add(PassportException.EXCEPTION_MOBILE_CODE_TYPE_INVALID);
 	}
 
-	protected void log(PassportApiException pae, Log logger) {
+	protected void log(PassportException pae, Log logger) {
 		logger.warn(pae.getMessage());
 	}
 
-	// index0:userHeadIconUrl, index1:oauthHeadIconUrl
-	protected String[] storeHeadIcon(String prefix, long passportUserId, String headIconUrl,
-			UserAccountTypeEnum accountType) {
+	// index0:userAvatarUrl, index1:oauthAvatarUrl
+	protected String[] storeAvatar(String prefix, long passportUserId, String headIconUrl,
+			UserAccountType accountType) {
 		if (StringUtils.isEmpty(headIconUrl)) {
-			String url = PlaceholderHeadIconUtil.getPlaceholderHeadIconUrlByMod(passportUserId);
+			String url = PlaceholderAvatarUtil.getPlaceholderAvatarByMod(passportUserId);
 			return new String[] { url, url };
 		} else {
-			String oauthKey = getPassportStorage().getOAuthHeadIconKey(prefix, passportUserId, accountType);
+			String oauthKey = getAccountAvatarStorage().getOAuthAvatarKey(prefix, passportUserId, accountType);
 			String oauthUrl = "";
 			try {
-				// byte[] image = obtainHeadIconImg(headIconUrl, oauthAppId,
+				// byte[] image = obtainAvatarImg(headIconUrl, oauthAppId,
 				// openId, accessToken, accountType);
-				oauthUrl = getPassportStorage().fetchResouce(headIconUrl, oauthKey);
+				oauthUrl = getAccountAvatarStorage().fetchResouce(headIconUrl, oauthKey);
 				if (oauthUrl == null) {
-					oauthUrl = PlaceholderHeadIconUtil.getPlaceholderHeadIconUrlByMod(passportUserId);
+					oauthUrl = PlaceholderAvatarUtil.getPlaceholderAvatarByMod(passportUserId);
 				}
 			} catch (Exception e) {
 				logger.warn(e.getMessage(), e);
@@ -136,41 +128,39 @@ public abstract class AbstractAccount {
 	 * 创建或者更新用户账号信息
 	 * 
 	 * @param userPortrait
-	 * @param xlUserId
+	 * @param userId
 	 * @param passportUserId
 	 * @param ip
 	 * @param accountType
 	 */
 	// create new record, or update if exists.
-	protected void createOrUpdateAccount(String prefix, UserPortrait userPortrait, String openId, Long xlUserId,
-			Long passportUserId, String ip, UserAccountTypeEnum accountType) throws PassportApiException {
+	protected void createOrUpdateAccount(String prefix, ThirdAccountSDKPortrait userPortrait, String openId,
+			Long userId, String ip, UserAccountType accountType) throws PassportException {
 		long now = System.currentTimeMillis();
-		PassportOAuthAccountEntity passportOAuthAccountEntity = newOAuthAccountInstance(userPortrait, openId, xlUserId,
+		PassportOAuthAccountEntity passportOAuthAccountEntity = newOAuthAccountInstance(userPortrait, openId, userId,
 				ip, now, accountType);
-		PassportUserAccountEntity passportUserAccountEntity = newPassportUserAccountInstance(userPortrait, xlUserId,
-				passportUserId, ip, now, accountType);
+		PassportUserAccountEntity passportUserAccountEntity = newPassportUserAccountInstance(userPortrait, userId, ip,
+				now);
 
-		passportAccountService.createOrUpdateAccount(prefix, passportUserAccountEntity, passportOAuthAccountEntity);
+		accountInfoService.createOrUpdateAccount(prefix, passportUserAccountEntity, passportOAuthAccountEntity);
 	}
 
 	// insert new record into mysql.
-	protected BindAccountResultDTO bindAccount(String prefix, UserPortrait userPortrait, String openId, Long xlUserId,
-			String ip, UserAccountTypeEnum accountType) throws PassportApiException {
-
-		Long passportUserId = getPassportAccountService().getUserInfoByXlUserId(xlUserId).getPassportUserId();
+	protected BindAccountResultDTO bindAccount(String prefix, ThirdAccountSDKPortrait userPortrait, String openId,
+			Long userId, String ip, UserAccountType accountType) throws PassportException {
 
 		// store head icon
-		String headIconUrl = userPortrait.getHeadIconURL();
+		String headIconUrl = userPortrait.getAvatar();
 		// 这里必须用passportUserId作为headiconurl一部分，因为现在还不知道xluserId
-		String[] urls = storeHeadIcon(prefix, passportUserId, headIconUrl, accountType);
-		userPortrait.setHeadIconURL(urls[0]);
-		userPortrait.setOauthHeadIconURL(urls[1]);
+		String[] urls = storeAvatar(prefix, headIconUrl, accountType);
+		userPortrait.setAvatar(urls[0]);
+		userPortrait.setOauthAvatar(urls[1]);
 
 		long now = System.currentTimeMillis();
-		PassportOAuthAccountEntity passportOAuthAccountEntity = newOAuthAccountInstance(userPortrait, openId, xlUserId,
+		PassportOAuthAccountEntity passportOAuthAccountEntity = newOAuthAccountInstance(userPortrait, openId, userId,
 				ip, now, accountType);
 
-		PassportUserAccountEntity passportUserAccountEntity = newPassportUserAccountInstance(userPortrait, xlUserId,
+		PassportUserAccountEntity passportUserAccountEntity = newPassportUserAccountInstance(userPortrait, userId,
 				passportUserId, ip, now, accountType);
 
 		passportAccountService.createOrUpdateAccount(prefix, passportUserAccountEntity, passportOAuthAccountEntity);
@@ -178,10 +168,10 @@ public abstract class AbstractAccount {
 		BindAccountResultDTO dto = new BindAccountResultDTO();
 		dto.setBindSuccess(true);
 
-		PassportUserAccountEntity userAccount = getPassportAccountService().getUserInfoByXlUserId(xlUserId);
+		PassportUserAccountEntity userAccount = getPassportAccountService().getUserInfoByXlUserId(userId);
 
-		dto.setHeadIconUrl(userAccount.getHeadIconUrl());
-		dto.setGender(SexEnum.valueOf(SexEnum.valueOf(userAccount.getSex())));
+		dto.setAvatar(userAccount.getAvatar());
+		dto.setGender(Gender.get(userAccount.getGender()));
 		dto.setUserName(passportOAuthAccountEntity.getNickName());
 
 		return dto;
@@ -191,20 +181,20 @@ public abstract class AbstractAccount {
 	// accessToken,
 	// String accountType) {
 	// if (accountType
-	// .equalsIgnoreCase(UserAccountTypeEnum.weichat.toString())) {
+	// .equalsIgnoreCase(UserAccountType.weichat.toString())) {
 	// return weichatUserSDK.validate(appId, openId, accessToken);
-	// } else if (accountType.equalsIgnoreCase(UserAccountTypeEnum.xiaomi
+	// } else if (accountType.equalsIgnoreCase(UserAccountType.xiaomi
 	// .toString())) {
 	// return xiaomiUserSDK.validate(appId, openId, accessToken);
-	// } else if (accountType.equalsIgnoreCase(UserAccountTypeEnum.mobile
+	// } else if (accountType.equalsIgnoreCase(UserAccountType.mobile
 	// .toString())) {
 	// return mobilAccountSDK.validate(appId, openId, accessToken);
 	// } else if (accountType
-	// .equalsIgnoreCase(UserAccountTypeEnum.mobileThunder.name())) {
+	// .equalsIgnoreCase(UserAccountType.mobileThunder.name())) {
 	// return mobileThunderSDK.validate(appId, openId, accessToken);
 	// } else {
-	// throw new PassportApiException(
-	// PassportApiException.EXCEPTION_INVALID_ACCOUNT_TYPE);
+	// throw new PassportException(
+	// PassportException.EXCEPTION_INVALID_ACCOUNT_TYPE);
 	// }
 	// }
 
@@ -216,12 +206,8 @@ public abstract class AbstractAccount {
 	 * @param openId
 	 * @return
 	 */
-	protected Long getXlUserId(String openId, UserAccountTypeEnum accountType) throws PassportApiException {
-		return passportAccountService.getXlUserId(openId, accountType);
-	}
-
-	protected Long newPassportUserId() throws PassportApiException {
-		return passportAccountService.nextPassportUserIdSeq();
+	protected Long getXlUserId(String openId, UserAccountType accountType) throws PassportException {
+		return accountInfoService.getUserId(openId, accountType);
 	}
 
 	/**
@@ -229,47 +215,41 @@ public abstract class AbstractAccount {
 	 * 
 	 * @return
 	 */
-	protected UserPortrait obtainUserPortrait(String appId, String openId, String accessToken,
-			UserAccountTypeEnum accountType, String bisType) throws PassportApiException {
-		if (accountType.name().equalsIgnoreCase(UserAccountTypeEnum.weichat.toString())) {
-			return weichatUserSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
-		} else if (accountType.name().equalsIgnoreCase(UserAccountTypeEnum.xiaomi.toString())) {
-			return xiaomiUserSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
-		} else if (accountType.name().equalsIgnoreCase(UserAccountTypeEnum.mobile.toString())) {
-			return mobilAccountSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
-		} else if (accountType.name().equalsIgnoreCase(UserAccountTypeEnum.mobileThunder.name())) {
-			throw new PassportApiException(PassportApiException.EXCEPTION_NO_SUPPORT_METHOD, null);
-			// return mobileThunderSDK.obtainUserPortrait(appId, openId,
-			// accessToken);
-		} else if (accountType.name().equalsIgnoreCase(UserAccountTypeEnum.mobileThunderSubscription.name())) {
-			return mobileThunderSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
-		} else if (accountType.name().equals(UserAccountTypeEnum.weibo.name())) {
-			return weiboUserSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
-		} else if (accountType.name().equals(UserAccountTypeEnum.qq.name())) {
-			return qqUserSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
+	protected ThirdAccountSDKPortrait obtainThirdAccountSDKPortrait(String appId, String openId, String accessToken,
+			UserAccountType accountType, String bisType) throws PassportException {
+		if (accountType.name().equalsIgnoreCase(UserAccountType.weichat.toString())) {
+			return weichatThirdAccountSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
+		} else if (accountType.name().equalsIgnoreCase(UserAccountType.xiaomi.toString())) {
+			return xiaomiThirdAccountSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
+		} else if (accountType.name().equalsIgnoreCase(UserAccountType.mobile.toString())) {
+			return mobileThirdAccountSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
+		} else if (accountType.name().equals(UserAccountType.weibo.name())) {
+			return weiboThirdAccountSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
+		} else if (accountType.name().equals(UserAccountType.qq.name())) {
+			return qqThirdAccountSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
 		} else {
-			throw new PassportApiException(PassportApiException.EXCEPTION_INVALID_ACCOUNT_TYPE,
+			throw new PassportException(PassportException.EXCEPTION_INVALID_ACCOUNT_TYPE,
 					"EXCEPTION_INVALID_ACCOUNT_TYPE", null);
 		}
 	}
 
-	protected byte[] obtainHeadIconImg(String url, String appId, String openId, String accessToken,
-			UserAccountTypeEnum accountType) throws PassportApiException {
-		if (accountType.name().equalsIgnoreCase(UserAccountTypeEnum.weichat.toString())) {
-			return weichatUserSDK.obtainHeadIconImg(url, appId, openId, accessToken);
-		} else if (accountType.name().equalsIgnoreCase(UserAccountTypeEnum.xiaomi.toString())) {
-			return xiaomiUserSDK.obtainHeadIconImg(url, appId, openId, accessToken);
-		} else if (accountType.name().equalsIgnoreCase(UserAccountTypeEnum.mobile.toString())) {
-			return mobilAccountSDK.obtainHeadIconImg(url, appId, openId, accessToken);
-		} else if (accountType.name().equals(UserAccountTypeEnum.weibo.name())) {
-			return weiboUserSDK.obtainHeadIconImg(url, appId, openId, accessToken);
-		} else if (accountType.name().equals(UserAccountTypeEnum.qq.name())) {
-			return qqUserSDK.obtainHeadIconImg(url, appId, openId, accessToken);
+	protected byte[] obtainAvatarImg(String url, String appId, String openId, String accessToken,
+			UserAccountType accountType) throws PassportException {
+		if (accountType.name().equalsIgnoreCase(UserAccountType.weichat.toString())) {
+			return weichatThirdAccountSDK.obtainAvatar(url, appId, openId, accessToken);
+		} else if (accountType.name().equalsIgnoreCase(UserAccountType.xiaomi.toString())) {
+			return xiaomiThirdAccountSDK.obtainAvatar(url, appId, openId, accessToken);
+		} else if (accountType.name().equalsIgnoreCase(UserAccountType.mobile.toString())) {
+			return mobileThirdAccountSDK.obtainAvatar(url, appId, openId, accessToken);
+		} else if (accountType.name().equals(UserAccountType.weibo.name())) {
+			return weiboThirdAccountSDK.obtainAvatar(url, appId, openId, accessToken);
+		} else if (accountType.name().equals(UserAccountType.qq.name())) {
+			return qqThirdAccountSDK.obtainAvatar(url, appId, openId, accessToken);
 		}
 		return null;
 	}
 
-	protected Ticket checkTicket(String t) throws PassportApiException {
+	protected Ticket checkTicket(String t) throws PassportException {
 		Ticket ticketFromClient = ticketManager.decodeTicket(t);
 		ticketFromClient.setT(t);
 
@@ -282,22 +262,22 @@ public abstract class AbstractAccount {
 			return ticketFromClient;
 		}
 		if (ticketInSSDB == null) {
-			throw new PassportApiException(PassportApiException.EXCEPTION_TICKET_INVALID, null);
+			throw new PassportException(PassportException.EXCEPTION_TICKET_INVALID, null);
 		} else if (ticketInSSDB.equals(ticketFromClient)) {
 			return ticketInSSDB;
 		} else {
-			throw new PassportApiException(PassportApiException.EXCEPTION_TICKET_INVALID, null);
+			throw new PassportException(PassportException.EXCEPTION_TICKET_INVALID, null);
 		}
 	}
 
-	protected PassportUserAccountEntity obtainPassportUserAccount(Long xlUserId) throws PassportApiException {
-		PassportUserAccountEntity userAccount = getPassportAccountService().getUserInfoByXlUserId(xlUserId);
+	protected PassportUserAccountEntity obtainPassportUserAccount(Long userId) throws PassportException {
+		PassportUserAccountEntity userAccount = getPassportUserAccountDao().getUserInfoByUserId(userId);
 
 		if (userAccount == null) {
 			return null;
 		}
 
-		userAccount.setNickName(NickNameUtil.convertNickName(userAccount.getNickName(), userAccount.getNickNameType()));
+		userAccount.setNickName(NickNameUtil.convertNickName(userAccount.getNickName()));
 		return userAccount;
 	}
 
@@ -306,86 +286,78 @@ public abstract class AbstractAccount {
 	 * 
 	 * @param passportUserId
 	 */
-	protected void multiDeviceProcess(long xlUserId, String deviceId) {
+	protected void multiDeviceProcess(long userId, String deviceId) {
 		// TODO
 	}
 
-	private PassportUserAccountEntity newPassportUserAccountInstance(UserPortrait userPortrait, Long xlUserId,
-			Long passportUserId, String ip, long time, UserAccountTypeEnum nickNameType) {
+	private PassportUserAccountEntity newPassportUserAccountInstance(ThirdAccountSDKPortrait userPortrait, Long userId,
+			String ip, long time) {
 		PassportUserAccountEntity userAccount = new PassportUserAccountEntity();
-		userAccount.setHeadIconUrl(userPortrait.getHeadIconURL());
+		userAccount.setAvatar(userPortrait.getAvatar());
 		userAccount.setNickName(userPortrait.getNickname());
-		userAccount.setPassportUserId(passportUserId);
 		userAccount.setRegistIp(IPUtil.Ip2Int(ip));
 		userAccount.setRegistTime(time);
-		userAccount.setSex(userPortrait.getSex().value());
+		userAccount.setGender(userPortrait.getGender().gender());
 		userAccount.setUpdateIp(IPUtil.Ip2Int(ip));
 		userAccount.setUpdateTime(time);
 		userAccount.setUserName(userPortrait.getUsername());
-		userAccount.setXlUserId(xlUserId);
-		userAccount.setNickNameType(nickNameType.value());
 		return userAccount;
 	}
 
-	private PassportOAuthAccountEntity newOAuthAccountInstance(UserPortrait userPortrait, String openId, Long xlUserId,
-			String ip, long time, UserAccountTypeEnum accountType) {
+	private PassportOAuthAccountEntity newOAuthAccountInstance(ThirdAccountSDKPortrait userPortrait, String openId,
+			Long userId, String ip, long time, UserAccountType accountType) {
 		PassportOAuthAccountEntity ssoAccount = new PassportOAuthAccountEntity();
 		ssoAccount.setBindIp(IPUtil.Ip2Int(ip));
 		ssoAccount.setBindTime(time);
-		ssoAccount.setHeadIconUrl(userPortrait.getOauthHeadIconURL());
+		ssoAccount.setAvatar(userPortrait.getAvatar());
 		ssoAccount.setNickName(userPortrait.getNickname());
 		ssoAccount.setOpenId(openId);
-		ssoAccount.setSex(userPortrait.getSex().value());
+		ssoAccount.setGender(userPortrait.getGender().gender());
 		ssoAccount.setType(accountType.value());
 		ssoAccount.setUpdateIp(IPUtil.Ip2Int(ip));
 		ssoAccount.setUpdateTime(time);
 		ssoAccount.setUserName(userPortrait.getUsername());
-		ssoAccount.setXlUserId(xlUserId);
 		return ssoAccount;
 	}
 
-	protected UserAccountSDK getXunleiUserCenterSDK() {
-		return xunleiUserCenterSDK;
-	}
-
-	protected UserAccountSDK getWeichatUserSDK() {
-		return weichatUserSDK;
-	}
-
-	protected UserAccountSDK getXiaomiUserSDK() {
-		return xiaomiUserSDK;
-	}
-
-	protected UserAccountSDK getMobilAccountSDK() {
-		return mobilAccountSDK;
-	}
-
-	protected PassportAccountService getPassportAccountService() {
-		return passportAccountService;
+	protected PassportCache getPassportCache() {
+		return passportCache;
 	}
 
 	protected TicketManager getTicketManager() {
 		return ticketManager;
 	}
 
-	protected SafeChecker getSafeChecker() {
-		return safeChecker;
+	protected ThirdAccountSDK getWeichatThirdAccountSDK() {
+		return weichatThirdAccountSDK;
 	}
 
-	protected PassportStorage getPassportStorage() {
-		return passportStorage;
+	protected ThirdAccountSDK getXiaomiThirdAccountSDK() {
+		return xiaomiThirdAccountSDK;
 	}
 
-	protected CommonHttpClient getCommonHttpClient() {
-		return commonHttpClient;
+	protected ThirdAccountSDK getMobileThirdAccountSDK() {
+		return mobileThirdAccountSDK;
 	}
 
-	protected QiniuConfig getQiniuConfig() {
-		return qiniuConfig;
+	protected ThirdAccountSDK getWeiboThirdAccountSDK() {
+		return weiboThirdAccountSDK;
 	}
 
-	protected PassportCache getPassportCache() {
-		return passportCache;
+	protected ThirdAccountSDK getQqThirdAccountSDK() {
+		return qqThirdAccountSDK;
+	}
+
+	protected AccountAvatarStorage getAccountAvatarStorage() {
+		return accountAvatarStorage;
+	}
+
+	protected AccountTicketService getAccountTicketService() {
+		return accountTicketService;
+	}
+
+	protected AccountInfoService getAccountInfoService() {
+		return accountInfoService;
 	}
 
 	protected PassportOAuthAccountDao getPassportOAuthAccountDao() {
@@ -396,12 +368,16 @@ public abstract class AbstractAccount {
 		return passportUserAccountDao;
 	}
 
-	protected UserAccountSDK getMobileThunderSDK() {
-		return mobileThunderSDK;
+	protected QiniuConfig getQiniuConfig() {
+		return qiniuConfig;
 	}
 
-	public PassportConfig getPassportConfig() {
+	protected PassportConfig getPassportConfig() {
 		return passportConfig;
+	}
+
+	protected CloseableHttpClient getCloseableHttpClient() {
+		return closeableHttpClient;
 	}
 
 }

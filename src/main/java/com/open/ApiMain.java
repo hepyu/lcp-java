@@ -31,7 +31,7 @@ public class ApiMain {
 		// System.setProperty("adpre", "1");
 		// }
 		// }
-		final String proFileName = EnvFinder.findProfile().name();
+		final String proFileName = EnvFinder.getProfile().name();
 		System.setProperty("spring.profiles.active", proFileName);
 		// System.setProperty("com.open.lcp.dao.*", "1");
 		// logger.info(

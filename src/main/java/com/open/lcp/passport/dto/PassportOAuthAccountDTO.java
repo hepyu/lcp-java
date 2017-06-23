@@ -1,12 +1,15 @@
 package com.open.lcp.passport.dto;
 
+import com.open.common.enums.Gender;
+import com.open.lcp.passport.UserAccountType;
+
 public class PassportOAuthAccountDTO {
 
 	private Long xlUserId;
 
 	private String openId;
 
-	private UserAccountTypeEnum type;
+	private UserAccountType type;
 
 	private String userName;
 
@@ -98,11 +101,11 @@ public class PassportOAuthAccountDTO {
 		this.updateTime = updateTime;
 	}
 
-	public UserAccountTypeEnum getType() {
+	public UserAccountType getType() {
 		return type;
 	}
 
-	public void setType(UserAccountTypeEnum type) {
+	public void setType(UserAccountType type) {
 		this.type = type;
 	}
 

@@ -10,7 +10,7 @@ public class ZKFinder {
 	// 0.find mysql
 
 	private static String findMysqlZKRoot() {
-		return EnvConsts.ENV_ROOT + "/" + EnvFinder.findProfile().name() + "/mysql";
+		return EnvConsts.ENV_ROOT + "/" + EnvFinder.getProfile().name() + "/mysql";
 	}
 
 	public static String findMysqlMasterZKRoot() {
@@ -37,7 +37,7 @@ public class ZKFinder {
 	// 2.find ssdb
 
 	public static String findSSDBZKRoot() {
-		return EnvConsts.ENV_ROOT + "/" + EnvFinder.findProfile().name() + "/ssdb";
+		return EnvConsts.ENV_ROOT + "/" + EnvFinder.getProfile().name() + "/ssdb";
 	}
 
 	public static SSDBX findSSDB(String source) {
@@ -47,12 +47,12 @@ public class ZKFinder {
 	// 3.find redis
 
 	public static String findRedisZKRoot() {
-		return EnvConsts.ENV_ROOT + "/" + EnvFinder.findProfile().name() + "/redis";
+		return EnvConsts.ENV_ROOT + "/" + EnvFinder.getProfile().name() + "/redis";
 	}
 
 	// 4.find kafka
 
 	public static String findKafkaZKRoot() {
-		return EnvConsts.ENV_ROOT + "/" + EnvFinder.findProfile().name() + "/kafka";
+		return EnvConsts.ENV_ROOT + "/" + EnvFinder.getProfile().name() + "/kafka";
 	}
 }

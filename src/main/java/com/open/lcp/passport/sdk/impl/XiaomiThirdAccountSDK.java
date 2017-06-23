@@ -16,15 +16,15 @@ import org.springframework.stereotype.Component;
 import com.open.common.enums.Gender;
 import com.open.common.enums.UserType;
 import com.open.lcp.passport.PassportException;
-import com.open.lcp.passport.sdk.PassportAccountPortrait;
+import com.open.lcp.passport.sdk.ThirdAccountSDKPortrait;
 import com.xiaomi.api.http.XMApiHttpClient;
 import com.xiaomi.api.http.XMHttpClient;
 import com.xiaomi.utils.XMUtil;
-import com.open.lcp.passport.util.PlaceholderHeadIconUtil;
+import com.open.lcp.passport.util.PlaceholderAvatarUtil;
 import com.open.lcp.passport.UserAccountType;
 
-@Component("xiaomiPassportAccountSDK")
-public class XiaomiPassportAccountSDK extends AbstractPassportAccountSDK {
+@Component("xiaomiThirdAccountSDK")
+public class XiaomiThirdAccountSDK extends AbstractThirdAccountSDK {
 
 	@Autowired
 	protected CloseableHttpClient httpClient;
@@ -74,7 +74,7 @@ public class XiaomiPassportAccountSDK extends AbstractPassportAccountSDK {
 	// }
 
 	@Override
-	public PassportAccountPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken,
+	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken,
 			String type) throws PassportException {
 
 		// obtainOpenId(oauthAppId, accessToken);
@@ -106,12 +106,12 @@ public class XiaomiPassportAccountSDK extends AbstractPassportAccountSDK {
 					? json.getJSONObject("data") : null;
 
 			if (profile != null) {
-				PassportAccountPortrait dto = new PassportAccountPortrait();
+				ThirdAccountSDKPortrait dto = new ThirdAccountSDKPortrait();
 				String headIconUrl = profile.has("miliaoIcon_120") ? profile.getString("miliaoIcon_120") : null;
 
 				if (headIconUrl != null && headIconUrl.equals(
 						"https://account.xiaomi.com/static/res/7c3e9b0/passport/acc-2014/img/n-avator-bg.png")) {
-					headIconUrl = PlaceholderHeadIconUtil.getPlaceholderHeadIconUrlByMod(profile.getLong("userId"));
+					headIconUrl = PlaceholderAvatarUtil.getPlaceholderAvatarByMod(profile.getLong("userId"));
 				}
 
 				String nickName = profile.has("miliaoNick") ? profile.getString("miliaoNick") : null;
@@ -119,7 +119,7 @@ public class XiaomiPassportAccountSDK extends AbstractPassportAccountSDK {
 				if (openId == null || openId.equals(userId) == false) {
 					throw new PassportException(PassportException.EXCEPTION_OPEN_ID_INVALID, null);
 				}
-				dto.setHeadIconURL(headIconUrl);
+				dto.setAvatar(headIconUrl);
 				dto.setNickname(nickName);
 				dto.setGender(Gender.unknown); // no this item data.
 

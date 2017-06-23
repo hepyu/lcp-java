@@ -16,14 +16,14 @@ import com.open.common.enums.UserType;
 import com.open.common.util.HttpUtil;
 import com.open.lcp.passport.PassportException;
 import com.open.lcp.passport.UserAccountType;
-import com.open.lcp.passport.sdk.PassportAccountPortrait;
-import com.open.lcp.passport.util.PlaceholderHeadIconUtil;
+import com.open.lcp.passport.sdk.ThirdAccountSDKPortrait;
+import com.open.lcp.passport.util.PlaceholderAvatarUtil;
 
-@Component("weiboPassportAccountSDK")
-public class WeiboPassportAccountSDK extends AbstractPassportAccountSDK {
+@Component("weiboThirdAccountSDK")
+public class WeiboThirdAccountSDK extends AbstractThirdAccountSDK {
 
 	@SuppressWarnings("unused")
-	private static final Log logger = LogFactory.getLog(WeiboPassportAccountSDK.class);
+	private static final Log logger = LogFactory.getLog(WeiboThirdAccountSDK.class);
 
 	@Autowired
 	protected CloseableHttpClient httpClient;
@@ -40,7 +40,7 @@ public class WeiboPassportAccountSDK extends AbstractPassportAccountSDK {
 
 	// http://open.weibo.com/wiki/2/users/show
 	@Override
-	public PassportAccountPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken,
+	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken,
 			String bisType) throws PassportException {
 
 		try {
@@ -83,15 +83,15 @@ public class WeiboPassportAccountSDK extends AbstractPassportAccountSDK {
 
 			for (String defaultUrl : DEFAULT_AVATAR_URL_LIST) {
 				if (temp.getProfile_image_url() != null && temp.getProfile_image_url().contains(defaultUrl)) {
-					String newHeadIconUrl = PlaceholderHeadIconUtil
-							.getPlaceholderHeadIconUrlByMod(Long.valueOf(temp.getIdstr()));
+					String newHeadIconUrl = PlaceholderAvatarUtil
+							.getPlaceholderAvatarByMod(Long.valueOf(temp.getIdstr()));
 					temp.setProfile_image_url(newHeadIconUrl);
 					break;
 				}
 			}
 
-			PassportAccountPortrait dto = new PassportAccountPortrait();
-			dto.setHeadIconURL(temp.getProfile_image_url());
+			ThirdAccountSDKPortrait dto = new ThirdAccountSDKPortrait();
+			dto.setAvatar(temp.getProfile_image_url());
 			dto.setNickname(temp.getScreen_name());
 			dto.setGender(Gender.get(WeiboSexEnum.valueOf(temp.getGender()).value()));
 			dto.setUsername(temp.getScreen_name());

@@ -4,13 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.math.NumberUtils;
-
 import com.open.common.enums.UserType;
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 import com.open.lcp.framework.core.api.service.dao.info.AppInitInfo;
 import com.open.lcp.framework.core.consts.LcpConstants;
-import com.open.lcp.passport.service.UserAccountService;
-import com.open.lcp.passport.service.impl.dto.UserAccountDto;
+import com.open.lcp.passport.dto.PassportUserAccountDTO;
+import com.open.lcp.passport.service.AccountInfoService;
 
 public class ApiCommandContext implements CommandContext {
 	private static final String KEY_EXT_STAT_USERID = "userId";
@@ -19,7 +18,7 @@ public class ApiCommandContext implements CommandContext {
 	// LogFactory.getLog(ApiCommandContext.class);
 	// private final AccountApi accountApi;
 
-	private UserAccountService userAccountService;
+	private AccountInfoService accountInfoService;
 
 	private long beginTime;
 
@@ -73,7 +72,7 @@ public class ApiCommandContext implements CommandContext {
 
 	public ApiCommandContext(long beginTime, AppInfo appInfo, Map<String, String> stringParams,
 			Map<String, Object> binaryParams, String ticket, String secretKey, String methodName,
-			Map<String, String> reqHeads, String clientIp, int clientPort, UserAccountService userAccountService) {
+			Map<String, String> reqHeads, String clientIp, int clientPort, AccountInfoService userAccountService) {
 		this.beginTime = beginTime;
 		this.appInfo = appInfo;
 		this.reqHeads = reqHeads;
@@ -94,7 +93,7 @@ public class ApiCommandContext implements CommandContext {
 		this.appVersion = stringParams.get(LcpConstants.PARAM_APP_VERSION);
 		this.aesKey = DigestUtils.md5(this.appInfo.getAppSecretKey());
 		// this.accountApi = accountApi;
-		this.userAccountService = userAccountService;
+		this.accountInfoService = userAccountService;
 	}
 
 	public String getAppVersion() {
@@ -335,17 +334,17 @@ public class ApiCommandContext implements CommandContext {
 		return this.v;
 	}
 
-	private UserAccountDto userInfo = null;
+	private PassportUserAccountDTO userInfo = null;
 
 	@Override
-	public UserAccountDto getUserInfo() {
+	public PassportUserAccountDTO getUserInfo() {
 		if (this.userId <= 0) {
 			return null;
 		}
 		if (userInfo != null) {
 			return userInfo;
 		}
-		this.userInfo = userAccountService.getUserInfo(this.userId);// accountApi.getUserInfoByXlUserId(this.userId);
+		this.userInfo = accountInfoService.getUserInfo(this.userId);// accountApi.getUserInfoByXlUserId(this.userId);
 		return this.userInfo;
 	}
 

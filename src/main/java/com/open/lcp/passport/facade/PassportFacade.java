@@ -2,17 +2,16 @@ package com.open.lcp.passport.facade;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import com.open.lcp.framework.core.annotation.LcpMethod;
 import com.open.lcp.framework.core.api.command.CommandContext;
 import com.open.lcp.framework.core.facade.ApiFacade;
-import com.open.lcp.passport.service.UserAccountService;
+import com.open.lcp.passport.service.AccountInfoService;
 
 @Component
 public class PassportFacade implements ApiFacade {
 
 	@Autowired
-	private UserAccountService userAccountService;
+	private AccountInfoService accountInfoService;
 
 	@LcpMethod(name = "passport.login.third", ver = "1.0", desc = "第三方登录")
 	public String loginThird(CommandContext context) {
@@ -21,6 +20,7 @@ public class PassportFacade implements ApiFacade {
 
 	@LcpMethod(name = "passport.login.mobile", ver = "1.0", desc = "手机号登录")
 	public String loginMobile(CommandContext context) {
-		userAccountService.
+		//
+		return null;
 	}
 }

@@ -9,41 +9,19 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.open.lcp.passport.PassportException;
+import com.open.lcp.passport.UserAccountType;
+import com.open.lcp.passport.api.AccountTicketApi;
+import com.open.lcp.passport.dto.CheckTicket;
+import com.open.lcp.passport.dto.PassportUserAccountDTO;
+import com.open.lcp.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.lcp.passport.ticket.Ticket;
-import com.xunlei.mcp.model.ApiException;
-import com.xunlei.mcp.model.UserInfo;
-import com.xunlei.xlmc.passport.IsRobotEnum;
-import com.xunlei.xlmc.passport.SexEnum;
-import com.xunlei.xlmc.passport.UserAccountTypeEnum;
-import com.xunlei.xlmc.passport.api.AccountApi;
-import com.xunlei.xlmc.passport.api.PassportApiException;
-import com.xunlei.xlmc.passport.bean.CheckTicket;
-import com.xunlei.xlmc.passport.bean.PassportOAuthAccount;
-import com.xunlei.xlmc.passport.bean.PassportUserAccount;
-import com.xunlei.xlmc.passport.bean.RequestUploadAvatarResult;
-import com.xunlei.xlmc.passport.cache.PassportCache;
-import com.xunlei.xlmc.passport.cache.PassportRedisCache;
-import com.xunlei.xlmc.passport.component.safecenter.SafeCheckResult;
-import com.xunlei.xlmc.passport.exception.ElementTooManyException;
-import com.xunlei.xlmc.passport.sdk.UserPortrait;
-import com.xunlei.xlmc.passport.service.dao.entity.DefaultAvatarSHA1Entity;
-import com.xunlei.xlmc.passport.service.dao.entity.DefaultAvatarSHA1SourceEnum;
-import com.xunlei.xlmc.passport.service.dao.entity.PassportOAuthAccountEntity;
-import com.xunlei.xlmc.passport.service.dao.entity.PassportUserAccountEntity;
-import com.xunlei.xlmc.passport.thread.XlSessionidCheckThreadPool;
-import com.xunlei.xlmc.passport.util.UserInfoUtil;
-import com.xunlei.xlmc.passport.util.UserTicketMaker;
 
 @Component
-public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi {
+public class SimpleAccountApiImpl extends AbstractAccount implements AccountTicketApi {
 
 	private final Log logger = LogFactory.getLog(SimpleAccountApiImpl.class);
 
-	@Autowired
-	PassportRedisCache passportRedisCache;
-	
-	private static ThreadPoolExecutor threadPool = XlSessionidCheckThreadPool.threadPool;
-	
 	@Override
 	public CheckTicket validateTicket(String t) {
 		try {
@@ -51,27 +29,27 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 
 			CheckTicket dto = new CheckTicket();
 			dto.setUserSecretKey(couple.getUserSecretKey());
-			dto.setXlUserId(couple.getXlUserId());
+			dto.setUserId(couple.getUserId());
 			return dto;
-		} catch (PassportApiException e) {
+		} catch (PassportException e) {
 			log(e, logger);
 			return null;
 		}
 	}
 
 	@Override
-	public UserInfo getUserInfoByTicket(String t) {
+	public PassportUserAccountDTO getUserInfoByTicket(String t) {
 		try {
 			Ticket ticket = super.checkTicket(t);
-			Long xlUserId = ticket.getXlUserId();
-			PassportUserAccountEntity entity = obtainPassportUserAccount(xlUserId);
+			Long userId = ticket.getUserId();
+			PassportUserAccountEntity entity = obtainPassportUserAccount(userId);
 
 			if (entity == null) {
 				return null;
 			}
 
 			return UserInfoUtil.convertToUserInfo(entity);
-		} catch (PassportApiException pae) {
+		} catch (PassportException pae) {
 			log(pae, logger);
 			throw new ApiException(pae.getPassportCode(), pae.getMessage());
 		}
@@ -90,12 +68,12 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 
 			PassportUserAccountEntity userEntity = obtainPassportUserAccount(xlUserId);
 
-			if (userEntity == null || userEntity.getNickNameType() == UserAccountTypeEnum.mobileThunder.value()) {
+			if (userEntity == null || userEntity.getNickNameType() == UserAccountType.mobileThunder.value()) {
 				return this.getMobileThunderUserWithoutValidation(xlUserId);
 			} else {
 				return UserInfoUtil.convertToUserInfo(userEntity);
 			}
-		} catch (PassportApiException pae) {
+		} catch (PassportException pae) {
 			log(pae, logger);
 			throw new ApiException(pae.getPassportCode(), pae.getMessage());
 		}
@@ -124,7 +102,7 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 				return account;
 			}
 
-		} catch (PassportApiException pae) {
+		} catch (PassportException pae) {
 			log(pae, logger);
 			throw new ApiException(pae.getPassportCode(), pae.getMessage());
 		}
@@ -138,8 +116,8 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 			UserPortrait userPortrait = getXunleiUserCenterSDK().validateAndObtainUserPortrait(null, null,
 					UserTicketMaker.toKey(passportUserId), null);
 			return UserInfoUtil.convertToUserInfo(userPortrait, xlUserId,
-					UserAccountTypeEnum.valueOf(entity.getNickNameType()));
-		} catch (PassportApiException pae) {
+					UserAccountType.valueOf(entity.getNickNameType()));
+		} catch (PassportException pae) {
 			log(pae, logger);
 			throw new ApiException(pae.getPassportCode(), pae.getMessage());
 		}
@@ -159,7 +137,7 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 				}
 			}
 			return valid;
-		} catch (PassportApiException pae) {
+		} catch (PassportException pae) {
 			log(pae, logger);
 			throw new ApiException(pae.getPassportCode(), pae.getMessage());
 		}
@@ -184,7 +162,7 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 				if (oauthAccountList != null) {
 					for (PassportOAuthAccountEntity oauthAccount : oauthAccountList) {
 						String openId = oauthAccount.getOpenId() + "";
-						UserAccountTypeEnum accountType = oauthAccount.getUserAccountTypeEnum();
+						UserAccountType accountType = oauthAccount.getUserAccountType();
 
 						cache.delXlUserId(openId, accountType);
 						cache.delOAuthAccountInfoByXlUserIdAndType(xlUserId, accountType);
@@ -211,7 +189,7 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 			} else {
 				return false;
 			}
-		} catch (PassportApiException pae) {
+		} catch (PassportException pae) {
 			log(pae, logger);
 			throw new ApiException(pae.getPassportCode(), pae.getMessage());
 		}
@@ -221,9 +199,9 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 	public Long validateMobileThunderUser(String uid, String sid, String ip) {
 		try {
 			Long retUserId = passportRedisCache.getUserIdBySessionId(sid);
-			if(retUserId==null){
+			if (retUserId == null) {
 				retUserId = innerValidateMobileThunderUser(uid, sid, ip);
-				if(retUserId!=null){
+				if (retUserId != null) {
 					passportRedisCache.setUserIdBySessionId(sid, retUserId);
 				}
 			}
@@ -233,16 +211,15 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 			return null;
 		}
 	}
-	
+
 	@Override
-	public Long validateMobileThunderUserMiss(String uid, String sid,
-			String ip, boolean isMiss) {
+	public Long validateMobileThunderUserMiss(String uid, String sid, String ip, boolean isMiss) {
 		try {
 			Long retUserId = passportRedisCache.getUserIdBySessionId(sid);
-			if(retUserId==null){
-				if(!isMiss){
+			if (retUserId == null) {
+				if (!isMiss) {
 					retUserId = innerValidateMobileThunderUserNoMiss(uid, sid, ip);
-				}else{//允许出错
+				} else {// 允许出错
 					asyncInnerValidateMobileThunderUserNoMiss(uid, sid, ip);
 				}
 			}
@@ -252,8 +229,8 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 			return null;
 		}
 	}
-	
-	private void asyncInnerValidateMobileThunderUserNoMiss(final String uid,final String sid,final String ip){
+
+	private void asyncInnerValidateMobileThunderUserNoMiss(final String uid, final String sid, final String ip) {
 		threadPool.execute(new Runnable() {
 			@Override
 			public void run() {
@@ -261,19 +238,18 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 			}
 		});
 	}
-	
-	
-	private Long innerValidateMobileThunderUserNoMiss(String uid, String sid, String ip){
+
+	private Long innerValidateMobileThunderUserNoMiss(String uid, String sid, String ip) {
 		Long retUserId = innerValidateMobileThunderUser(uid, sid, ip);
-		if(retUserId!=null){
+		if (retUserId != null) {
 			passportRedisCache.setUserIdBySessionId(sid, retUserId);
 		}
 		return retUserId;
 	}
-	
-	private Long innerValidateMobileThunderUser(String uid, String sid, String ip){
+
+	private Long innerValidateMobileThunderUser(String uid, String sid, String ip) {
 		try {
-			
+
 			UserPortrait userPortrait = getMobileThunderSDK().validateAndObtainUserPortrait(null, uid, sid, null);
 
 			if (userPortrait == null) {
@@ -287,7 +263,7 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 					return Long.valueOf(uid);
 				}
 			}
-		} catch (PassportApiException pae) {
+		} catch (PassportException pae) {
 			log(pae, logger);
 			return null;
 		}
@@ -302,8 +278,8 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 		try {
 			final UserPortrait userPortrait = getMobileThunderSDK().getUserInfoWithoutValidation(null, xlUserId + "",
 					null);
-			return UserInfoUtil.convertToUserInfo(userPortrait, xlUserId, UserAccountTypeEnum.mobileThunder);
-		} catch (PassportApiException pae) {
+			return UserInfoUtil.convertToUserInfo(userPortrait, xlUserId, UserAccountType.mobileThunder);
+		} catch (PassportException pae) {
 			log(pae, logger);
 			throw new ApiException(pae.getPassportCode(), pae.getMessage());
 		}
@@ -318,7 +294,7 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 	public PassportUserAccountDTO getBigRobotXlUserInfo(Long xlUserId) {
 		try {
 			return getPassportAccountService().getBigRobotXlUserInfo(xlUserId);
-		} catch (PassportApiException pae) {
+		} catch (PassportException pae) {
 			log(pae, logger);
 			throw new ApiException(pae.getPassportCode(), pae.getMessage());
 		}
@@ -336,25 +312,24 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 		} else {
 			return isRobot(account.getNickNameType().intValue());
 			// int nickNameType = account.getNickNameType().intValue();
-			// if (nickNameType == UserAccountTypeEnum.bigRobbot.value()
-			// || nickNameType == UserAccountTypeEnum.robbot.value()) {
+			// if (nickNameType == UserAccountType.bigRobbot.value()
+			// || nickNameType == UserAccountType.robbot.value()) {
 			// return IsRobotEnum.isRobot;
 			// } else {
 			// return IsRobotEnum.notRobot;
 			// }
 		}
 	}
-	
+
 	@Override
-	public IsRobotEnum isRobotCache(Long xlUserId) { 
-         return getPassportAccountService().isRobot(xlUserId);
-		
+	public IsRobotEnum isRobotCache(Long xlUserId) {
+		return getPassportAccountService().isRobot(xlUserId);
+
 	}
 
 	@Override
 	public IsRobotEnum isRobot(Integer userAccountType) {
-		if (userAccountType == UserAccountTypeEnum.bigRobbot.value()
-				|| userAccountType == UserAccountTypeEnum.robbot.value()) {
+		if (userAccountType == UserAccountType.bigRobbot.value() || userAccountType == UserAccountType.robbot.value()) {
 			return IsRobotEnum.isRobot;
 		} else {
 			return IsRobotEnum.notRobot;
@@ -404,7 +379,7 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 			oauthAccount.setNickName(entity.getNickName());
 			oauthAccount.setOpenId(entity.getOpenId());
 			oauthAccount.setGender(SexEnum.valueOf(SexEnum.valueOf(entity.getSex())));
-			oauthAccount.setType(UserAccountTypeEnum.valueOf(entity.getType()));
+			oauthAccount.setType(UserAccountType.valueOf(entity.getType()));
 			oauthAccount.setUpdateIp(entity.getUpdateIp());
 			oauthAccount.setUpdateTime(entity.getUpdateTime());
 			oauthAccount.setUserName(entity.getUserName());
@@ -415,7 +390,7 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 	}
 
 	@Override
-	public int unbindAccount(Long xlUserId, UserAccountTypeEnum userAccountType) {
+	public int unbindAccount(Long xlUserId, UserAccountType userAccountType) {
 		return getPassportAccountService().unbindAccount(xlUserId, userAccountType);
 	}
 
@@ -423,7 +398,7 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 	public boolean updateGender(Long xlUserId, SexEnum sexEnum) {
 		try {
 			return getPassportAccountService().updateSex(xlUserId, sexEnum);
-		} catch (PassportApiException e) {
+		} catch (PassportException e) {
 			logger.error(e.getMessage(), e);
 			throw new ApiException(e.getPassportCode());
 		}
@@ -433,7 +408,7 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 	public boolean updateNickName(Long xlUserId, String nickName) {
 		try {
 			return getPassportAccountService().updateNickName(xlUserId, nickName);
-		} catch (PassportApiException e) {
+		} catch (PassportException e) {
 			logger.error(e.getMessage(), e);
 			throw new ApiException(e.getPassportCode());
 		}
@@ -443,17 +418,17 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 	public boolean updateDescription(Long xlUserId, String description) {
 		try {
 			return getPassportAccountService().updateDescription(xlUserId, description);
-		} catch (PassportApiException e) {
+		} catch (PassportException e) {
 			logger.error(e.getMessage(), e);
 			throw new ApiException(e.getPassportCode());
 		}
 	}
 
 	@Override
-	public boolean updateNickNameType(Long xlUserId, UserAccountTypeEnum userAccountType) {
+	public boolean updateNickNameType(Long xlUserId, UserAccountType userAccountType) {
 		try {
 			return getPassportAccountService().updateNickNameType(xlUserId, userAccountType);
-		} catch (PassportApiException e) {
+		} catch (PassportException e) {
 			logger.error(e.getMessage(), e);
 			throw new ApiException(e.getPassportCode());
 		}
@@ -470,10 +445,10 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 	// }
 
 	@Override
-	public RequestUploadAvatarResult requestUploadAvatar(String prefix, Long xlUserId) {
+	public RequestUploadAvatarResultDTO requestUploadAvatar(String prefix, Long xlUserId) {
 		try {
 			return getPassportAccountService().requestUploadAvatar(prefix, xlUserId);
-		} catch (PassportApiException e) {
+		} catch (PassportException e) {
 			logger.error(e.getMessage(), e);
 			throw new ApiException(e.getPassportCode());
 		}
@@ -483,60 +458,30 @@ public class SimpleAccountApiImpl extends AbstractAccount implements AccountApi 
 	public String commitUploadAvatar(String prefix, Long xlUserId) {
 		try {
 			return getPassportAccountService().commitUploadAvatar(prefix, xlUserId);
-		} catch (PassportApiException e) {
+		} catch (PassportException e) {
 			logger.error(e.getMessage(), e);
 			throw new ApiException(e.getPassportCode());
 		}
 	}
 
 	@Override
-	public UserAccountTypeEnum getUserType(Long xlUserId) {
+	public UserAccountType getUserType(Long xlUserId) {
 		try {
 			PassportUserAccountEntity userEntity = obtainPassportUserAccount(xlUserId);
 			if (userEntity != null) {
-				UserAccountTypeEnum userAccountType = UserAccountTypeEnum.valueOf(userEntity.getNickNameType());
+				UserAccountType userAccountType = UserAccountType.valueOf(userEntity.getNickNameType());
 				return userAccountType;
 			} else {
 				if (getMobileThunderUserWithoutValidation(xlUserId) != null) {
-					return UserAccountTypeEnum.mobileThunder;
+					return UserAccountType.mobileThunder;
 				} else {
-					return UserAccountTypeEnum.unknow;
+					return UserAccountType.unknow;
 				}
 			}
-		} catch (PassportApiException pae) {
+		} catch (PassportException pae) {
 			log(pae, logger);
 			throw new ApiException(pae.getPassportCode(), pae.getMessage());
 		}
 	}
-
-	@Override
-	public List<DefaultAvatarSHA1Entity> getAllDefaultAvatarSHA1() {
-		return getPassportAccountService().getDefaultAvatarSHA1List();
-	}
-
-	@Override
-	public boolean setDefaultAvatarSHA1(String avatarSHA1, String originAvatarUrl, int source) {
-		return getPassportAccountService().setDefaultAvatar(avatarSHA1, originAvatarUrl,
-				DefaultAvatarSHA1SourceEnum.valueOf(source));
-	}
-
-	@Override
-	public DefaultAvatarSHA1Entity getDefaultAvatarSHA1(String avatarSHA1) {
-		return getPassportAccountService().getDefaultAvatarSHA1(avatarSHA1);
-	}
-
-	@Override
-	public boolean isDefaultAvatar(String avatarSHA1) {
-		return getPassportAccountService().isDefaultAvatar(avatarSHA1);
-	}
-
-	@Override
-	public boolean isDefaultHeadIcon(String headIconUrl) {
-		return getPassportAccountService().isDefaultHeadIcon(headIconUrl);
-	}
-
-
-
-	
 
 }

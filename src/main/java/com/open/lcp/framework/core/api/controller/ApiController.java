@@ -35,9 +35,10 @@ import com.open.lcp.framework.core.consts.HttpConstants;
 import com.open.lcp.framework.core.consts.LcpConstants;
 import com.open.lcp.framework.core.facade.ApiResult;
 import com.open.lcp.framework.core.facade.ApiResultCode;
-import com.open.lcp.framework.security.CheckTicket;
 import com.open.lcp.framework.util.LcpUtils;
-import com.open.lcp.passport.service.UserAccountService;
+import com.open.lcp.passport.dto.CheckTicket;
+import com.open.lcp.passport.service.AccountInfoService;
+import com.open.lcp.passport.service.AccountTicketService;
 
 @Controller
 @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
@@ -67,7 +68,10 @@ public class ApiController {
 	private ApiCommandLookupService commandLookupService;
 
 	@Autowired
-	private UserAccountService userAccountService;
+	private AccountInfoService accountInfoService;
+
+	@Autowired
+	private AccountTicketService accountTicketService;
 
 	@RequestMapping("/api/**")
 	public ApiResult apiV1() {
@@ -211,7 +215,7 @@ public class ApiController {
 					httpHeads, //
 					clientIp, //
 					clientPort, //
-					userAccountService);
+					accountInfoService);
 			if (btsBody != null) {
 				context.setOctetBody(btsBody);
 			}
@@ -320,7 +324,7 @@ public class ApiController {
 		if (StringUtils.isNotEmpty(t)) {
 			CheckTicket ticket = null;
 			try {
-				ticket = userAccountService.validateTicket(t);
+				ticket = accountTicketService.validateTicket(t);
 			} catch (Exception e) {
 				logger.error(String.format("accountApi.validateTicket(%s) sig:%s", t, sig), e); //$NON-NLS-1$
 			}
