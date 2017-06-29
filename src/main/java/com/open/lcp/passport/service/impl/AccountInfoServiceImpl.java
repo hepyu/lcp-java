@@ -1,9 +1,11 @@
 package com.open.lcp.passport.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.open.common.enums.Gender;
 import com.open.lcp.passport.UserAccountType;
@@ -11,18 +13,23 @@ import com.open.lcp.passport.cache.PassportCache;
 import com.open.lcp.passport.dto.PassportOAuthAccountDTO;
 import com.open.lcp.passport.dto.PassportUserAccountDTO;
 import com.open.lcp.passport.dto.RequestUploadAvatarResultDTO;
-import com.open.lcp.passport.service.AbstractPassportAccount;
+import com.open.lcp.passport.service.AbstractAccount;
 import com.open.lcp.passport.service.AccountInfoService;
 import com.open.lcp.passport.service.dao.PassportOAuthAccountDao;
 import com.open.lcp.passport.service.dao.PassportUserAccountDao;
 import com.open.lcp.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.passport.service.dao.entity.PassportUserAccountEntity;
+import com.open.lcp.passport.storage.AccountAvatarStorage;
+import com.open.lcp.passport.util.AccountUtil;
 
 @Service
-public class AccountInfoServiceImpl extends AbstractPassportAccount implements AccountInfoService {
+public class AccountInfoServiceImpl extends AbstractAccount implements AccountInfoService {
 
 	@Autowired
 	private PassportCache passportCache;
+
+	@Autowired
+	private AccountAvatarStorage accountAvatarStorage;
 
 	@Autowired
 	private PassportUserAccountDao passportUserAccountDao;
@@ -32,33 +39,11 @@ public class AccountInfoServiceImpl extends AbstractPassportAccount implements A
 
 	@Override
 	public PassportUserAccountDTO getUserInfo(Long userId) {
-		if (userId == null || userId <= 0) {
-			return null;
-		}
 
-		PassportUserAccountEntity userAccount = passportCache.getUserInfoByUserId(userId);
-		if (userAccount == null) {
-			userAccount = passportUserAccountDao.getUserInfoByUserId(userId);
-
-			if (userAccount != null) {
-				passportCache.setUserInfoByUserId(userId, userAccount);
-			}
-		}
-
+		PassportUserAccountEntity entity = obtainPassportUserAccount(userId);
 		PassportUserAccountDTO dto = null;
-		if (userAccount != null) {
-			dto = new PassportUserAccountDTO();
-			dto.setAvatar(userAccount.getAvatar());
-			dto.setDescription(userAccount.getDescription());
-			dto.setGender(Gender.get(userAccount.getGender()));
-			// dto.setMobile();
-			dto.setNickName(userAccount.getNickName());
-			dto.setRegistIp(userAccount.getRegistIp());
-			dto.setRegistTime(userAccount.getRegistTime());
-			dto.setUpdateIp(userAccount.getUpdateIp());
-			dto.setUpdateTime(userAccount.getUpdateTime());
-			dto.setUserId(userAccount.getUserId());
-			dto.setUserName(userAccount.getUserName());
+		if (entity != null) {
+			dto = AccountUtil.convertPassportUserAccoutEntity(entity);
 		}
 		return dto;
 	}
@@ -66,43 +51,112 @@ public class AccountInfoServiceImpl extends AbstractPassportAccount implements A
 	@Override
 	public List<PassportOAuthAccountDTO> getOAuthAccountList(Long userId) {
 		List<PassportOAuthAccountEntity> list = passportOAuthAccountDao.getOAuthAccountListByUserId(userId);
-		
+		PassportOAuthAccountDTO dto = null;
+		List<PassportOAuthAccountDTO> dtolist = new ArrayList<PassportOAuthAccountDTO>();
+		for (PassportOAuthAccountEntity entity : list) {
+			dto = AccountUtil.convertPassportUserAccoutEntity(entity);
+			dtolist.add(dto);
+		}
+		return dtolist;
 	}
 
 	@Override
 	public int unbindAccount(Long userId, UserAccountType userAccountType) {
-		// TODO Auto-generated method stub
-		return 0;
+		List<PassportOAuthAccountEntity> list = passportOAuthAccountDao.getOAuthAccountInfo(userId,
+				userAccountType.value());
+		if (list == null || list.isEmpty()) {
+			return 0;
+		}
+		PassportOAuthAccountEntity entity = list.get(0);
+		if (entity == null || StringUtils.isEmpty(entity.getOpenId())) {
+			return 0;
+		}
+		int result = passportOAuthAccountDao.unbindOAuthAccount(userId, userAccountType.value());
+		if (result > 0) {
+			passportCache.delOAuthAccountInfoByUserIdAndType(userId, userAccountType);
+			passportCache.delUserId(entity.getOpenId(), userAccountType);
+		}
+		return result;
 	}
 
 	@Override
-	public boolean updateGender(Long userId, Gender gender) {
-		// TODO Auto-generated method stub
-		return false;
+	public int updateGender(Long userId, Gender gender) {
+		return passportUserAccountDao.updateGender(userId, gender.gender());
 	}
 
 	@Override
-	public boolean updateNickName(Long userId, String nickName) {
-		// TODO Auto-generated method stub
-		return false;
+	public int updateNickName(Long userId, String nickName) {
+		return passportUserAccountDao.updateNickName(userId, nickName);
 	}
 
 	@Override
-	public boolean updateDescription(Long userId, String description) {
-		// TODO Auto-generated method stub
-		return false;
+	public int updateDescription(Long userId, String description) {
+		return passportUserAccountDao.updateDescription(userId, description);
 	}
 
 	@Override
 	public RequestUploadAvatarResultDTO requestUploadAvatar(String prefix, Long userId) {
-		// TODO Auto-generated method stub
-		return null;
+		String key = accountAvatarStorage.getUserAvatarKey(prefix, userId);
+		String uploadToken = accountAvatarStorage.requestUploadToken(key);
+
+		RequestUploadAvatarResultDTO result = new RequestUploadAvatarResultDTO();
+		result.setKey(key);
+		result.setUploadToken(uploadToken);
+		return result;
 	}
 
 	@Override
 	public String commitUploadAvatar(String prefix, Long userId) {
-		// TODO Auto-generated method stub
-		return null;
+		String avatarUrl = accountAvatarStorage.getUserAvatarUrl(prefix, userId);
+		int result = passportUserAccountDao.updateAvatar(userId, avatarUrl);
+
+		if (result > 0) {
+			return avatarUrl;
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public RequestUploadAvatarResultDTO requestUploadAvatar(String prefix, Long userId, UserAccountType accountType) {
+		String key = accountAvatarStorage.getOAuthAvatarKey(prefix, userId, accountType);
+		String uploadToken = accountAvatarStorage.requestUploadToken(key);
+
+		RequestUploadAvatarResultDTO result = new RequestUploadAvatarResultDTO();
+		result.setKey(key);
+		result.setUploadToken(uploadToken);
+		return result;
+	}
+
+	@Override
+	public String commitUploadAvatar(String prefix, Long userId, UserAccountType accountType) {
+		String avatarUrl = accountAvatarStorage.getOAuthAvatarUrl(prefix, userId, accountType);
+		int result = passportUserAccountDao.updateAvatar(userId, avatarUrl);
+		if (result > 0) {
+			return avatarUrl;
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId) {
+		return requestUploadAvatar(null, userId);
+	}
+
+	@Override
+	public String commitUploadAvatar(Long userId) {
+		return commitUploadAvatar(null, userId);
+	}
+
+	@Override
+	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId, UserAccountType accountType) {
+		return requestUploadAvatar(null, userId, accountType);
+	}
+
+	@Override
+	public String commitUploadAvatar(Long userId, UserAccountType accountType) {
+		return commitUploadAvatar(null, userId, accountType);
 	}
 
 }

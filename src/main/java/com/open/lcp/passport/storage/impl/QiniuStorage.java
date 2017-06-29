@@ -3,7 +3,6 @@ package com.open.lcp.passport.storage.impl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,12 +36,11 @@ public class QiniuStorage implements AccountAvatarStorage {
 	private Auth auth() {
 		return Auth.create(qiniuConfig.getAccesskey(), qiniuConfig.getSecretkey());
 	}
-	//
-	// @Override
-	// public String getOAuthAvatarKey(long passportUserId,
-	// UserAccountTypeEnum accountType) {
-	// return getOAuthAvatarKey(null, passportUserId, accountType);
-	// }
+
+	@Override
+	public String getOAuthAvatarKey(long userId, UserAccountType accountType) {
+		return getOAuthAvatarKey(null, userId, accountType);
+	}
 
 	@Override
 	public String getOAuthAvatarKey(String prefix, long userId, UserAccountType accountType) {
@@ -54,18 +52,21 @@ public class QiniuStorage implements AccountAvatarStorage {
 		}
 	}
 
-	// @Override
-	// public String getOAuthAvatarUrl(long passportUserId,
-	// UserAccountTypeEnum accountType) {
-	// String key = getOAuthAvatarKey(passportUserId, accountType);
-	// String url = "http://" + qiniuConfig.getQiniu_image_upload_url() + "/" +
-	// key;
-	// return url + "?v=" + System.currentTimeMillis();
-	// }
+	@Override
+	public String getOAuthAvatarUrl(long userId, UserAccountType accountType) {
+		return getOAuthAvatarUrl(null, userId, accountType);
+	}
 
 	@Override
-	public String getUserAvatarUrl(String prefix, long passportUserId) {
-		String key = getUserAvatarKey(prefix, passportUserId);
+	public String getOAuthAvatarUrl(String prefix, long userId, UserAccountType accountType) {
+		String key = getOAuthAvatarKey(prefix, userId, accountType);
+		String url = "http://" + qiniuConfig.getQiniu_image_upload_url() + "/" + key;
+		return url + "?v=" + System.currentTimeMillis();
+	}
+
+	@Override
+	public String getUserAvatarUrl(String prefix, long userId) {
+		String key = getUserAvatarKey(prefix, userId);
 		String url = "http://" + qiniuConfig.getQiniu_image_upload_url() + "/" + key;
 		return url + "?v=" + System.currentTimeMillis();
 	}
@@ -76,8 +77,8 @@ public class QiniuStorage implements AccountAvatarStorage {
 	// }
 
 	@Override
-	public String getUserAvatarKey(String prefix, long passportUserId) {
-		String key = "headIcon_" + passportUserId + "_" + EnvFinder.getProfile();
+	public String getUserAvatarKey(String prefix, long userId) {
+		String key = "headIcon_" + userId + "_" + EnvFinder.getProfile();
 		if (StringUtils.isEmpty(prefix)) {
 			return key;
 		} else {

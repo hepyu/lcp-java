@@ -4,19 +4,19 @@ import com.open.lcp.passport.UserAccountType;
 
 public interface AccountAvatarStorage {
 
-	// public String getOAuthAvatarUrl(long passportUserId,
-	// UserAccountTypeEnum accountType);
-
-	// public String getOAuthAvatarKey(long passportUserId,
-	// UserAccountTypeEnum accountType);
+	public String getOAuthAvatarKey(long userId, UserAccountType accountType);
 
 	public String getOAuthAvatarKey(String prefix, long userId, UserAccountType accountType);
 
-	public String getUserAvatarUrl(String prefix, long passportUserId);
+	public String getOAuthAvatarUrl(long userId, UserAccountType accountType);
+
+	public String getOAuthAvatarUrl(String prefix, long userId, UserAccountType accountType);
+
+	public String getUserAvatarUrl(String prefix, long userId);
 
 	// public String getUserAvatarKey(long passportUserId);
 
-	public String getUserAvatarKey(String prefix, long passportUserId);
+	public String getUserAvatarKey(String prefix, long userId);
 
 	public String requestUploadToken(String key);
 

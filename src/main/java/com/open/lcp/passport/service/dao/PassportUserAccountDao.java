@@ -16,8 +16,20 @@ public interface PassportUserAccountDao {
 	@SQL("SELECT user_id, user_name, nick_name, avatar, gender, update_ip, regist_ip, update_time, regist_time, description from passport_user_account WHERE user_id=:1 LIMIT 1")
 	public PassportUserAccountEntity getUserInfoByUserId(Long userId);
 
-	// @Deprecated
-	// @SQL("DELETE FROM passport_user_account WHERE user_id=:1")
-	// public int delPassportUserAccountByXLUserId(Long userId);
+	@SQL("UPDATE passport_user_account SET gender=:2 WHERE user_id=:1")
+	public int updateGender(Long userId, int gender);
+
+	@SQL("UPDATE passport_user_account SET nick_name=:2 WHERE user_id=:1")
+	public int updateNickName(Long userId, String nickName);
+
+	@SQL("UPDATE passport_user_account SET avatar=:2 WHERE user_id=:1")
+	public int updateAvatar(Long userId, String avatar);
+
+	@SQL("UPDATE passport_user_account SET description=:2 WHERE user_id=:1")
+	public int updateDescription(Long userId, String description);
+
+	@Deprecated
+	@SQL("DELETE FROM passport_user_account WHERE user_id=:1")
+	public int delPassportUserAccountByUserId(Long userId);
 
 }

@@ -46,4 +46,8 @@ public interface PassportOAuthAccountDao {
 	@SQL("UPDATE passport_oauth_account SET user_name=:2, nick_name=:3, update_time=:4 WHERE user_id=:1 AND type=7")
 	public int updateTextField(Long userId, String userName, String nickName, long ts);
 
+	@Deprecated
+	@SQL("DELETE FROM passport_oauth_account WHERE user_id=:1")
+	public int delPassportOAuthAccountByUserId(Long userId);
+
 }

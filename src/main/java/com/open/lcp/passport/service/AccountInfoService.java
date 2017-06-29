@@ -16,14 +16,26 @@ public interface AccountInfoService {
 
 	public int unbindAccount(Long userId, UserAccountType userAccountType);
 
-	public boolean updateGender(Long userId, Gender gender);
+	public int updateGender(Long userId, Gender gender);
 
-	public boolean updateNickName(Long userId, String nickName);
+	public int updateNickName(Long userId, String nickName);
 
-	public boolean updateDescription(Long userId, String description);
+	public int updateDescription(Long userId, String description);
 
 	public RequestUploadAvatarResultDTO requestUploadAvatar(String prefix, Long userId);
 
 	public String commitUploadAvatar(String prefix, Long userId);
+
+	public RequestUploadAvatarResultDTO requestUploadAvatar(String prefix, Long userId, UserAccountType accountType);
+
+	public String commitUploadAvatar(String prefix, Long userId, UserAccountType accountType);
+
+	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId);
+
+	public String commitUploadAvatar(Long userId);
+
+	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId, UserAccountType accountType);
+
+	public String commitUploadAvatar(Long userId, UserAccountType accountType);
 
 }

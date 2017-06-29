@@ -5,7 +5,7 @@ import com.open.lcp.passport.UserAccountType;
 
 public class PassportOAuthAccountDTO {
 
-	private Long xlUserId;
+	private Long userId;
 
 	private String openId;
 
@@ -15,7 +15,7 @@ public class PassportOAuthAccountDTO {
 
 	private String nickName;
 
-	private String headIconUrl;
+	private String avatar;
 
 	private Gender gender;
 
@@ -26,16 +26,6 @@ public class PassportOAuthAccountDTO {
 	private Long bindTime;
 
 	private Long updateTime;
-
-	private int bindType;
-
-	public Long getXlUserId() {
-		return xlUserId;
-	}
-
-	public void setXlUserId(Long xlUserId) {
-		this.xlUserId = xlUserId;
-	}
 
 	public String getOpenId() {
 		return openId;
@@ -61,12 +51,12 @@ public class PassportOAuthAccountDTO {
 		this.nickName = nickName;
 	}
 
-	public String getHeadIconUrl() {
-		return headIconUrl;
+	public String getAvatar() {
+		return avatar;
 	}
 
-	public void setHeadIconUrl(String headIconUrl) {
-		this.headIconUrl = headIconUrl;
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	public int getBindIp() {
@@ -117,12 +107,12 @@ public class PassportOAuthAccountDTO {
 		this.gender = gender;
 	}
 
-	public int getBindType() {
-		return bindType;
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setBindType(int bindType) {
-		this.bindType = bindType;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 }
