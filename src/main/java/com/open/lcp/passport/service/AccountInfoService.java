@@ -26,6 +26,4 @@ public interface AccountInfoService {
 
 	public String commitUploadAvatar(String prefix, Long userId);
 
-	public UserAccountType getUserType(Long userId);
-
 }

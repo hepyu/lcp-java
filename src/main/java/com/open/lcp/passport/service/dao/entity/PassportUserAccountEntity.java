@@ -96,10 +96,6 @@ public class PassportUserAccountEntity {
 		this.updateTime = updateTime;
 	}
 
-	public Gender getSexEnum() {
-		return Gender.get(this.gender);
-	}
-
 	public String getDescription() {
 		return description;
 	}

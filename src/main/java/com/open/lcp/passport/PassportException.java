@@ -1,6 +1,6 @@
 package com.open.lcp.passport;
 
-public class PassportException extends Exception {
+public class PassportException extends RuntimeException {
 
 	/**
 	 * 
@@ -12,22 +12,22 @@ public class PassportException extends Exception {
 	// 登录失败
 	public static final int EXCEPTION_LOGIN_FAILED = 9001;
 
-	// 没有登录，需要登�?
+	// 没有登录，需要登�?
 	public static final int EXCEPTION_NEED_LOGIN = 9002;
 
-	// 账号已经绑定或�?�当前账号已经绑定了同类型的账号
+	// 账号已经绑定或�?�当前账号已经绑定了同类型的账号
 	public static final int EXCEPTION_BIND_ACCOUNT_HAS_EXIST_OR_SAME_TYPE_HAS_EXIST = 9003;
 
 	// ticket无效
 	public static final int EXCEPTION_TICKET_INVALID = 9004;
 
-	// 手机验证码发送失�?
+	// 手机验证码发送失�?
 	public static final int EXCEPTION_SEND_MOBILE_CODE_FAILED = 9005;
 
-	// 手机验证码失�?
+	// 手机验证码失�?
 	public static final int EXCEPTION_MOBILE_CODE_INVALID = 9006;
 
-	// 手机验证码类型非�?
+	// 手机验证码类型非�?
 	public static final int EXCEPTION_MOBILE_CODE_TYPE_INVALID = 9007;
 
 	// 用户身份可疑
@@ -39,7 +39,7 @@ public class PassportException extends Exception {
 	// 用户身份可疑
 	public static final int EXCEPTION_XL_RETURN_USERID_NULL = 9010;
 
-	// 非法的用户账号类�?
+	// 非法的用户账号类�?
 	public static final int EXCEPTION_INVALID_ACCOUNT_TYPE = 9011;
 
 	// 调用迅雷用户中心接口失败
@@ -59,14 +59,14 @@ public class PassportException extends Exception {
 	public static final int EXCEPTION_ELEMENT_TOO_MANY = 9018;
 
 	public static final int EXCEPTION_USER_ACCOUNT_NOT_EXIST = 9019;
-	
-	//触发敏感�?
-	public static final int EXCEPTION_KEYWORD_WRONG = 9020;
 
-	public PassportException(int passportCode) {
-		super(passportCode + "");
-		this.passportCode = passportCode;
-	}
+	// account not exist.
+	public static final int EXCEPTION_ACCOUNT_NOT_EXIST = 9020;
+
+	// public PassportException(int passportCode) {
+	// super(passportCode + "");
+	// this.passportCode = passportCode;
+	// }
 
 	public PassportException(int passportCode, Throwable t) {
 		super(passportCode + "", t);
@@ -82,10 +82,10 @@ public class PassportException extends Exception {
 		return passportCode;
 	}
 
-	/*@Override
-	public String getMessage() {
-		String errorMsg = "passportCode:" + passportCode + ";ExceptionMsg:" + super.getMessage();
-		return errorMsg;
-	}*/
+	/*
+	 * @Override public String getMessage() { String errorMsg = "passportCode:"
+	 * + passportCode + ";ExceptionMsg:" + super.getMessage(); return errorMsg;
+	 * }
+	 */
 
 }

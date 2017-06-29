@@ -27,91 +27,91 @@ public class PassportUserAccountDTO {
 	// 个人说明
 	private String description;
 
-	protected Long getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	protected void setUserId(Long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
-	protected String getUserName() {
+	public String getUserName() {
 		return userName;
 	}
 
-	protected void setUserName(String userName) {
+	public void setUserName(String userName) {
 		this.userName = userName;
 	}
 
-	protected String getNickName() {
+	public String getNickName() {
 		return nickName;
 	}
 
-	protected void setNickName(String nickName) {
+	public void setNickName(String nickName) {
 		this.nickName = nickName;
 	}
 
-	protected String getAvatar() {
+	public String getAvatar() {
 		return avatar;
 	}
 
-	protected void setAvatar(String avatar) {
+	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
 
-	protected Gender getGender() {
+	public Gender getGender() {
 		return gender;
 	}
 
-	protected void setGender(Gender gender) {
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
 
-	protected Integer getRegistIp() {
+	public Integer getRegistIp() {
 		return registIp;
 	}
 
-	protected void setRegistIp(Integer registIp) {
+	public void setRegistIp(Integer registIp) {
 		this.registIp = registIp;
 	}
 
-	protected Integer getUpdateIp() {
+	public Integer getUpdateIp() {
 		return updateIp;
 	}
 
-	protected void setUpdateIp(Integer updateIp) {
+	public void setUpdateIp(Integer updateIp) {
 		this.updateIp = updateIp;
 	}
 
-	protected Long getRegistTime() {
+	public Long getRegistTime() {
 		return registTime;
 	}
 
-	protected void setRegistTime(Long registTime) {
+	public void setRegistTime(Long registTime) {
 		this.registTime = registTime;
 	}
 
-	protected Long getUpdateTime() {
+	public Long getUpdateTime() {
 		return updateTime;
 	}
 
-	protected void setUpdateTime(Long updateTime) {
+	public void setUpdateTime(Long updateTime) {
 		this.updateTime = updateTime;
 	}
 
-	protected String getMobile() {
+	public String getMobile() {
 		return mobile;
 	}
 
-	protected void setMobile(String mobile) {
+	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
 
-	protected String getDescription() {
+	public String getDescription() {
 		return description;
 	}
 
-	protected void setDescription(String description) {
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
