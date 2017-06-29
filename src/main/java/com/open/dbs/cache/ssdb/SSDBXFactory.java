@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkMarshallingError;
 import org.I0Itec.zkclient.serialize.ZkSerializer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.google.gson.Gson;
 import com.mangocity.zk.ConfigChangeListener;
@@ -15,7 +17,7 @@ import com.open.env.finder.ZKFinder;
 
 public class SSDBXFactory {
 
-	// private static final Log logger = LogFactory.getLog(SSDBXFactory.class);
+	private static final Log logger = LogFactory.getLog(SSDBXFactory.class);
 
 	private static final Map<String, SSDBXImpl> ssdbxMap = new ConcurrentHashMap<String, SSDBXImpl>();
 
@@ -27,35 +29,45 @@ public class SSDBXFactory {
 		if (ssdbxImpl == null) {
 			synchronized (LOCK_OF_NEWPATH) {
 				if (ssdbxImpl == null) {
-					ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
+					ZkClient zkClient = null;
+					try {
+						zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
 
-						@Override
-						public byte[] serialize(Object paramObject) throws ZkMarshallingError {
-							return paramObject == null ? null : paramObject.toString().getBytes();
+							@Override
+							public byte[] serialize(Object paramObject) throws ZkMarshallingError {
+								return paramObject == null ? null : paramObject.toString().getBytes();
+							}
+
+							@Override
+							public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
+								return new String(paramArrayOfByte);
+							}
+						});
+
+						ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, ssdbZkRoot);
+						sub.subscribe(instanceName, new ConfigChangeListener() {
+
+							@Override
+							public void configChanged(String key, String value) {
+
+								ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(value);
+								ssdbxMap.get(instanceName).getSSDBHolder().setSSDBConfig(ssdbConfig);
+
+							}
+						});
+						// String initValue = sub.getInitValue(source);
+
+						// {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
+						ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(zkClient, ssdbZkRoot, instanceName);
+						ssdbxMap.put(instanceName, new SSDBXImpl(ssdbConfig));
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+						System.exit(-1);
+					} finally {
+						if (zkClient != null) {
+							zkClient.close();
 						}
-
-						@Override
-						public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
-							return new String(paramArrayOfByte);
-						}
-					});
-
-					ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, ssdbZkRoot);
-					sub.subscribe(instanceName, new ConfigChangeListener() {
-
-						@Override
-						public void configChanged(String key, String value) {
-
-							ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(value);
-							ssdbxMap.get(instanceName).getSSDBHolder().setSSDBConfig(ssdbConfig);
-
-						}
-					});
-					// String initValue = sub.getInitValue(source);
-
-					// {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
-					ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(zkClient, ssdbZkRoot, instanceName);
-					ssdbxMap.put(instanceName, new SSDBXImpl(ssdbConfig));
+					}
 				}
 			}
 		}

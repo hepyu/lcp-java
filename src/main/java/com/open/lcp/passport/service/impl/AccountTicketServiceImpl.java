@@ -1,8 +1,11 @@
 package com.open.lcp.passport.service.impl;
 
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
+
 import com.open.lcp.passport.UserAccountType;
 import com.open.lcp.passport.dto.CheckTicket;
 import com.open.lcp.passport.dto.PassportUserAccountDTO;
@@ -13,6 +16,7 @@ import com.open.lcp.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.lcp.passport.ticket.Ticket;
 import com.open.lcp.passport.util.AccountUtil;
 
+@Service
 public class AccountTicketServiceImpl extends AbstractAccount implements AccountTicketService {
 
 	private final Log logger = LogFactory.getLog(AccountTicketServiceImpl.class);
@@ -40,7 +44,7 @@ public class AccountTicketServiceImpl extends AbstractAccount implements Account
 			if (couple.getUserId() > 0) {
 				Long userId = couple.getUserId();
 
-				List<PassportOAuthAccountEntity> oauthAccountList = passportOAuthAccountDao
+				List<PassportOAuthAccountEntity> oauthAccountList = passportOAuthAccountDAO
 						.getOAuthAccountListByUserId(userId);
 				if (oauthAccountList != null) {
 					for (PassportOAuthAccountEntity oauthAccount : oauthAccountList) {
@@ -54,11 +58,11 @@ public class AccountTicketServiceImpl extends AbstractAccount implements Account
 
 				passportCache.delUserInfoByUserId(userId);
 
-				PassportUserAccountEntity userAccountEntity = passportUserAccountDao.getUserInfoByUserId(userId);
+				PassportUserAccountEntity userAccountEntity = passportUserAccountDAO.getUserInfoByUserId(userId);
 				passportCache.delUserInfoByUserId(userAccountEntity.getUserId());
 
-				passportOAuthAccountDao.delPassportOAuthAccountByUserId(userAccountEntity.getUserId());
-				passportUserAccountDao.delPassportUserAccountByUserId(userAccountEntity.getUserId());
+				passportOAuthAccountDAO.delPassportOAuthAccountByUserId(userAccountEntity.getUserId());
+				passportUserAccountDAO.delPassportUserAccountByUserId(userAccountEntity.getUserId());
 
 				return true;
 			} else {

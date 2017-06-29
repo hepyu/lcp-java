@@ -3,39 +3,22 @@ package com.open.lcp.passport.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.open.common.enums.Gender;
 import com.open.lcp.passport.UserAccountType;
-import com.open.lcp.passport.cache.PassportCache;
 import com.open.lcp.passport.dto.PassportOAuthAccountDTO;
 import com.open.lcp.passport.dto.PassportUserAccountDTO;
 import com.open.lcp.passport.dto.RequestUploadAvatarResultDTO;
 import com.open.lcp.passport.service.AbstractAccount;
 import com.open.lcp.passport.service.AccountInfoService;
-import com.open.lcp.passport.service.dao.PassportOAuthAccountDao;
-import com.open.lcp.passport.service.dao.PassportUserAccountDao;
 import com.open.lcp.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.passport.service.dao.entity.PassportUserAccountEntity;
-import com.open.lcp.passport.storage.AccountAvatarStorage;
 import com.open.lcp.passport.util.AccountUtil;
 
 @Service
 public class AccountInfoServiceImpl extends AbstractAccount implements AccountInfoService {
-
-	@Autowired
-	private PassportCache passportCache;
-
-	@Autowired
-	private AccountAvatarStorage accountAvatarStorage;
-
-	@Autowired
-	private PassportUserAccountDao passportUserAccountDao;
-
-	@Autowired
-	private PassportOAuthAccountDao passportOAuthAccountDao;
 
 	@Override
 	public PassportUserAccountDTO getUserInfo(Long userId) {
@@ -50,7 +33,7 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 
 	@Override
 	public List<PassportOAuthAccountDTO> getOAuthAccountList(Long userId) {
-		List<PassportOAuthAccountEntity> list = passportOAuthAccountDao.getOAuthAccountListByUserId(userId);
+		List<PassportOAuthAccountEntity> list = passportOAuthAccountDAO.getOAuthAccountListByUserId(userId);
 		PassportOAuthAccountDTO dto = null;
 		List<PassportOAuthAccountDTO> dtolist = new ArrayList<PassportOAuthAccountDTO>();
 		for (PassportOAuthAccountEntity entity : list) {
@@ -62,7 +45,7 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 
 	@Override
 	public int unbindAccount(Long userId, UserAccountType userAccountType) {
-		List<PassportOAuthAccountEntity> list = passportOAuthAccountDao.getOAuthAccountInfo(userId,
+		List<PassportOAuthAccountEntity> list = passportOAuthAccountDAO.getOAuthAccountInfo(userId,
 				userAccountType.value());
 		if (list == null || list.isEmpty()) {
 			return 0;
@@ -71,7 +54,7 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 		if (entity == null || StringUtils.isEmpty(entity.getOpenId())) {
 			return 0;
 		}
-		int result = passportOAuthAccountDao.unbindOAuthAccount(userId, userAccountType.value());
+		int result = passportOAuthAccountDAO.unbindOAuthAccount(userId, userAccountType.value());
 		if (result > 0) {
 			passportCache.delOAuthAccountInfoByUserIdAndType(userId, userAccountType);
 			passportCache.delUserId(entity.getOpenId(), userAccountType);
@@ -81,17 +64,17 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 
 	@Override
 	public int updateGender(Long userId, Gender gender) {
-		return passportUserAccountDao.updateGender(userId, gender.gender());
+		return passportUserAccountDAO.updateGender(userId, gender.gender());
 	}
 
 	@Override
 	public int updateNickName(Long userId, String nickName) {
-		return passportUserAccountDao.updateNickName(userId, nickName);
+		return passportUserAccountDAO.updateNickName(userId, nickName);
 	}
 
 	@Override
 	public int updateDescription(Long userId, String description) {
-		return passportUserAccountDao.updateDescription(userId, description);
+		return passportUserAccountDAO.updateDescription(userId, description);
 	}
 
 	@Override
@@ -108,7 +91,7 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 	@Override
 	public String commitUploadAvatar(String prefix, Long userId) {
 		String avatarUrl = accountAvatarStorage.getUserAvatarUrl(prefix, userId);
-		int result = passportUserAccountDao.updateAvatar(userId, avatarUrl);
+		int result = passportUserAccountDAO.updateAvatar(userId, avatarUrl);
 
 		if (result > 0) {
 			return avatarUrl;
@@ -131,7 +114,7 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 	@Override
 	public String commitUploadAvatar(String prefix, Long userId, UserAccountType accountType) {
 		String avatarUrl = accountAvatarStorage.getOAuthAvatarUrl(prefix, userId, accountType);
-		int result = passportUserAccountDao.updateAvatar(userId, avatarUrl);
+		int result = passportUserAccountDAO.updateAvatar(userId, avatarUrl);
 		if (result > 0) {
 			return avatarUrl;
 		} else {

@@ -3,10 +3,11 @@ package com.open.lcp.passport.service.dao;
 import java.util.List;
 import com.open.jade.jade.annotation.DAO;
 import com.open.jade.jade.annotation.SQL;
+import com.open.lcp.framework.core.api.service.dao.entity.AppInitInfoEntity;
 import com.open.lcp.passport.service.dao.entity.PassportOAuthAccountEntity;
 
-@DAO(catalog = "mcp")
-public interface PassportOAuthAccountDao {
+@DAO(catalog = "lcp")
+public interface PassportOAuthAccountDAO {
 
 	@SQL("INSERT INTO passport_oauth_account(user_id, open_id, type, user_name, nick_name, avatar, gender, update_ip, bind_ip, update_time, bind_time) values(:1.userId, :1.openId, :1.type, :1.userName, :1.nickName, :1.headIconUrl, :1.gender, :1.updateIp, :1.bindIp, :1.updateTime, :1.bindTime) on duplicate key update user_name=:1.nickName, nick_name=:1.nickName, avatar=:1.headIconUrl, gender=:1.gender, update_time=:1.updateTime, update_ip=:1.updateIp")
 	public int insertOrUpdate(PassportOAuthAccountEntity passportOAuthAccountEntity);

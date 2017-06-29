@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.open.lcp.passport.PassportException;
 import com.open.lcp.passport.cache.PassportCache;
-import com.open.lcp.passport.service.dao.PassportOAuthAccountDao;
-import com.open.lcp.passport.service.dao.PassportUserAccountDao;
+import com.open.lcp.passport.service.dao.PassportOAuthAccountDAO;
+import com.open.lcp.passport.service.dao.PassportUserAccountDAO;
 import com.open.lcp.passport.service.dao.entity.PassportUserAccountEntity;
+import com.open.lcp.passport.storage.AccountAvatarStorage;
 import com.open.lcp.passport.ticket.Ticket;
 import com.open.lcp.passport.ticket.TicketManager;
 
@@ -17,16 +18,19 @@ public abstract class AbstractAccount {
 	private final Log logger = LogFactory.getLog(AbstractAccount.class);
 
 	@Autowired
-	private TicketManager ticketManager;
+	protected TicketManager ticketManager;
 
 	@Autowired
 	protected PassportCache passportCache;
 
 	@Autowired
-	protected PassportUserAccountDao passportUserAccountDao;
+	protected AccountAvatarStorage accountAvatarStorage;
 
 	@Autowired
-	protected PassportOAuthAccountDao passportOAuthAccountDao;
+	protected PassportUserAccountDAO passportUserAccountDAO;
+
+	@Autowired
+	protected PassportOAuthAccountDAO passportOAuthAccountDAO;
 
 	protected Ticket checkTicket(String t) throws PassportException {
 		Ticket ticketFromClient = ticketManager.decodeTicket(t);
@@ -55,7 +59,7 @@ public abstract class AbstractAccount {
 
 		PassportUserAccountEntity userAccount = passportCache.getUserInfoByUserId(userId);
 		if (userAccount == null) {
-			userAccount = passportUserAccountDao.getUserInfoByUserId(userId);
+			userAccount = passportUserAccountDAO.getUserInfoByUserId(userId);
 
 			if (userAccount != null) {
 				passportCache.setUserInfoByUserId(userId, userAccount);
@@ -63,4 +67,5 @@ public abstract class AbstractAccount {
 		}
 		return userAccount;
 	}
+
 }

@@ -2,18 +2,18 @@ package com.open.dbs.mysql;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkMarshallingError;
 import org.I0Itec.zkclient.serialize.ZkSerializer;
-
 import com.google.gson.Gson;
 import com.open.dbs.DBConfig;
 import com.open.env.finder.ZKFinder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class MysqlXFactory {
 
-	// private static final Log logger = LogFactory.getLog(SSDBXFactory.class);
+	private static final Log logger = LogFactory.getLog(MysqlXFactory.class);
 
 	private static Gson gson = new Gson();
 
@@ -29,21 +29,31 @@ public class MysqlXFactory {
 		if (dbconfig == null) {
 			synchronized (LOCK_OF_NEWPATH) {
 				if (dbconfig == null) {
-					ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
+					ZkClient zkClient = null;
+					try {
+						zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
 
-						@Override
-						public byte[] serialize(Object paramObject) throws ZkMarshallingError {
-							return paramObject == null ? null : paramObject.toString().getBytes();
+							@Override
+							public byte[] serialize(Object paramObject) throws ZkMarshallingError {
+								return paramObject == null ? null : paramObject.toString().getBytes();
+							}
+
+							@Override
+							public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
+								return new String(paramArrayOfByte);
+							}
+						});
+
+						dbconfig = loadDBConfig(zkClient, mysqlMasterZkRoot, instanceName);
+						mysqlMasterConfigMap.put(instanceName, dbconfig);
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+						System.exit(-1);
+					} finally {
+						if (zkClient != null) {
+							zkClient.close();
 						}
-
-						@Override
-						public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
-							return new String(paramArrayOfByte);
-						}
-					});
-
-					dbconfig = loadDBConfig(zkClient, mysqlMasterZkRoot, instanceName);
-					mysqlMasterConfigMap.put(instanceName, dbconfig);
+					}
 				}
 			}
 		}
@@ -56,21 +66,31 @@ public class MysqlXFactory {
 		if (dbconfig == null) {
 			synchronized (LOCK_OF_NEWPATH) {
 				if (dbconfig == null) {
-					ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
+					ZkClient zkClient = null;
+					try {
+						zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
 
-						@Override
-						public byte[] serialize(Object paramObject) throws ZkMarshallingError {
-							return paramObject == null ? null : paramObject.toString().getBytes();
+							@Override
+							public byte[] serialize(Object paramObject) throws ZkMarshallingError {
+								return paramObject == null ? null : paramObject.toString().getBytes();
+							}
+
+							@Override
+							public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
+								return new String(paramArrayOfByte);
+							}
+						});
+
+						dbconfig = loadDBConfig(zkClient, mysqlSlaveZkRoot, instanceName);
+						mysqlSlaveConfigMap.put(instanceName, dbconfig);
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+						System.exit(-1);
+					} finally {
+						if (zkClient != null) {
+							zkClient.close();
 						}
-
-						@Override
-						public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
-							return new String(paramArrayOfByte);
-						}
-					});
-
-					dbconfig = loadDBConfig(zkClient, mysqlSlaveZkRoot, instanceName);
-					mysqlSlaveConfigMap.put(instanceName, dbconfig);
+					}
 				}
 			}
 		}

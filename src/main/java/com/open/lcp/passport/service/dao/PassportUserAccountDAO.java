@@ -5,7 +5,7 @@ import com.open.jade.jade.annotation.SQL;
 import com.open.lcp.passport.service.dao.entity.PassportUserAccountEntity;
 
 @DAO(catalog = "lcp")
-public interface PassportUserAccountDao {
+public interface PassportUserAccountDAO {
 
 	String SQL_SELECT_PART = "user_id, user_name, nick_name, avatar, gender, update_ip, regist_ip, update_time, regist_time, description";
 
