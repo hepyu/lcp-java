@@ -8,8 +8,8 @@ import com.open.common.enums.UserType;
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 import com.open.lcp.framework.core.api.service.dao.info.AppInitInfo;
 import com.open.lcp.framework.core.consts.LcpConstants;
-import com.open.lcp.passport.dto.PassportUserAccountDTO;
-import com.open.lcp.passport.service.AccountInfoService;
+import com.open.passport.dto.PassportUserAccountDTO;
+import com.open.passport.service.AccountInfoService;
 
 public class ApiCommandContext implements CommandContext {
 	private static final String KEY_EXT_STAT_USERID = "userId";

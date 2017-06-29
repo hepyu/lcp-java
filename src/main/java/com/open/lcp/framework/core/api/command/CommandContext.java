@@ -3,7 +3,7 @@ package com.open.lcp.framework.core.api.command;
 import java.util.Map;
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 import com.open.lcp.framework.core.api.service.dao.info.AppInitInfo;
-import com.open.lcp.passport.dto.PassportUserAccountDTO;
+import com.open.passport.dto.PassportUserAccountDTO;
 
 /**
  * 接口执行时的上下文信息
