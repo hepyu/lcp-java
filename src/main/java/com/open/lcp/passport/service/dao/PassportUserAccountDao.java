@@ -4,16 +4,20 @@ import com.open.jade.jade.annotation.DAO;
 import com.open.jade.jade.annotation.SQL;
 import com.open.lcp.passport.service.dao.entity.PassportUserAccountEntity;
 
-@DAO(catalog = "mcp")
+@DAO(catalog = "lcp")
 public interface PassportUserAccountDao {
 
-	@SQL("INSERT INTO passport_user_account(user_id, user_name, nick_name, avatar, gender, update_ip, regist_ip, update_time, regist_time) values(:1.userId, :1.userName, :1.nickName, :1.avatar, :1.gender, :1.updateIp, :1.registIp, :1.updateTime, :1.registTime) on duplicate key update user_name=:1.userName, nick_name=:1.nickName, avatar=:1.avatar, gender=:1.gender, update_time=:1.updateTime, update_ip=:1.updateIp")
+	String SQL_SELECT_PART = "user_id, user_name, nick_name, avatar, gender, update_ip, regist_ip, update_time, regist_time, description";
+
+	@SQL("INSERT INTO passport_user_account(" + SQL_SELECT_PART
+			+ ") values(:1.userId, :1.userName, :1.nickName, :1.avatar, :1.gender, :1.updateIp, :1.registIp, :1.updateTime, :1.registTime, :1.description) on duplicate key update user_name=:1.userName, nick_name=:1.nickName, avatar=:1.avatar, gender=:1.gender, update_time=:1.updateTime, update_ip=:1.updateIp, description=:1.description")
 	public int insertOrUpdate(PassportUserAccountEntity passportUserAccountEntity);
 
-	@SQL("INSERT IGNORE INTO passport_user_account(user_id, user_name, nick_name, avatar, gender, update_ip, regist_ip, update_time, regist_time) values(:1.userId, :1.userName, :1.nickName, :1.avatar, :1.gender, :1.updateIp, :1.registIp, :1.updateTime, :1.registTime)")
+	@SQL("INSERT IGNORE INTO passport_user_account(" + SQL_SELECT_PART
+			+ ") values(:1.userId, :1.userName, :1.nickName, :1.avatar, :1.gender, :1.updateIp, :1.registIp, :1.updateTime, :1.registTime, :1.description)")
 	public int insert(PassportUserAccountEntity passportUserAccountEntity);
 
-	@SQL("SELECT user_id, user_name, nick_name, avatar, gender, update_ip, regist_ip, update_time, regist_time, description from passport_user_account WHERE user_id=:1 LIMIT 1")
+	@SQL("SELECT " + SQL_SELECT_PART + " from passport_user_account WHERE user_id=:1 LIMIT 1")
 	public PassportUserAccountEntity getUserInfoByUserId(Long userId);
 
 	@SQL("UPDATE passport_user_account SET gender=:2 WHERE user_id=:1")
