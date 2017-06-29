@@ -27,7 +27,7 @@ public class SSDBXFactory {
 		if (ssdbxImpl == null) {
 			synchronized (LOCK_OF_NEWPATH) {
 				if (ssdbxImpl == null) {
-					ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
+					ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
 
 						@Override
 						public byte[] serialize(Object paramObject) throws ZkMarshallingError {

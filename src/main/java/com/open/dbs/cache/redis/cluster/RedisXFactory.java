@@ -32,7 +32,7 @@ public class RedisXFactory {
 				if (instance == null) {
 					instance = redisMap.get(instanceName);
 					if (instance == null) {
-						ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
+						ZkClient zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
 
 							@Override
 							public byte[] serialize(Object paramObject) throws ZkMarshallingError {
