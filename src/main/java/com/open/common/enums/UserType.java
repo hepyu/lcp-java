@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum UserType {
-	
-	admin(0), user(1);
+
+	admin(0), user(1), test(2);
 
 	private int type;
 
