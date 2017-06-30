@@ -12,7 +12,10 @@ import com.open.passport.service.dao.entity.PassportUserAccountEntity;
 
 public interface AccountInfoService {
 
-	public void createOrUpdateAccount(String prefix, PassportUserAccountEntity passportUserAccountEntity,
+	public void createAccount(String prefix, PassportUserAccountEntity passportUserAccountEntity,
+			PassportOAuthAccountEntity passportOAuthAccountEntity);
+
+	public void updatedAccount(String prefix, PassportUserAccountEntity passportUserAccountEntity,
 			PassportOAuthAccountEntity passportOAuthAccountEntity);
 
 	public PassportUserAccountDTO getUserInfo(Long userId);

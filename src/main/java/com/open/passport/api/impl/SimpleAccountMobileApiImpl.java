@@ -71,8 +71,12 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 			userPortrait.setUsername(userName);
 
 			// 3.registOrLogin 迅雷账号中心
-			Long userIdInPassport = getUserId(mobile, UserAccountType.mobile);
-			boolean isNewUser = true;
+			Long userId = getUserId(mobile, UserAccountType.mobile);
+			if(userId==null){
+				accountInfoService.
+			}else{
+				
+			}
 
 			// 4.mysql中创建用户记录,每次都需要更新，因为headIconURL可能会变，同时更新update_ip,
 			// update_time
