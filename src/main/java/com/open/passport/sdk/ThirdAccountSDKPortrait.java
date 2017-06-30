@@ -11,8 +11,6 @@ public class ThirdAccountSDKPortrait {
 
 	private String avatar;
 
-	private String oauthAvatar;
-
 	private Gender gender;
 
 	private UserType userType;
@@ -39,14 +37,6 @@ public class ThirdAccountSDKPortrait {
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
-	}
-
-	public String getOauthAvatar() {
-		return oauthAvatar;
-	}
-
-	public void setOauthAvatar(String oauthAvatar) {
-		this.oauthAvatar = oauthAvatar;
 	}
 
 	public Gender getGender() {

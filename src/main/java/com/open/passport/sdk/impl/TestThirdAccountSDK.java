@@ -19,7 +19,7 @@ public class TestThirdAccountSDK extends AbstractThirdAccountSDK {
 		portrait.setAvatar("http://www.baidu.com");
 		portrait.setGender(Gender.female);
 		portrait.setNickname("test-nickname");
-		portrait.setOauthAvatar(portrait.getAvatar());
+		portrait.setAvatar(portrait.getAvatar());
 		portrait.setUsername("test-username");
 		portrait.setUserType(UserType.test);
 		return portrait;

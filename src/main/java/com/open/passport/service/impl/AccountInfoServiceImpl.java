@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.open.common.enums.Gender;
+import com.open.passport.PassportException;
 import com.open.passport.UserAccountType;
 import com.open.passport.dto.PassportOAuthAccountDTO;
 import com.open.passport.dto.PassportUserAccountDTO;
@@ -19,6 +20,40 @@ import com.open.passport.util.AccountUtil;
 
 @Service
 public class AccountInfoServiceImpl extends AbstractAccount implements AccountInfoService {
+
+	@Override
+	public void createOrUpdateAccount(String prefix, PassportUserAccountEntity passportUserAccountEntity,
+			PassportOAuthAccountEntity passportOAuthAccountEntity) {
+
+		if (StringUtils.isEmpty(passportUserAccountEntity.getNickName())
+				|| StringUtils.isEmpty(passportUserAccountEntity.getUserName())
+				|| StringUtils.isEmpty(passportUserAccountEntity.getAvatar())
+				|| StringUtils.isEmpty(passportOAuthAccountEntity.getNickName())
+				|| StringUtils.isEmpty(passportOAuthAccountEntity.getUserName())
+				|| StringUtils.isEmpty(passportOAuthAccountEntity.getAvatar())) {
+			throw new PassportException(PassportException.EXCEPTION_OBTAIN_PORTRAIT_FAILED,
+					"EXCEPTION_OBTAIN_PORTRAIT_FAILED", null);
+		}
+
+		int accountType = passportOAuthAccountEntity.getType();
+		UserAccountType type = UserAccountType.valueOf(accountType);
+		String openId = passportOAuthAccountEntity.getOpenId();
+		Long userId = passportOAuthAccountEntity.getUserId();
+
+		Long xlUserIdInDB = passportOAuthAccountDAO.getUserId(openId, type.value());
+		// 如果当前账号已经被他人绑定，exception
+		if (xlUserIdInDB != null && xlUserIdInDB.longValue() != userId.longValue()) {
+			throw new PassportException(PassportException.EXCEPTION_BIND_ACCOUNT_HAS_EXIST_OR_SAME_TYPE_HAS_EXIST,
+					null);
+		}
+
+		passportOAuthAccountDAO.insertOrUpdate(passportOAuthAccountEntity);
+		passportUserAccountDAO.insertOrUpdate(passportUserAccountEntity);
+
+		passportCache.delOAuthAccountInfoByUserIdAndType(userId, type);
+		passportCache.delUserInfoByUserId(userId);
+		passportCache.delUserId(openId, type);
+	}
 
 	@Override
 	public PassportUserAccountDTO getUserInfo(Long userId) {

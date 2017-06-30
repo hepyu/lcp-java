@@ -7,8 +7,13 @@ import com.open.passport.UserAccountType;
 import com.open.passport.dto.PassportOAuthAccountDTO;
 import com.open.passport.dto.PassportUserAccountDTO;
 import com.open.passport.dto.RequestUploadAvatarResultDTO;
+import com.open.passport.service.dao.entity.PassportOAuthAccountEntity;
+import com.open.passport.service.dao.entity.PassportUserAccountEntity;
 
 public interface AccountInfoService {
+
+	public void createOrUpdateAccount(String prefix, PassportUserAccountEntity passportUserAccountEntity,
+			PassportOAuthAccountEntity passportOAuthAccountEntity);
 
 	public PassportUserAccountDTO getUserInfo(Long userId);
 

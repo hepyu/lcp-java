@@ -8,7 +8,7 @@ public class BindAccountResultDTO {
 
 	private String userName;
 
-	private String headIconUrl;
+	private String avatar;
 
 	private Gender gender;
 
@@ -20,12 +20,12 @@ public class BindAccountResultDTO {
 		this.userName = userName;
 	}
 
-	public String getHeadIconUrl() {
-		return headIconUrl;
+	public String getAvatar() {
+		return avatar;
 	}
 
-	public void setHeadIconUrl(String headIconUrl) {
-		this.headIconUrl = headIconUrl;
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	public Gender getGender() {
