@@ -10,6 +10,6 @@ package com.open.passport.api;
 public interface AccountAdminApi {
 
 	@Deprecated
-	public boolean registUser(long passportUserId, String userName, String nickName, String gender, String avatar,
-			String desc, String userAccountType);
+	public boolean registUser(String userName, String nickName, String gender, String avatar, String desc,
+			String userAccountType);
 }
