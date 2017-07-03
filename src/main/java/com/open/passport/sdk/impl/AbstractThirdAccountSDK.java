@@ -20,8 +20,8 @@ public abstract class AbstractThirdAccountSDK implements ThirdAccountSDK {
 	}
 
 	@Override
-	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken,
-			String bisType) throws PassportException {
+	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken)
+			throws PassportException {
 		throw new PassportException(PassportException.EXCEPTION_NO_SUPPORT_METHOD, "EXCEPTION_NO_SUPPORT_METHOD", null);
 	}
 

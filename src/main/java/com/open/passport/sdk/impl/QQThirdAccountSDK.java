@@ -24,8 +24,8 @@ public class QQThirdAccountSDK extends AbstractThirdAccountSDK {
 	protected CloseableHttpClient httpClient;
 
 	@Override
-	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken,
-			String bisType) throws PassportException {
+	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken)
+			throws PassportException {
 
 		try {
 

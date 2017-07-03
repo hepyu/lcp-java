@@ -9,8 +9,8 @@ import com.open.passport.sdk.ThirdAccountSDKPortrait;
 public class MobileThirdAccountSDK extends AbstractThirdAccountSDK {
 
 	@Override
-	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken,
-			String bisType) throws PassportException {
+	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken)
+			throws PassportException {
 		throw new PassportException(PassportException.EXCEPTION_NO_SUPPORT_METHOD, "no suppoprt.", null);
 	}
 

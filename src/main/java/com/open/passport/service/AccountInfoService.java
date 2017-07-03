@@ -12,10 +12,12 @@ import com.open.passport.service.dao.entity.PassportUserAccountEntity;
 
 public interface AccountInfoService {
 
-	public void createAccount(String prefix, PassportUserAccountEntity passportUserAccountEntity,
+	public void createAccount(PassportUserAccountEntity passportUserAccountEntity,
 			PassportOAuthAccountEntity passportOAuthAccountEntity);
 
-	public void updatedAccount(String prefix, PassportUserAccountEntity passportUserAccountEntity,
+	public void bindAccount(PassportOAuthAccountEntity passportOAuthAccountEntity);
+
+	public void login(PassportUserAccountEntity passportUserAccountEntity,
 			PassportOAuthAccountEntity passportOAuthAccountEntity);
 
 	public PassportUserAccountDTO getUserInfo(Long userId);
@@ -29,14 +31,6 @@ public interface AccountInfoService {
 	public int updateNickName(Long userId, String nickName);
 
 	public int updateDescription(Long userId, String description);
-
-	public RequestUploadAvatarResultDTO requestUploadAvatar(String prefix, Long userId);
-
-	public String commitUploadAvatar(String prefix, Long userId);
-
-	public RequestUploadAvatarResultDTO requestUploadAvatar(String prefix, Long userId, UserAccountType accountType);
-
-	public String commitUploadAvatar(String prefix, Long userId, UserAccountType accountType);
 
 	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId);
 

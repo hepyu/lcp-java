@@ -89,17 +89,13 @@ public class AbstractAccountApi {
 		passportCodeNotErrorList.add(PassportException.EXCEPTION_MOBILE_CODE_TYPE_INVALID);
 	}
 
-	protected void log(PassportException pae, Log logger) {
-		logger.warn(pae.getMessage());
-	}
-
 	// index0:userHeadIconUrl, index1:oauthHeadIconUrl
-	protected String[] storeHeadIcon(String prefix, long userId, String headIconUrl, UserAccountType accountType) {
+	protected String[] storeHeadIcon(long userId, String headIconUrl, UserAccountType accountType) {
 		if (StringUtils.isEmpty(headIconUrl)) {
 			String url = PlaceholderAvatarUtil.getPlaceholderAvatarByMod(userId);
 			return new String[] { url, url };
 		} else {
-			String oauthKey = accountAvatarStorage.getOAuthAvatarKey(prefix, userId, accountType);
+			String oauthKey = accountAvatarStorage.getOAuthAvatarKey(userId, accountType);
 			String oauthUrl = "";
 			try {
 				// byte[] image = obtainHeadIconImg(headIconUrl, oauthAppId,
@@ -126,25 +122,42 @@ public class AbstractAccountApi {
 	 * @param accountType
 	 */
 	// create new record, or update if exists.
-	protected void createOrUpdateAccount(String prefix, ThirdAccountSDKPortrait userPortrait, String openId,
-			Long userId, String ip, UserAccountType accountType) throws PassportException {
+	protected void createAccount(ThirdAccountSDKPortrait userPortrait, String openId, Long userId, String ip,
+			UserAccountType accountType, String avatar) throws PassportException {
 		long now = System.currentTimeMillis();
 		PassportOAuthAccountEntity passportOAuthAccountEntity = newOAuthAccountInstance(userPortrait, openId, userId,
 				ip, now, accountType);
 		PassportUserAccountEntity passportUserAccountEntity = newPassportUserAccountInstance(userPortrait, userId, ip,
 				now, accountType);
 
-		accountInfoService.createOrUpdateAccount(prefix, passportUserAccountEntity, passportOAuthAccountEntity);
+		accountInfoService.createAccount(passportUserAccountEntity, passportOAuthAccountEntity);
+
+		if (!StringUtils.isEmpty(avatar)) {
+			userId = passportUserAccountEntity.getUserId();
+			String[] urls = storeHeadIcon(userId, avatar, accountType);
+			userPortrait.setAvatar(urls[0]);
+		}
+	}
+
+	protected void login(ThirdAccountSDKPortrait userPortrait, String openId, Long userId, String ip,
+			UserAccountType accountType) throws PassportException {
+		long now = System.currentTimeMillis();
+		PassportOAuthAccountEntity passportOAuthAccountEntity = newOAuthAccountInstance(userPortrait, openId, userId,
+				ip, now, accountType);
+		PassportUserAccountEntity passportUserAccountEntity = newPassportUserAccountInstance(userPortrait, userId, ip,
+				now, accountType);
+
+		accountInfoService.login(passportUserAccountEntity, passportOAuthAccountEntity);
 	}
 
 	// insert new record into mysql.
-	protected BindAccountResultDTO bindAccount(String prefix, ThirdAccountSDKPortrait userPortrait, String openId,
-			Long userId, String ip, UserAccountType accountType) throws PassportException {
+	protected BindAccountResultDTO bindAccount(ThirdAccountSDKPortrait userPortrait, String openId, Long userId,
+			String ip, UserAccountType accountType) throws PassportException {
 
 		// store head icon
 		String headIconUrl = userPortrait.getAvatar();
 		// 这里必须用passportUserId作为headiconurl一部分，因为现在还不知道xluserId
-		String[] urls = storeHeadIcon(prefix, userId, headIconUrl, accountType);
+		String[] urls = storeHeadIcon(userId, headIconUrl, accountType);
 		userPortrait.setAvatar(urls[0]);
 		// userPortrait.setOauthHeadIconURL(urls[1]);
 
@@ -152,10 +165,7 @@ public class AbstractAccountApi {
 		PassportOAuthAccountEntity passportOAuthAccountEntity = newOAuthAccountInstance(userPortrait, openId, userId,
 				ip, now, accountType);
 
-		PassportUserAccountEntity passportUserAccountEntity = newPassportUserAccountInstance(userPortrait, userId, ip,
-				now, accountType);
-
-		accountInfoService.createOrUpdateAccount(prefix, passportUserAccountEntity, passportOAuthAccountEntity);
+		accountInfoService.bindAccount(passportOAuthAccountEntity);
 
 		BindAccountResultDTO dto = new BindAccountResultDTO();
 		dto.setBindSuccess(true);
@@ -187,17 +197,17 @@ public class AbstractAccountApi {
 	 * @return
 	 */
 	protected ThirdAccountSDKPortrait obtainThirdAccountSDK(String appId, String openId, String accessToken,
-			UserAccountType accountType, String bisType) throws PassportException {
+			UserAccountType accountType) throws PassportException {
 		if (accountType.name().equalsIgnoreCase(UserAccountType.weichat.toString())) {
-			return weichatUserSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
+			return weichatUserSDK.validateAndObtainUserPortrait(appId, openId, accessToken);
 		} else if (accountType.name().equalsIgnoreCase(UserAccountType.xiaomi.toString())) {
-			return xiaomiUserSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
+			return xiaomiUserSDK.validateAndObtainUserPortrait(appId, openId, accessToken);
 		} else if (accountType.name().equalsIgnoreCase(UserAccountType.mobile.toString())) {
-			return mobilAccountSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
+			return mobilAccountSDK.validateAndObtainUserPortrait(appId, openId, accessToken);
 		} else if (accountType.name().equals(UserAccountType.weibo.name())) {
-			return weiboUserSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
+			return weiboUserSDK.validateAndObtainUserPortrait(appId, openId, accessToken);
 		} else if (accountType.name().equals(UserAccountType.qq.name())) {
-			return qqUserSDK.validateAndObtainUserPortrait(appId, openId, accessToken, bisType);
+			return qqUserSDK.validateAndObtainUserPortrait(appId, openId, accessToken);
 		} else {
 			throw new PassportException(PassportException.EXCEPTION_INVALID_ACCOUNT_TYPE,
 					"EXCEPTION_INVALID_ACCOUNT_TYPE", null);

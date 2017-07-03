@@ -1,7 +1,5 @@
 package com.open.passport.service.dao.entity;
 
-import com.open.common.enums.Gender;
-
 public class PassportUserAccountEntity {
 
 	private Long userId;
@@ -21,6 +19,8 @@ public class PassportUserAccountEntity {
 	private Long registTime;
 
 	private Long updateTime;
+
+	private Long lastLoginTime;
 
 	private String description;
 
@@ -102,6 +102,14 @@ public class PassportUserAccountEntity {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Long getLastLoginTime() {
+		return lastLoginTime;
+	}
+
+	public void setLastLoginTime(Long lastLoginTime) {
+		this.lastLoginTime = lastLoginTime;
 	}
 
 }

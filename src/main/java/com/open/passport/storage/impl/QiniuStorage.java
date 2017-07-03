@@ -1,6 +1,5 @@
 package com.open.passport.storage.impl;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -39,34 +38,20 @@ public class QiniuStorage implements AccountAvatarStorage {
 
 	@Override
 	public String getOAuthAvatarKey(long userId, UserAccountType accountType) {
-		return getOAuthAvatarKey(null, userId, accountType);
-	}
-
-	@Override
-	public String getOAuthAvatarKey(String prefix, long userId, UserAccountType accountType) {
 		String key = "avatar_" + userId + "_" + EnvFinder.getProfile().name() + "_" + accountType.name();
-		if (StringUtils.isEmpty(prefix)) {
-			return key;
-		} else {
-			return "prefix_" + key;
-		}
+		return key;
 	}
 
 	@Override
 	public String getOAuthAvatarUrl(long userId, UserAccountType accountType) {
-		return getOAuthAvatarUrl(null, userId, accountType);
-	}
-
-	@Override
-	public String getOAuthAvatarUrl(String prefix, long userId, UserAccountType accountType) {
-		String key = getOAuthAvatarKey(prefix, userId, accountType);
+		String key = getOAuthAvatarKey(userId, accountType);
 		String url = "http://" + qiniuConfig.getQiniu_image_upload_url() + "/" + key;
 		return url + "?v=" + System.currentTimeMillis();
 	}
 
 	@Override
-	public String getUserAvatarUrl(String prefix, long userId) {
-		String key = getUserAvatarKey(prefix, userId);
+	public String getUserAvatarUrl(long userId) {
+		String key = getUserAvatarKey(userId);
 		String url = "http://" + qiniuConfig.getQiniu_image_upload_url() + "/" + key;
 		return url + "?v=" + System.currentTimeMillis();
 	}
@@ -77,13 +62,9 @@ public class QiniuStorage implements AccountAvatarStorage {
 	// }
 
 	@Override
-	public String getUserAvatarKey(String prefix, long userId) {
-		String key = "headIcon_" + userId + "_" + EnvFinder.getProfile();
-		if (StringUtils.isEmpty(prefix)) {
-			return key;
-		} else {
-			return prefix + "_" + key;
-		}
+	public String getUserAvatarKey(long userId) {
+		String key = "avatar_" + userId + "_" + EnvFinder.getProfile();
+		return key;
 	}
 
 	@Override

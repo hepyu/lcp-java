@@ -5,8 +5,8 @@ import com.open.passport.PassportException;
 
 public interface ThirdAccountSDK {
 
-	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken,
-			String bisType) throws PassportException;
+	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken)
+			throws PassportException;
 
 	public byte[] obtainAvatar(String url, String oauthAppId, String openId, String accessToken)
 			throws PassportException;

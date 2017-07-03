@@ -1,15 +1,12 @@
 package com.open.passport.api.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 import com.open.common.enums.Gender;
+import com.open.env.finder.EnvEnum;
+import com.open.env.finder.EnvFinder;
 import com.open.passport.MobileCodeType;
 import com.open.passport.PassportException;
 import com.open.passport.UserAccountType;
@@ -20,8 +17,6 @@ import com.open.passport.dto.LoginByMobileResultDTO;
 import com.open.passport.dto.ObtainMobileCodeDTO;
 import com.open.passport.dto.PassportUserAccountDTO;
 import com.open.passport.sdk.ThirdAccountSDKPortrait;
-import com.open.passport.service.AbstractAccount;
-import com.open.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.passport.ticket.Ticket;
 import com.open.passport.util.NickNameUtil;
 
@@ -31,8 +26,8 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 	private final Log logger = LogFactory.getLog(SimpleAccountMobileApiImpl.class);
 
 	@Override
-	public LoginByMobileResultDTO login(String prefix, int appId, String mobile, String mobileCode, String deviceId,
-			String ip, String ua) {
+	public LoginByMobileResultDTO login(int appId, String mobile, String mobileCode, String deviceId, String ip,
+			String ua) {
 		try {
 			// 1.调用安全中心接口，验证是否允许登陆
 
@@ -41,7 +36,7 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 					mobileCode);
 
 			if ("11111111111".equals(mobile) && "666666".equals(mobileCode)) {
-				Long userId = passportOAuthAccountDAO.getUserId("18553227095", UserAccountType.mobile.value());
+				Long userId = passportOAuthAccountDAO.getUserId("11111111111", UserAccountType.mobile.value());
 				Ticket couple = ticketManager.createSecretKeyCouple(appId, userId);
 
 				String description = passportUserAccountDAO.getUserInfoByUserId(userId).getDescription();
@@ -70,42 +65,36 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 			userPortrait.setGender(Gender.unknown);
 			userPortrait.setUsername(userName);
 
-			// 3.registOrLogin 迅雷账号中心
+			// 3.registOrLogin
 			Long userId = getUserId(mobile, UserAccountType.mobile);
-			if(userId==null){
-				accountInfoService.
-			}else{
-				
+			if (userId == null) {
+				super.createAccount(userPortrait, mobile, userId, ip, UserAccountType.mobile, null);
+			} else {
+				super.login(userPortrait, mobile, userId, ip, UserAccountType.mobile);
 			}
-
-			// 4.mysql中创建用户记录,每次都需要更新，因为headIconURL可能会变，同时更新update_ip,
-			// update_time
-			createOrUpdateAccount(prefix, userPortrait, mobile, userId, ip, UserAccountType.mobile);
-
-			String description = passportUserAccountDAO.getUserInfoByUserId(userId).get(0).getDescription();
 
 			// 5.处理相同用户不同设备之间,或者相同用户相同设备的多次登陆的登陆互踢逻辑
 			multiDeviceProcess(userId, deviceId);
 
 			// 6.生成sk,uk
-			Ticket couple = getTicketManager().createSecretKeyCouple(appId, userId);
-			boolean existAccountExceptMobile = accountInfoService.existAccountExceptMobileByUserId(userId);
+			Ticket couple = ticketManager.createSecretKeyCouple(appId, userId);
 
-			PassportUserAccountEntity userAccount = obtainPassportUserAccount(userId);
+			PassportUserAccountDTO userAccount = accountInfoService.getUserInfo(userId);
 
 			LoginByMobileResultDTO resultDTO = new LoginByMobileResultDTO();
 			resultDTO.setAvatar(userAccount.getAvatar());
-			resultDTO.setGender(Gender.valueOf(userAccount.getGender()));
+			resultDTO.setGender(userAccount.getGender());
 			resultDTO.setUserId(userId);
 			resultDTO.setUserName(userAccount.getNickName());
 			resultDTO.setUserSecretKey(couple.getUserSecretKey());
 			resultDTO.setT(couple.getT());
-			resultDTO.setNewUser(isNewUser);
-			resultDTO.setDescription(description);
+			resultDTO.setDescription(userAccount.getDescription());
 			return resultDTO;
-		} catch (PassportException pae) {
-			log(pae, logger);
-			throw new PassportException(pae.getPassportCode(), pae.getMessage());
+		} catch (PassportException e) {
+			logger.error(e.getMessage(), e);
+			throw new PassportException(e.getPassportCode(), e.getMessage(), e);
+		} catch (Exception e1) {
+			throw new PassportException(PassportException.EXCEPTION_LOGIN_FAILED, e1.getMessage(), e1);
 		}
 	}
 
@@ -113,69 +102,28 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 	public ObtainMobileCodeDTO obtainMobileCode(String ip, String deviceId, int appId, String mobile,
 			MobileCodeType type) {
 
-		// TODO
-		SafeCheckResult safeCheckResult = getSafeChecker().checkObtainMobileCode(ip, mobile, "");
-		if (!safeCheckResult.isSuccess()) {
-			ObtainMobileCode resultDTO = new ObtainMobileCode();
-			resultDTO.setSecurityCode(safeCheckResult.getCode());
-			resultDTO.setNeedImageCode(safeCheckResult.isNeedImageCode());
-			resultDTO.setImageCodeUrl(safeCheckResult.getImageCodeUrl());
-			return resultDTO;
-		}
+		EnvEnum env = EnvFinder.getProfile();
+		String validateCode = null;
 
-		Random rm = new Random();
-		int strLength = 20;
-		// 获得随机数
-		double pross = (1 + rm.nextDouble()) * Math.pow(10, strLength);
-		// 将获得的获得随机数转化为字符串
-		String validateCode = String.valueOf(pross);
-		validateCode = validateCode.substring(2, 8);
-
-		String msg = null;
-		if (appId == 19) {
-			msg = validateCode + "（动态验证码），请在30分钟内填写【快盘】";
-		} else if (appId == 3) {
-			msg = validateCode + "（动态验证码），请在30分钟内填写【小米文件管理】";
-		} else if (appId == 20 || appId == 22) {
-			msg = validateCode + "（动态验证码），请在30分钟内填写【有料】";
+		if (env == EnvEnum.dev) {
+			validateCode = "123456";
+		} else if (env == EnvEnum.test) {
+			validateCode = "123456";
+		} else if (env == EnvEnum.pre || env == EnvEnum.product) {
+			// TODO
+			validateCode = "123456";
 		} else {
-			msg = validateCode + "（动态验证码），请在30分钟内填写【小米文件管理】";
+			throw new PassportException(PassportException.EXCEPTION_SEND_MOBILE_CODE_FAILED, "invalid env.", null);
 		}
 
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("desNo", mobile);
-		params.put("msg", msg);
-
-		try {
-			HttpResult httpResult = getCommonHttpClient().httpPost(getPassportConfig().getMobileCodeUrl(), params);
-			int code = httpResult.getCode();
-			// String result = httpResult.getResult();
-			if (code == 298) {
-				// GSON GSON = NEW GSON();
-				// OBTAINMOBILECODEDTO DTO = GSON.FROMJSON(RESULT,
-				// OBTAINMOBILECODEDTO.CLASS);
-				// String batchnumber = dto.getBatchnumber();
-				passportCache.setMobileCode(mobile, deviceId, appId, type, validateCode + "");
-			} else {
-				throw new PassportException(PassportException.EXCEPTION_SEND_MOBILE_CODE_FAILED, null);
-			}
-		} catch (PassportException pae) {
-			log(pae, logger);
-			throw new PassportException(pae.getPassportCode(), pae.getMessage());
-		} catch (Exception e) {
-			PassportException pae = new PassportException(PassportException.EXCEPTION_SEND_MOBILE_CODE_FAILED, e);
-			log(pae, logger);
-			throw new PassportException(pae.getPassportCode(), pae.getMessage());
-		}
-
-		ObtainMobileCode dto = new ObtainMobileCode();
+		String msg = validateCode + "（动态验证码），请在30分钟内填写【LCP】";
+		ObtainMobileCodeDTO dto = new ObtainMobileCodeDTO();
 		dto.setMsg(msg);
 		return dto;
 	}
 
 	@Override
-	public boolean bindMobile(String prefix, int appId, String mobile, String mobileCode, String deviceId, String t,
-			String ip) {
+	public boolean bindMobile(int appId, String mobile, String mobileCode, String deviceId, String t, String ip) {
 		try {
 			Ticket couple = super.checkTicket(t);
 
@@ -191,12 +139,12 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 			userPortrait.setNickname(NickNameUtil.convertNickName(mobile));
 			userPortrait.setGender(Gender.unknown);
 			userPortrait.setUsername(NickNameUtil.convertNickName(mobile));
-			BindAccountResultDTO bindResult = super.bindAccount(prefix, userPortrait, mobile, couple.getUserId(), ip,
+			BindAccountResultDTO bindResult = super.bindAccount(userPortrait, mobile, couple.getUserId(), ip,
 					UserAccountType.mobile);
 
 			return bindResult.isBindSuccess();
 		} catch (PassportException pae) {
-			log(pae, logger);
+			logger.error(pae.getMessage(), pae);
 			throw new PassportException(pae.getPassportCode(), pae.getMessage(), pae);
 		}
 	}

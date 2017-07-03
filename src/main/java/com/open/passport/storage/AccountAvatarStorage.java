@@ -6,17 +6,19 @@ public interface AccountAvatarStorage {
 
 	public String getOAuthAvatarKey(long userId, UserAccountType accountType);
 
-	public String getOAuthAvatarKey(String prefix, long userId, UserAccountType accountType);
+	// public String getOAuthAvatarKey(String prefix, long userId,
+	// UserAccountType accountType);
 
 	public String getOAuthAvatarUrl(long userId, UserAccountType accountType);
 
-	public String getOAuthAvatarUrl(String prefix, long userId, UserAccountType accountType);
+	// public String getOAuthAvatarUrl(String prefix, long userId,
+	// UserAccountType accountType);
 
-	public String getUserAvatarUrl(String prefix, long userId);
+	public String getUserAvatarUrl(long userId);
 
-	// public String getUserAvatarKey(long passportUserId);
+	public String getUserAvatarKey(long passportUserId);
 
-	public String getUserAvatarKey(String prefix, long userId);
+	// public String getUserAvatarKey(String prefix, long userId);
 
 	public String requestUploadToken(String key);
 

@@ -11,8 +11,8 @@ import com.open.passport.sdk.ThirdAccountSDKPortrait;
 public class TestThirdAccountSDK extends AbstractThirdAccountSDK {
 
 	@Override
-	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken,
-			String bisType) throws PassportException {
+	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken)
+			throws PassportException {
 
 		ThirdAccountSDKPortrait portrait = new ThirdAccountSDKPortrait();
 

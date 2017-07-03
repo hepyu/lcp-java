@@ -36,6 +36,7 @@ public class AccountTicketServiceImpl extends AbstractAccount implements Account
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean suicide(String t) {
 

@@ -40,8 +40,8 @@ public class WeiboThirdAccountSDK extends AbstractThirdAccountSDK {
 
 	// http://open.weibo.com/wiki/2/users/show
 	@Override
-	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken,
-			String bisType) throws PassportException {
+	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String oauthAppId, String openId, String accessToken)
+			throws PassportException {
 
 		try {
 			// String url =

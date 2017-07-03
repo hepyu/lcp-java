@@ -22,7 +22,7 @@ import com.open.passport.util.AccountUtil;
 public class AccountInfoServiceImpl extends AbstractAccount implements AccountInfoService {
 
 	@Override
-	public void createOrUpdateAccount(String prefix, PassportUserAccountEntity passportUserAccountEntity,
+	public void createAccount(PassportUserAccountEntity passportUserAccountEntity,
 			PassportOAuthAccountEntity passportOAuthAccountEntity) {
 
 		if (StringUtils.isEmpty(passportUserAccountEntity.getNickName())
@@ -35,24 +35,30 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 					"EXCEPTION_OBTAIN_PORTRAIT_FAILED", null);
 		}
 
-		int accountType = passportOAuthAccountEntity.getType();
-		UserAccountType type = UserAccountType.valueOf(accountType);
-		String openId = passportOAuthAccountEntity.getOpenId();
-		Long userId = passportOAuthAccountEntity.getUserId();
-
-		Long xlUserIdInDB = passportOAuthAccountDAO.getUserId(openId, type.value());
-		// 如果当前账号已经被他人绑定，exception
-		if (xlUserIdInDB != null && xlUserIdInDB.longValue() != userId.longValue()) {
-			throw new PassportException(PassportException.EXCEPTION_BIND_ACCOUNT_HAS_EXIST_OR_SAME_TYPE_HAS_EXIST,
-					null);
+		int createResult = passportUserAccountDAO.create(passportUserAccountEntity);
+		if (createResult > 0) {
+			passportOAuthAccountEntity.setUserId(passportUserAccountEntity.getUserId());
+			passportOAuthAccountDAO.create(passportOAuthAccountEntity);
+			// passportCache.delOAuthAccountInfoByUserIdAndType(userId, type);
+			// passportCache.delUserInfoByUserId(userId);
+			// passportCache.delUserId(openId, type);
 		}
+	}
 
-		passportOAuthAccountDAO.insertOrUpdate(passportOAuthAccountEntity);
-		passportUserAccountDAO.insertOrUpdate(passportUserAccountEntity);
+	@Override
+	public void bindAccount(PassportOAuthAccountEntity passportOAuthAccountEntity) {
+		passportOAuthAccountDAO.create(passportOAuthAccountEntity);
+	}
 
-		passportCache.delOAuthAccountInfoByUserIdAndType(userId, type);
-		passportCache.delUserInfoByUserId(userId);
-		passportCache.delUserId(openId, type);
+	@Override
+	public void login(PassportUserAccountEntity passportUserAccountEntity,
+			PassportOAuthAccountEntity passportOAuthAccountEntity) {
+		if (passportUserAccountEntity == null || passportUserAccountEntity.getUserId() == null
+				|| passportUserAccountEntity.getUserId() <= 0) {
+			throw new PassportException(PassportException.EXCEPTION_LOGIN_FAILED, "EXCEPTION_LOGIN_FAILED", null);
+		}
+		passportUserAccountDAO.login(passportUserAccountEntity);
+		passportOAuthAccountDAO.login(passportOAuthAccountEntity);
 	}
 
 	@Override
@@ -113,68 +119,48 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 	}
 
 	@Override
-	public RequestUploadAvatarResultDTO requestUploadAvatar(String prefix, Long userId) {
-		String key = accountAvatarStorage.getUserAvatarKey(prefix, userId);
-		String uploadToken = accountAvatarStorage.requestUploadToken(key);
-
-		RequestUploadAvatarResultDTO result = new RequestUploadAvatarResultDTO();
-		result.setKey(key);
-		result.setUploadToken(uploadToken);
-		return result;
-	}
-
-	@Override
-	public String commitUploadAvatar(String prefix, Long userId) {
-		String avatarUrl = accountAvatarStorage.getUserAvatarUrl(prefix, userId);
-		int result = passportUserAccountDAO.updateAvatar(userId, avatarUrl);
-
-		if (result > 0) {
-			return avatarUrl;
-		} else {
-			return null;
-		}
-	}
-
-	@Override
-	public RequestUploadAvatarResultDTO requestUploadAvatar(String prefix, Long userId, UserAccountType accountType) {
-		String key = accountAvatarStorage.getOAuthAvatarKey(prefix, userId, accountType);
-		String uploadToken = accountAvatarStorage.requestUploadToken(key);
-
-		RequestUploadAvatarResultDTO result = new RequestUploadAvatarResultDTO();
-		result.setKey(key);
-		result.setUploadToken(uploadToken);
-		return result;
-	}
-
-	@Override
-	public String commitUploadAvatar(String prefix, Long userId, UserAccountType accountType) {
-		String avatarUrl = accountAvatarStorage.getOAuthAvatarUrl(prefix, userId, accountType);
-		int result = passportUserAccountDAO.updateAvatar(userId, avatarUrl);
-		if (result > 0) {
-			return avatarUrl;
-		} else {
-			return null;
-		}
-	}
-
-	@Override
 	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId) {
-		return requestUploadAvatar(null, userId);
+		String key = accountAvatarStorage.getUserAvatarKey(userId);
+		String uploadToken = accountAvatarStorage.requestUploadToken(key);
+
+		RequestUploadAvatarResultDTO result = new RequestUploadAvatarResultDTO();
+		result.setKey(key);
+		result.setUploadToken(uploadToken);
+		return result;
 	}
 
 	@Override
 	public String commitUploadAvatar(Long userId) {
-		return commitUploadAvatar(null, userId);
+		String avatarUrl = accountAvatarStorage.getUserAvatarUrl(userId);
+		int result = passportUserAccountDAO.updateAvatar(userId, avatarUrl);
+
+		if (result > 0) {
+			return avatarUrl;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId, UserAccountType accountType) {
-		return requestUploadAvatar(null, userId, accountType);
+		String key = accountAvatarStorage.getOAuthAvatarKey(userId, accountType);
+		String uploadToken = accountAvatarStorage.requestUploadToken(key);
+
+		RequestUploadAvatarResultDTO result = new RequestUploadAvatarResultDTO();
+		result.setKey(key);
+		result.setUploadToken(uploadToken);
+		return result;
 	}
 
 	@Override
 	public String commitUploadAvatar(Long userId, UserAccountType accountType) {
-		return commitUploadAvatar(null, userId, accountType);
+		String avatarUrl = accountAvatarStorage.getOAuthAvatarUrl(userId, accountType);
+		int result = passportUserAccountDAO.updateAvatar(userId, avatarUrl);
+		if (result > 0) {
+			return avatarUrl;
+		} else {
+			return null;
+		}
 	}
 
 }

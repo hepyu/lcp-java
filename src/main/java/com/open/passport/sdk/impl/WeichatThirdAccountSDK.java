@@ -29,8 +29,8 @@ public class WeichatThirdAccountSDK extends AbstractThirdAccountSDK {
 	protected CloseableHttpClient httpClient;
 
 	@Override
-	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String appId, String openId, String accessToken,
-			String type) throws PassportException {
+	public ThirdAccountSDKPortrait validateAndObtainUserPortrait(String appId, String openId, String accessToken)
+			throws PassportException {
 
 		StringBuilder sb = new StringBuilder();
 		BufferedReader in = null;
