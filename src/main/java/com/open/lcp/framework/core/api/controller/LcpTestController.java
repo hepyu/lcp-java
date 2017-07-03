@@ -31,8 +31,8 @@ import com.open.lcp.framework.util.LcpUtils;
  */
 @Controller
 @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
-public class TestController extends AbstractController {
-	private static final Log logger = LogFactory.getLog(TestController.class);
+public class LcpTestController extends AbstractController {
+	private static final Log logger = LogFactory.getLog(LcpTestController.class);
 	@Autowired
 	private CloseableHttpClient client;
 	// private static final String[] allowdIps = { "127.0.0.1",

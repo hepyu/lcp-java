@@ -5,7 +5,7 @@ import com.open.jade.jade.annotation.SQL;
 import com.open.lcp.framework.core.api.service.dao.entity.AppInitInfoEntity;
 
 @DAO(catalog = "lcp")
-public interface AppInitInfoDAO {
+public interface LcpAppInitInfoDAO {
 
 	@SQL("select device_id, miui_version, product_version, miui_type, language, country, screen_height, device, android_version, model, screen_resolution, screen_width, screen_density, mac, imei, mac_md5, imei_md5 from app_init_info where device_id=:1")
 	public AppInitInfoEntity getAppInit(String deviceId);

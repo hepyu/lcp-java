@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.open.lcp.framework.core.annotation.LcpReq;
 import com.open.lcp.framework.core.annotation.LcpRequired;
-import com.open.lcp.framework.core.api.ApiException;
+import com.open.lcp.framework.core.api.LcpApiException;
 import com.open.lcp.framework.core.api.LcpFieldLoadHolder;
 import com.open.lcp.framework.core.api.ModelCastHolder;
 import com.open.lcp.framework.core.api.RequiredCheck;
@@ -34,8 +34,8 @@ public class ApiFacadeCommand extends AbstractApiCommand implements Initializing
 	public static final ApiResult SYS_RPC_ERROR = new ApiResult(ApiResultCode.E_SYS_RPC_ERROR);
 	public static final ApiResult API_RESULT_SUCCESS = new ApiResult(ApiResultCode.SUCCESS, 0);
 
-	public static final ApiException EXP_ERR_REQ = new ApiException(ApiResultCode.E_SYS_PARAM);
-	public static final ApiException EXP_ERR_RESP = new ApiException(ApiResultCode.E_SYS_RESP);
+	public static final LcpApiException EXP_ERR_REQ = new LcpApiException(ApiResultCode.E_SYS_PARAM);
+	public static final LcpApiException EXP_ERR_RESP = new LcpApiException(ApiResultCode.E_SYS_RESP);
 
 	private static final Map<String, Set<CommandListener>> listeners = new HashMap<String, Set<CommandListener>>();
 
@@ -85,7 +85,7 @@ public class ApiFacadeCommand extends AbstractApiCommand implements Initializing
 			} catch (Exception e) {
 				logger.warn(String.format("onExecute(ApiCommandContext) reqModel build error, method:%s, sig:%s",
 						methodName, sig), e);
-				throw ApiException.E_SYS_INVALID_PARAM;
+				throw LcpApiException.E_SYS_INVALID_PARAM;
 			}
 			if (apiFacadeMethod.getReqClass() != null) {
 				this.checkReqModel(reqModel, apiFacadeMethod.getLcpReq(), ctx);// 请求对象检查：参数必要性，值域
@@ -103,7 +103,7 @@ public class ApiFacadeCommand extends AbstractApiCommand implements Initializing
 					} else if (pts[0] == CommandContext.class) {// 仅ctx
 						respModel = apiFacadeMethod.getMethod().invoke(apiFacadeMethod.getMethodOfObject(), ctx);
 					} else {// 未知错误
-						throw ApiException.E_SYS_INVALID_PARAM;
+						throw LcpApiException.E_SYS_INVALID_PARAM;
 					}
 					break;
 				case 2:
@@ -150,7 +150,7 @@ public class ApiFacadeCommand extends AbstractApiCommand implements Initializing
 			} catch (InvocationTargetException e) {
 				throw e.getCause();
 			}
-		} catch (ApiException e) {
+		} catch (LcpApiException e) {
 			String errorMsg = e.getMessage();
 			if (errorMsg == null) {
 				if (logger.isDebugEnabled()) {
@@ -199,7 +199,7 @@ public class ApiFacadeCommand extends AbstractApiCommand implements Initializing
 						logger.debug("ApiFacadeCommand " + cmdName + "'s listener " + c.getClass().getName()
 								+ ".beforeExec invoked.");
 					}
-				} catch (ApiException e) {
+				} catch (LcpApiException e) {
 					throw e;
 				} catch (Throwable t) {
 					logger.warn("beforeInvokeMethod(ApiCommandContext) - exception ignored", t); //$NON-NLS-1$
@@ -242,9 +242,9 @@ public class ApiFacadeCommand extends AbstractApiCommand implements Initializing
 	 * @param reqModel
 	 * @param reqParameter
 	 * @param ctx
-	 * @throws ApiException
+	 * @throws LcpApiException
 	 */
-	protected void checkReqModel(Object reqModel, LcpReq lcpReq, ApiCommandContext ctx) throws ApiException {
+	protected void checkReqModel(Object reqModel, LcpReq lcpReq, ApiCommandContext ctx) throws LcpApiException {
 		RequiredCheck result = null;
 		if (lcpReq != null) {// 按单个参数加注解的形式来处理
 			result = LcpRequiredCheckHolder.check(lcpReq, reqModel);
@@ -259,17 +259,17 @@ public class ApiFacadeCommand extends AbstractApiCommand implements Initializing
 				int errorCode = required.errorCode();
 				String errorMsg = required.errorMsg();
 				if (errorMsg == null || errorMsg.isEmpty()) {
-					throw new ApiException(errorCode);
+					throw new LcpApiException(errorCode);
 				}
-				throw new ApiException(errorCode, errorMsg);
+				throw new LcpApiException(errorCode, errorMsg);
 			}
 			if (lcpReq != null && lcpReq.errorCode() > 0) {
 				int errorCode = lcpReq.errorCode();
 				String errorMsg = lcpReq.errorMsg();
 				if (errorMsg == null || errorMsg.isEmpty()) {
-					throw new ApiException(errorCode);
+					throw new LcpApiException(errorCode);
 				}
-				throw new ApiException(errorCode, errorMsg);
+				throw new LcpApiException(errorCode, errorMsg);
 			}
 			throw EXP_ERR_REQ;
 		}
@@ -282,9 +282,9 @@ public class ApiFacadeCommand extends AbstractApiCommand implements Initializing
 	 * 
 	 * @param respModel
 	 * @param context
-	 * @throws ApiException
+	 * @throws LcpApiException
 	 */
-	protected void checkRespModel(Object respModel, ApiCommandContext ctx) throws ApiException {
+	protected void checkRespModel(Object respModel, ApiCommandContext ctx) throws LcpApiException {
 		RequiredCheck result = LcpRequiredCheckHolder.checkMultilayer(respModel);
 		if (result != null && result.getErrorType() != ErrorType.Pass) {
 			logger.warn(String.format(SF_RESP_ERROR//

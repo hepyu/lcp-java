@@ -4,33 +4,33 @@ import java.util.List;
 
 import com.open.jade.jade.annotation.DAO;
 import com.open.jade.jade.annotation.SQL;
-import com.open.lcp.framework.core.api.service.dao.entity.ApiMaxThreadsEntity;
-import com.open.lcp.framework.core.api.service.dao.entity.AppAuthInfoEntity;
-import com.open.lcp.framework.core.api.service.dao.entity.AppInfoEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.LcpApiMaxThreadsEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.LcpAppAuthInfoEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.LcpAppInfoEntity;
 import com.open.lcp.framework.core.api.service.dao.entity.LcpTimeSwitcherEntity;
-import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
+import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 
 @DAO(catalog = "lcp")
-public interface AppInfoDAO {
+public interface LcpAppInfoDAO {
 
 	// *** (1). table lcp_sys_config_app_info ***//
 
 	@SQL("SELECT app_id,app_name,app_secret_key,app_package_name,app_platform_id,app_os_id,add_time,blcode,responsible,is_point,is_short_msg,recommend_platform,is_use_https FROM lcp_sys_config_app_info")
-	public List<AppInfoEntity> getAppList();
+	public List<LcpAppInfoEntity> getAppList();
 
 	@SQL("insert into lcp_sys_config_app_info values(:1.appId, :1.appName, :1.appSecretKey, :1.appPackageName, :1.appPlatformId, :1.appOsId, now(), :1.blCode, :1.responsible, :1.isPoint, :1.isShortMsg, :1.recommendPlatform, :1.isUseHttps) ")
-	public int createApp(AppInfo appInfo);
+	public int createApp(LcpAppInfo appInfo);
 
 	@SQL("SELECT app_id,app_name,app_secret_key,app_package_name,app_platform_id,app_os_id,add_time,blcode,responsible,is_point,is_short_msg,recommend_platform,is_use_https FROM lcp_sys_config_app_info where app_id=:1")
-	public AppInfoEntity findAppInfoByAppId(int appId);
+	public LcpAppInfoEntity findAppInfoByAppId(int appId);
 
 	// *** (2). table lcp_sys_config_client_auth : ***//
 
 	@SQL("SELECT id,app_id,auth_method,auth_ips,add_time FROM lcp_sys_config_client_auth where app_id = :1")
-	public List<AppAuthInfoEntity> loadAcceptMethodsByAppId(int appId);
+	public List<LcpAppAuthInfoEntity> loadAcceptMethodsByAppId(int appId);
 
 	@SQL("SELECT id,app_id,auth_method,auth_ips,add_time FROM lcp_sys_config_client_auth")
-	public List<AppAuthInfoEntity> loadAllAuthorities();
+	public List<LcpAppAuthInfoEntity> loadAllAuthorities();
 
 	// *** (3). table lcp_time_switcher : ***//
 
@@ -48,5 +48,5 @@ public interface AppInfoDAO {
 
 	/* 接口并发限制 */
 	@SQL("SELECT api,max_threads,out_resp,keys_req FROM lcp_api_max_threads")
-	public List<ApiMaxThreadsEntity> getApiMaxThreads();
+	public List<LcpApiMaxThreadsEntity> getApiMaxThreads();
 }

@@ -11,7 +11,7 @@ import com.open.dbs.cache.ssdb.SSDBX;
 import com.open.env.finder.ZKFinder;
 import com.open.lcp.ResourceEnum;
 import com.open.lcp.framework.core.api.service.AppInitService;
-import com.open.lcp.framework.core.api.service.dao.AppInitInfoDAO;
+import com.open.lcp.framework.core.api.service.dao.LcpAppInitInfoDAO;
 import com.open.lcp.framework.core.api.service.dao.entity.AppInitInfoEntity;
 
 @Service
@@ -23,7 +23,7 @@ public class AppInitServiceImpl implements AppInitService {
 	private SSDBX ssdbx = ZKFinder.findSSDB(ResourceEnum.ssdb_lcp_app_init.resourceName());
 
 	@Resource
-	AppInitInfoDAO appInitDao;
+	LcpAppInitInfoDAO appInitDao;
 
 	@Override
 	public AppInitInfoEntity getAppInitInfo(String deviceId) {

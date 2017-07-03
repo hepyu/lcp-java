@@ -1,7 +1,7 @@
 package com.open.lcp.framework.core.api.command;
 
 import java.util.Map;
-import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
+import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 import com.open.lcp.framework.core.api.service.dao.info.AppInitInfo;
 import com.open.passport.dto.PassportUserAccountDTO;
 
@@ -21,7 +21,7 @@ public interface CommandContext {
 
 	public PassportUserAccountDTO getUserInfo();
 
-	public AppInfo getAppInfo();
+	public LcpAppInfo getAppInfo();
 
 	public String getDeviceId();
 

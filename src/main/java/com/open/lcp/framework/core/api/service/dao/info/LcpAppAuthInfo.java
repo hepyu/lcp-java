@@ -2,7 +2,7 @@ package com.open.lcp.framework.core.api.service.dao.info;
 
 import java.util.Set;
 
-public interface AppAuthInfo {
+public interface LcpAppAuthInfo {
 
 	public int getId();
 

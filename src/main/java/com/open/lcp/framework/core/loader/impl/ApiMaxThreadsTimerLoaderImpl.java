@@ -7,26 +7,26 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.open.lcp.framework.core.api.service.dao.AppInfoDAO;
-import com.open.lcp.framework.core.api.service.dao.entity.ApiMaxThreadsEntity;
+import com.open.lcp.framework.core.api.service.dao.LcpAppInfoDAO;
+import com.open.lcp.framework.core.api.service.dao.entity.LcpApiMaxThreadsEntity;
 import com.open.lcp.framework.core.loader.ApiMaxThreadsTimerLoader;
 
 @Component
 public class ApiMaxThreadsTimerLoaderImpl implements ApiMaxThreadsTimerLoader {
 
-	private Map<String, ApiMaxThreadsEntity> map = new HashMap<String, ApiMaxThreadsEntity>(0);
+	private Map<String, LcpApiMaxThreadsEntity> map = new HashMap<String, LcpApiMaxThreadsEntity>(0);
 
 	@Autowired
-	private AppInfoDAO appInfoDAO;
+	private LcpAppInfoDAO appInfoDAO;
 
 	@Override
 	public String reload() {
-		List<ApiMaxThreadsEntity> lsApi = appInfoDAO.getApiMaxThreads();
+		List<LcpApiMaxThreadsEntity> lsApi = appInfoDAO.getApiMaxThreads();
 		if (lsApi == null || lsApi.isEmpty()) {
 			return "empt";
 		}
-		Map<String, ApiMaxThreadsEntity> mapApi = new HashMap<String, ApiMaxThreadsEntity>(lsApi.size());
-		for (ApiMaxThreadsEntity api : lsApi) {
+		Map<String, LcpApiMaxThreadsEntity> mapApi = new HashMap<String, LcpApiMaxThreadsEntity>(lsApi.size());
+		for (LcpApiMaxThreadsEntity api : lsApi) {
 			api.setOutResp(api.getOutResp().trim());
 			final String keys = api.getKeysReq().trim();
 			if (keys.length() > 0) {
@@ -49,7 +49,7 @@ public class ApiMaxThreadsTimerLoaderImpl implements ApiMaxThreadsTimerLoader {
 	}
 
 	@Override
-	public ApiMaxThreadsEntity getLcpApiMaxThreads(String api) {
+	public LcpApiMaxThreadsEntity getLcpApiMaxThreads(String api) {
 		return map.get(api);
 	}
 }

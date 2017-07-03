@@ -29,8 +29,8 @@ import com.open.lcp.framework.core.api.command.ApiCommandContext;
 import com.open.lcp.framework.core.api.command.ApiFacadeMethod;
 import com.open.lcp.framework.core.api.command.CommandContext;
 import com.open.lcp.framework.core.api.command.CommandModelHolder;
-import com.open.lcp.framework.core.api.service.ApiExceptionMessageService;
-import com.open.lcp.framework.core.api.service.dao.IgnoreMethodLogDAO;
+import com.open.lcp.framework.core.api.service.LcpApiExceptionMessageService;
+import com.open.lcp.framework.core.api.service.dao.LcpIgnoreMethodLogDAO;
 import com.open.lcp.framework.core.api.service.dao.entity.LcpIgnoreMethodLogEntity;
 import com.open.lcp.framework.core.consts.LcpConstants;
 import com.open.lcp.framework.core.facade.ApiResult;
@@ -38,7 +38,7 @@ import com.open.lcp.framework.core.loader.TimerLoader;
 import com.open.lcp.framework.util.LcpUtils;
 
 @Component
-public class ApiReturnValueHandler implements HandlerMethodReturnValueHandler, TimerLoader {
+public class LcpApiReturnValueHandler implements HandlerMethodReturnValueHandler, TimerLoader {
 	private static final Log logReqResp = LogFactory.getLog("mcp_req_resp");
 
 	//private static final String env_host = EnvFinderUtil.getIpcfg().getLocalIp();
@@ -48,10 +48,10 @@ public class ApiReturnValueHandler implements HandlerMethodReturnValueHandler, T
 	private Set<String> sysConfigIgnoreLogMethodSet;
 
 	@Autowired
-	private IgnoreMethodLogDAO lcpIgnoreMethodLogDAO;
+	private LcpIgnoreMethodLogDAO lcpIgnoreMethodLogDAO;
 
 	@Autowired
-	private ApiExceptionMessageService apiExceptionMessageService;
+	private LcpApiExceptionMessageService apiExceptionMessageService;
 
 	private static final Gson gsonDefault = LcpConstants.gson;
 

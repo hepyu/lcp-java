@@ -10,9 +10,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @EnableWebMvc
 @Configuration
-public class ApiReturnValueConfig extends WebMvcConfigurerAdapter {
+public class LcpApiReturnValueConfig extends WebMvcConfigurerAdapter {
 	@Autowired
-	private ApiReturnValueHandler apiReturnValueHandler;
+	private LcpApiReturnValueHandler apiReturnValueHandler;
 
 	@Override
 	public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> returnValueHandlers) {

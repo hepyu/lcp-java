@@ -18,13 +18,13 @@ import com.open.lcp.framework.core.annotation.LcpMethod;
 import com.open.lcp.framework.core.api.command.ApiCommand;
 import com.open.lcp.framework.core.api.command.ApiFacadeMethod;
 import com.open.lcp.framework.core.api.command.CommandModelHolder;
-import com.open.lcp.framework.core.api.service.ApiCommandLookupService;
+import com.open.lcp.framework.core.api.service.LcpApiCommandLookupService;
 import com.open.lcp.framework.core.facade.ApiFacade;
 
 @Service
-public class ApiCommandLookupServiceImpl implements ApiCommandLookupService, InitializingBean {
+public class LcpApiCommandLookupServiceImpl implements LcpApiCommandLookupService, InitializingBean {
 
-	private static final Log logger = LogFactory.getLog(ApiCommandLookupServiceImpl.class);
+	private static final Log logger = LogFactory.getLog(LcpApiCommandLookupServiceImpl.class);
 
 	@Autowired
 	private Collection<ApiFacade> apiFacadeList;

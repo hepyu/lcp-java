@@ -11,11 +11,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.open.lcp.framework.core.api.service.dao.AppInfoDAO;
-import com.open.lcp.framework.core.api.service.dao.entity.AppAuthInfoEntity;
-import com.open.lcp.framework.core.api.service.dao.entity.AppInfoEntity;
-import com.open.lcp.framework.core.api.service.dao.info.AppAuthInfo;
-import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
+import com.open.lcp.framework.core.api.service.dao.LcpAppInfoDAO;
+import com.open.lcp.framework.core.api.service.dao.entity.LcpAppAuthInfoEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.LcpAppInfoEntity;
+import com.open.lcp.framework.core.api.service.dao.info.LcpAppAuthInfo;
+import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 import com.open.lcp.framework.core.loader.AppInfoTimerLoader;
 import com.open.lcp.framework.core.loader.TimerLoader;
 import com.open.lcp.framework.util.LcpUtils;
@@ -25,31 +25,31 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 
 	private static final Log logger = LogFactory.getLog(AppInfoTimerLoaderImpl.class);
 
-	private Map<Integer, AppInfo> appIdAppInfoMap = null;
+	private Map<Integer, LcpAppInfo> appIdAppInfoMap = null;
 
-	private Map<Integer, List<AppAuthInfo>> appAuthMap = null;
+	private Map<Integer, List<LcpAppAuthInfo>> appAuthMap = null;
 
 	@Autowired
-	private AppInfoDAO appInfoDAO;
+	private LcpAppInfoDAO appInfoDAO;
 
 	private void loadApp() {
 		logger.info("loadApp start");
 		long startTime = System.currentTimeMillis();
-		List<AppInfoEntity> appInfos = appInfoDAO.getAppList();
+		List<LcpAppInfoEntity> appInfos = appInfoDAO.getAppList();
 
-		Map<Integer, AppInfo> appIdAppInfoMap = new HashMap<Integer, AppInfo>();
-		Map<Integer, List<AppAuthInfo>> appAuthMap = new HashMap<Integer, List<AppAuthInfo>>();
+		Map<Integer, LcpAppInfo> appIdAppInfoMap = new HashMap<Integer, LcpAppInfo>();
+		Map<Integer, List<LcpAppAuthInfo>> appAuthMap = new HashMap<Integer, List<LcpAppAuthInfo>>();
 
-		List<AppAuthInfoEntity> allAuths = appInfoDAO.loadAllAuthorities();
-		for (AppAuthInfo auth : allAuths) {
+		List<LcpAppAuthInfoEntity> allAuths = appInfoDAO.loadAllAuthorities();
+		for (LcpAppAuthInfo auth : allAuths) {
 			int appId = auth.getAppId();
 			if (!appAuthMap.containsKey(appId)) {
-				appAuthMap.put(appId, new ArrayList<AppAuthInfo>());
+				appAuthMap.put(appId, new ArrayList<LcpAppAuthInfo>());
 			}
 			appAuthMap.get(appId).add(auth);
 		}
 
-		for (AppInfo app : appInfos) {
+		for (LcpAppInfo app : appInfos) {
 			appIdAppInfoMap.put(app.getAppId(), app);
 		}
 
@@ -76,7 +76,7 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 	}
 
 	@Override
-	public AppInfo getAppInfo(int appId) {
+	public LcpAppInfo getAppInfo(int appId) {
 		if (appId == 0 || this.appIdAppInfoMap == null) {
 			return null;
 		}
@@ -84,14 +84,14 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 	}
 
 	@Override
-	public List<AppAuthInfo> getAppAuthListByAppId(int appId) {
+	public List<LcpAppAuthInfo> getAppAuthListByAppId(int appId) {
 
 		if (appId == 0 || this.appIdAppInfoMap == null || appAuthMap.size() == 0) {
 			return null;
 		}
-		List<AppAuthInfo> rtList = appAuthMap.get(appId);
+		List<LcpAppAuthInfo> rtList = appAuthMap.get(appId);
 		if (rtList == null) {
-			return new ArrayList<AppAuthInfo>();
+			return new ArrayList<LcpAppAuthInfo>();
 		} else {
 			return rtList;
 		}
@@ -102,11 +102,11 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 		if (this.appAuthMap == null) {
 			return false;
 		}
-		List<AppAuthInfo> apiAuthList = this.appAuthMap.get(appId);
+		List<LcpAppAuthInfo> apiAuthList = this.appAuthMap.get(appId);
 		if (apiAuthList == null) {
 			return false;
 		}
-		for (AppAuthInfo auth : apiAuthList) {
+		for (LcpAppAuthInfo auth : apiAuthList) {
 			if (isClientIPAuthorized(clientIP, auth) && LcpUtils.leftMatch(methodName, auth.getAuthMethod())) {
 				return true;
 			}
@@ -115,7 +115,7 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 
 	}
 
-	private boolean isClientIPAuthorized(String clientIP, AppAuthInfo auth) {
+	private boolean isClientIPAuthorized(String clientIP, LcpAppAuthInfo auth) {
 		Set<String> authIPs = auth.getAuthIpSet();
 		if (authIPs == null || authIPs.isEmpty()) {
 			return true;

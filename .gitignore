@@ -1,28 +1,19 @@
-*.class
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.ear
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-
 /target
 
 /.git
 /.settings
-#.classpath
-#.project
+.classpath
+.project
 *.log
 .pydevproject
+/target
+/target
+/target
+/target
 /target
 /bin/
 /mvn.assembly.bat
 .idea
 .idea/*
 .gitignore
-
+xunlei-mcp.iml

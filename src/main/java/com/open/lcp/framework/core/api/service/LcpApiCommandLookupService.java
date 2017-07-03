@@ -6,7 +6,7 @@ import java.util.Map;
 import com.open.lcp.framework.core.api.command.ApiCommand;
 
 
-public interface ApiCommandLookupService {
+public interface LcpApiCommandLookupService {
 
 	/**
 	 * lookup api command from methodValue

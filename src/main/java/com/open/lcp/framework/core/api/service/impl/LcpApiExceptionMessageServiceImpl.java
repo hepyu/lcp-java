@@ -4,10 +4,10 @@ import java.util.ResourceBundle;
 
 import org.springframework.stereotype.Service;
 
-import com.open.lcp.framework.core.api.service.ApiExceptionMessageService;
+import com.open.lcp.framework.core.api.service.LcpApiExceptionMessageService;
 
 @Service
-public class ApiExceptionMessageServiceImpl implements ApiExceptionMessageService {
+public class LcpApiExceptionMessageServiceImpl implements LcpApiExceptionMessageService {
 
 	private static final ResourceBundle rsMessage = ResourceBundle.getBundle("api_result_code_messages");
 

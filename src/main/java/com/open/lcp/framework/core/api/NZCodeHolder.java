@@ -38,7 +38,7 @@ public class NZCodeHolder {
 		return NZMAP.get(nzcode);
 	}
 
-	public static void set(ApiException api, String cause) {
+	public static void set(LcpApiException api, String cause) {
 		set(api.getErrorCode(), api.getMessage(), cause);
 	}
 

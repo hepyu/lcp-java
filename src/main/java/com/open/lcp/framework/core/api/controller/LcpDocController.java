@@ -44,20 +44,20 @@ import com.open.lcp.framework.core.api.command.ApiCommand;
 import com.open.lcp.framework.core.api.command.ApiFacadeCommand;
 import com.open.lcp.framework.core.api.command.ApiFacadeMethod;
 import com.open.lcp.framework.core.api.command.CommandModelHolder;
-import com.open.lcp.framework.core.api.service.ApiCommandLookupService;
+import com.open.lcp.framework.core.api.service.LcpApiCommandLookupService;
 
 @Controller
 @RequestMapping(method = RequestMethod.GET)
-public class DocController extends AbstractController implements InitializingBean {
+public class LcpDocController extends AbstractController implements InitializingBean {
 
-	private static final Log logger = LogFactory.getLog(DocController.class);
+	private static final Log logger = LogFactory.getLog(LcpDocController.class);
 
 	private static final List<String> oldMethods = new ArrayList<String>();
 
 	private static final Map<Integer, Set<String>> errorCodeMap = new HashMap<Integer, Set<String>>();
 
 	@Autowired
-	private ApiCommandLookupService commandLookupService;
+	private LcpApiCommandLookupService commandLookupService;
 
 	private String[] methods;
 

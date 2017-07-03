@@ -28,9 +28,9 @@ import com.open.lcp.framework.core.api.LcpThreadLocal;
 import com.open.lcp.framework.core.api.command.ApiCommand;
 import com.open.lcp.framework.core.api.command.ApiCommandContext;
 import com.open.lcp.framework.core.api.command.RequestBaseContext;
-import com.open.lcp.framework.core.api.service.ApiCommandLookupService;
-import com.open.lcp.framework.core.api.service.AppInfoService;
-import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
+import com.open.lcp.framework.core.api.service.LcpApiCommandLookupService;
+import com.open.lcp.framework.core.api.service.LcpAppInfoService;
+import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 import com.open.lcp.framework.core.consts.HttpConstants;
 import com.open.lcp.framework.core.consts.LcpConstants;
 import com.open.lcp.framework.core.facade.ApiResult;
@@ -42,14 +42,14 @@ import com.open.passport.service.AccountTicketService;
 
 @Controller
 @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
-public class ApiController {
+public class LcpApiController {
 	static {
 		SSDBCounterByThread.enable();
 	}
 	/**
 	 * Logger for this class
 	 */
-	private static final Log logger = LogFactory.getLog(ApiController.class);
+	private static final Log logger = LogFactory.getLog(LcpApiController.class);
 	private static final Log httpAccessLogger = LogFactory.getLog("http_access");
 	private static final Log httpAccessNZLogger = LogFactory.getLog("http_access_nz");
 	private static final Log httpAccessSlowLogger = LogFactory.getLog("http_access_slow");
@@ -63,9 +63,9 @@ public class ApiController {
 	public static final ApiResult ERR_REQUIRED_PARAM = new ApiResult(ApiResultCode.E_SYS_PARAM);
 	public static final ApiResult ERR_SYS_PARAM = new ApiResult(ApiResultCode.E_SYS_PARAM);
 	@Autowired
-	private AppInfoService appInfoService;
+	private LcpAppInfoService appInfoService;
 	@Autowired
-	private ApiCommandLookupService commandLookupService;
+	private LcpApiCommandLookupService commandLookupService;
 
 	@Autowired
 	private AccountInfoService accountInfoService;
@@ -301,7 +301,7 @@ public class ApiController {
 			RequestBaseContext requestBaseContext, ApiResult apiResult, final String methodName) throws Exception {
 		Map<String, String> requestParamMap = requestBaseContext.getRequestParamMap();
 		final int appId = NumberUtils.toInt(requestParamMap.get(HttpConstants.PARAM_APP_ID));
-		final AppInfo appInfo = appInfoService.getAppInfo(appId);
+		final LcpAppInfo appInfo = appInfoService.getAppInfo(appId);
 		// 鎺ュ叆淇℃伅鏃犳晥
 		if (appInfo == null) {
 			apiResult.setCode(ApiResultCode.E_SYS_INVALID_APP_ID);

@@ -40,29 +40,27 @@ public class AbstractAccountApi {
 	@Autowired
 	protected TicketManager ticketManager;
 
-	@Resource(name = "weichatUserSDK")
+	@Resource(name = "weichatThirdAccountSDK")
 	protected ThirdAccountSDK weichatUserSDK;
 
-	@Resource(name = "xiaomiUserSDK")
+	@Resource(name = "xiaomiThirdAccountSDK")
 	protected ThirdAccountSDK xiaomiUserSDK;
 
 	@Resource(name = "mobileThirdAccountSDK")
 	protected ThirdAccountSDK mobilAccountSDK;
 
-	@Resource(name = "weiboUserSDK")
+	@Resource(name = "weiboThirdAccountSDK")
 	private ThirdAccountSDK weiboUserSDK;
 
-	@Resource(name = "qqUserSDK")
+	@Resource(name = "qqThirdAccountSDK")
 	protected ThirdAccountSDK qqUserSDK;
 
 	@Autowired
 	protected AccountAvatarStorage accountAvatarStorage;
 
-	// service层有可能有缓存和业务逻辑
 	@Autowired
 	protected AccountInfoService accountInfoService;
 
-	// dao层都是简单的CRUD，并且没有缓存
 	@Autowired
 	protected PassportOAuthAccountDAO passportOAuthAccountDAO;
 
@@ -112,15 +110,6 @@ public class AbstractAccountApi {
 		}
 	}
 
-	/**
-	 * 创建或者更新用户账号信息
-	 * 
-	 * @param userPortrait
-	 * @param xlUserId
-	 * @param passportUserId
-	 * @param ip
-	 * @param accountType
-	 */
 	// create new record, or update if exists.
 	protected void createAccount(ThirdAccountSDKPortrait userPortrait, String openId, Long userId, String ip,
 			UserAccountType accountType, String avatar) throws PassportException {
@@ -156,10 +145,8 @@ public class AbstractAccountApi {
 
 		// store head icon
 		String headIconUrl = userPortrait.getAvatar();
-		// 这里必须用passportUserId作为headiconurl一部分，因为现在还不知道xluserId
 		String[] urls = storeHeadIcon(userId, headIconUrl, accountType);
 		userPortrait.setAvatar(urls[0]);
-		// userPortrait.setOauthHeadIconURL(urls[1]);
 
 		long now = System.currentTimeMillis();
 		PassportOAuthAccountEntity passportOAuthAccountEntity = newOAuthAccountInstance(userPortrait, openId, userId,
@@ -179,21 +166,11 @@ public class AbstractAccountApi {
 		return dto;
 	}
 
-	/**
-	 * d 需要先判断openId,appId是否已经在账号系统中存在，如果存在，返回已有的passportUserId；不存在则生成。
-	 * 这里暂时不用缓存，直接查库。
-	 * 
-	 * @param appId
-	 * @param openId
-	 * @return
-	 */
 	protected Long getUserId(String openId, UserAccountType accountType) throws PassportException {
 		return passportOAuthAccountDAO.getUserId(openId, accountType.value());
 	}
 
 	/**
-	 * 根据不同用户类型(weichat,weibo等)实现不同的用户肖像获取接口，同时根据token验证是否合法
-	 * 
 	 * @return
 	 */
 	protected ThirdAccountSDKPortrait obtainThirdAccountSDK(String appId, String openId, String accessToken,
@@ -261,11 +238,6 @@ public class AbstractAccountApi {
 		return userAccount;
 	}
 
-	/**
-	 * 处理相同用户不同设备之间的登陆互踢逻辑
-	 * 
-	 * @param passportUserId
-	 */
 	protected void multiDeviceProcess(long xlUserId, String deviceId) {
 		// TODO
 	}

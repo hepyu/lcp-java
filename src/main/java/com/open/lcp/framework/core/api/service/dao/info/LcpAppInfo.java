@@ -1,6 +1,6 @@
 package com.open.lcp.framework.core.api.service.dao.info;
 
-public interface AppInfo {
+public interface LcpAppInfo {
 
 	public int getAppId();
 

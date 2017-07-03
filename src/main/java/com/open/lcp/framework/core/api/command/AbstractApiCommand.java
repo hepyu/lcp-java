@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.open.lcp.framework.core.api.BlockChecker;
 import com.open.lcp.framework.core.api.RequestChecker;
-import com.open.lcp.framework.core.api.service.ApiMaxThreadsService;
+import com.open.lcp.framework.core.api.service.LcpApiMaxThreadsService;
 import com.open.lcp.framework.core.api.service.AppInitService;
-import com.open.lcp.framework.core.api.service.dao.entity.ApiMaxThreadsEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.LcpApiMaxThreadsEntity;
 import com.open.lcp.framework.core.facade.ApiResult;
 import com.open.lcp.framework.core.facade.ApiResultCode;
 
@@ -58,7 +58,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 	@Autowired
 	private AppInitService appInitService;
 	@Autowired
-	private ApiMaxThreadsService apiMaxThreadsService;
+	private LcpApiMaxThreadsService apiMaxThreadsService;
 
 	/**
 	 * 子类不可重写
@@ -160,7 +160,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 		int maxThreads = BLOCK_THREADS;
 		int warnThreads = BLOCK_THREADS_WARN;
 
-		final ApiMaxThreadsEntity apiMaxThreads = apiMaxThreadsService.getLcpApiMaxThreads(nameAndVersion);
+		final LcpApiMaxThreadsEntity apiMaxThreads = apiMaxThreadsService.getLcpApiMaxThreads(nameAndVersion);
 		if (apiMaxThreads != null) {
 			maxThreads = apiMaxThreads.getMaxThreads();
 			warnThreads = maxThreads * 3 / 4;

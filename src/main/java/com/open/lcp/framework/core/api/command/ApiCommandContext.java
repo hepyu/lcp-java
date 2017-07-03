@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import com.open.common.enums.UserType;
-import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
+import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 import com.open.lcp.framework.core.api.service.dao.info.AppInitInfo;
 import com.open.lcp.framework.core.consts.LcpConstants;
 import com.open.passport.dto.PassportUserAccountDTO;
@@ -29,7 +29,7 @@ public class ApiCommandContext implements CommandContext {
 	private long userId;
 	private UserType userType;
 	/** 客户端接入授权信息 */
-	private AppInfo appInfo;
+	private LcpAppInfo appInfo;
 
 	/** 设备唯一标识 */
 	private String deviceId;
@@ -70,7 +70,7 @@ public class ApiCommandContext implements CommandContext {
 	private byte[] aesKey;
 	private byte[] octetBody;
 
-	public ApiCommandContext(long beginTime, AppInfo appInfo, Map<String, String> stringParams,
+	public ApiCommandContext(long beginTime, LcpAppInfo appInfo, Map<String, String> stringParams,
 			Map<String, Object> binaryParams, String ticket, String secretKey, String methodName,
 			Map<String, String> reqHeads, String clientIp, int clientPort, AccountInfoService userAccountService) {
 		this.beginTime = beginTime;
@@ -150,11 +150,11 @@ public class ApiCommandContext implements CommandContext {
 	}
 
 	@Override
-	public AppInfo getAppInfo() {
+	public LcpAppInfo getAppInfo() {
 		return appInfo;
 	}
 
-	public void setAppInfo(AppInfo appInfo) {
+	public void setAppInfo(LcpAppInfo appInfo) {
 		this.appInfo = appInfo;
 	}
 

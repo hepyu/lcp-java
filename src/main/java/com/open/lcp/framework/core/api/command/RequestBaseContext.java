@@ -3,7 +3,7 @@ package com.open.lcp.framework.core.api.command;
 import java.util.Map;
 
 import com.open.common.enums.UserType;
-import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
+import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 
 public class RequestBaseContext {
 	private UserType userType;
@@ -16,7 +16,7 @@ public class RequestBaseContext {
 	private long userId;
 	private Map<String, String> requestParamMap;
 
-	private AppInfo appInfo;
+	private LcpAppInfo appInfo;
 
 	private String ticket;
 
@@ -63,11 +63,11 @@ public class RequestBaseContext {
 		this.secretKey = secretKey;
 	}
 
-	public AppInfo getAppInfo() {
+	public LcpAppInfo getAppInfo() {
 		return appInfo;
 	}
 
-	public void setAppInfo(AppInfo appInfo) {
+	public void setAppInfo(LcpAppInfo appInfo) {
 		this.appInfo = appInfo;
 	}
 

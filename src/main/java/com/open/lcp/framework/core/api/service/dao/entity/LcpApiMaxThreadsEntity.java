@@ -1,6 +1,6 @@
 package com.open.lcp.framework.core.api.service.dao.entity;
 
-public class ApiMaxThreadsEntity {
+public class LcpApiMaxThreadsEntity {
 
 	private String api;
 	private int maxThreads;

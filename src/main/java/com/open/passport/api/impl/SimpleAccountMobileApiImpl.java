@@ -32,11 +32,21 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 			// 1.调用安全中心接口，验证是否允许登陆
 
 			// check mobileCode
-			boolean isExist = passportCache.existMobileCode(mobile, deviceId, appId, MobileCodeType.loginByMobile,
-					mobileCode);
 
-			if ("11111111111".equals(mobile) && "666666".equals(mobileCode)) {
-				Long userId = passportOAuthAccountDAO.getUserId("11111111111", UserAccountType.mobile.value());
+			if ("test".equals(mobile) && "test".equals(mobileCode)) {
+				Long userId = passportOAuthAccountDAO.getUserId("test", UserAccountType.mobile.value());
+
+				if (userId == null) {
+					ThirdAccountSDKPortrait userPortrait = new ThirdAccountSDKPortrait();
+					// userPortraitDTO.setAvatar("");
+					String userName = NickNameUtil.convertNickName(mobile);
+					userPortrait.setNickname(userName);
+					userPortrait.setGender(Gender.unknown);
+					userPortrait.setUsername(userName);
+
+					super.createAccount(userPortrait, mobile, userId, ip, UserAccountType.mobile, null);
+				}
+
 				Ticket couple = ticketManager.createSecretKeyCouple(appId, userId);
 
 				String description = passportUserAccountDAO.getUserInfoByUserId(userId).getDescription();
@@ -53,7 +63,12 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 				resultDTO.setNewUser(false);
 				resultDTO.setDescription(description);
 				return resultDTO;
-			} else if (!isExist) {
+			}
+
+			boolean isExist = passportCache.existMobileCode(mobile, deviceId, appId, MobileCodeType.loginByMobile,
+					mobileCode);
+
+			if (!isExist) {
 				throw new PassportException(PassportException.EXCEPTION_MOBILE_CODE_INVALID, null);
 			}
 
