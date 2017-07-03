@@ -111,7 +111,7 @@ public class AbstractAccountApi {
 	}
 
 	// create new record, or update if exists.
-	protected void createAccount(ThirdAccountSDKPortrait userPortrait, String openId, Long userId, String ip,
+	protected Long createAccount(ThirdAccountSDKPortrait userPortrait, String openId, Long userId, String ip,
 			UserAccountType accountType, String avatar) throws PassportException {
 		long now = System.currentTimeMillis();
 		PassportOAuthAccountEntity passportOAuthAccountEntity = newOAuthAccountInstance(userPortrait, openId, userId,
@@ -126,6 +126,7 @@ public class AbstractAccountApi {
 			String[] urls = storeHeadIcon(userId, avatar, accountType);
 			userPortrait.setAvatar(urls[0]);
 		}
+		return passportUserAccountEntity.getUserId();
 	}
 
 	protected void login(ThirdAccountSDKPortrait userPortrait, String openId, Long userId, String ip,

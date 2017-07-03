@@ -14,7 +14,7 @@ public interface PassportOAuthAccountDAO {
 	public static final int MOBILE_ACCOUNT_TYPE = 2;// UserAccountType.mobile.value()
 
 	@SQL("INSERT INTO passport_oauth_account(" + SELECT_PART_SQL
-			+ ") values(:1.userId, :1.openId, :1.type, :1.userName, :1.nickName, :1.avatar, :1.gender, :1.updateIp, :1.bindIp, :1.updateTime, :1.bindTime)")
+			+ ") values(:1.userId, :1.openId, :1.type, :1.userName, :1.nickName, :1.avatar, :1.gender, :1.updateIp, :1.bindIp, :1.updateTime, :1.bindTime, :1.lastLoginTime)")
 	// on duplicate key update user_name=:1.nickName, nick_name=:1.nickName,
 	// avatar=:1.avatar, gender=:1.gender, update_time=:1.updateTime,
 	// update_ip=:1.updateIp

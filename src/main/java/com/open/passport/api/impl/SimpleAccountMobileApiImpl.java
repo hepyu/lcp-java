@@ -32,7 +32,6 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 			// 1.调用安全中心接口，验证是否允许登陆
 
 			// check mobileCode
-
 			if ("test".equals(mobile) && "test".equals(mobileCode)) {
 				Long userId = passportOAuthAccountDAO.getUserId("test", UserAccountType.mobile.value());
 
@@ -44,7 +43,7 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 					userPortrait.setGender(Gender.unknown);
 					userPortrait.setUsername(userName);
 
-					super.createAccount(userPortrait, mobile, userId, ip, UserAccountType.mobile, null);
+					userId = super.createAccount(userPortrait, mobile, userId, ip, UserAccountType.mobile, null);
 				}
 
 				Ticket couple = ticketManager.createSecretKeyCouple(appId, userId);
@@ -105,11 +104,9 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 			resultDTO.setT(couple.getT());
 			resultDTO.setDescription(userAccount.getDescription());
 			return resultDTO;
-		} catch (PassportException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			throw new PassportException(e.getPassportCode(), e.getMessage(), e);
-		} catch (Exception e1) {
-			throw new PassportException(PassportException.EXCEPTION_LOGIN_FAILED, e1.getMessage(), e1);
+			throw new PassportException(PassportException.EXCEPTION_LOGIN_FAILED, e.getMessage(), e);
 		}
 	}
 

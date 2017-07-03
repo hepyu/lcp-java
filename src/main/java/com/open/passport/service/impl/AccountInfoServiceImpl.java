@@ -17,6 +17,7 @@ import com.open.passport.service.AccountInfoService;
 import com.open.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.passport.util.AccountUtil;
+import com.open.passport.util.PlaceholderAvatarUtil;
 
 @Service
 public class AccountInfoServiceImpl extends AbstractAccount implements AccountInfoService {
@@ -24,6 +25,14 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 	@Override
 	public void createAccount(PassportUserAccountEntity passportUserAccountEntity,
 			PassportOAuthAccountEntity passportOAuthAccountEntity) {
+
+		if (StringUtils.isEmpty(passportUserAccountEntity.getAvatar())) {
+			passportUserAccountEntity.setAvatar(PlaceholderAvatarUtil.getPlaceholderAvatar());
+		}
+
+		if (StringUtils.isEmpty(passportOAuthAccountEntity.getAvatar())) {
+			passportOAuthAccountEntity.setAvatar(passportUserAccountEntity.getAvatar());
+		}
 
 		if (StringUtils.isEmpty(passportUserAccountEntity.getNickName())
 				|| StringUtils.isEmpty(passportUserAccountEntity.getUserName())
@@ -35,9 +44,14 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 					"EXCEPTION_OBTAIN_PORTRAIT_FAILED", null);
 		}
 
-		int createResult = passportUserAccountDAO.create(passportUserAccountEntity);
-		if (createResult > 0) {
-			passportOAuthAccountEntity.setUserId(passportUserAccountEntity.getUserId());
+		long ts = System.currentTimeMillis();
+		passportUserAccountEntity.setLastLoginTime(ts);
+		passportOAuthAccountEntity.setLastLoginTime(ts);
+
+		Long createResult = passportUserAccountDAO.create(passportUserAccountEntity);
+		if (createResult != null && createResult > 0) {
+			passportUserAccountEntity.setUserId(createResult);
+			passportOAuthAccountEntity.setUserId(createResult);
 			passportOAuthAccountDAO.create(passportOAuthAccountEntity);
 			// passportCache.delOAuthAccountInfoByUserIdAndType(userId, type);
 			// passportCache.delUserInfoByUserId(userId);

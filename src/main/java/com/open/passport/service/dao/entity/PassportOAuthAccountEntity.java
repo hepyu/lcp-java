@@ -26,6 +26,8 @@ public class PassportOAuthAccountEntity {
 
 	private Long updateTime;
 
+	private Long lastLoginTime;
+
 	public Long getUserId() {
 		return userId;
 	}
@@ -116,6 +118,14 @@ public class PassportOAuthAccountEntity {
 
 	public void setUpdateTime(Long updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public Long getLastLoginTime() {
+		return lastLoginTime;
+	}
+
+	public void setLastLoginTime(Long lastLoginTime) {
+		this.lastLoginTime = lastLoginTime;
 	}
 
 }

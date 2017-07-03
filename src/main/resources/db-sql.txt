@@ -84,7 +84,8 @@ CREATE TABLE `passport_user_account` (
   `description` varchar(500) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-ALTER TABLE `passport_oauth_account`  ADD COLUMN `last_login_time` BIGINT NOT NULL AFTER `description`;
+ALTER TABLE `passport_user_account`  ADD COLUMN `last_login_time` BIGINT NOT NULL AFTER `description`;
+ALTER TABLE `passport_user_account` CHANGE COLUMN `user_id` `user_id` INT(11) NOT NULL AUTO_INCREMENT ;
 
 CREATE TABLE `passport_oauth_account` (
   `open_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,

@@ -17,14 +17,14 @@ public class TicketManagerImpl implements TicketManager {
 	private PassportCache passportCache;
 
 	@Override
-	public Ticket createSecretKeyCouple(int appId, Long xlUserId) throws PassportException {
+	public Ticket createSecretKeyCouple(int appId, Long userId) throws PassportException {
 		try {
 			String userSecretKey = UUID.randomUUID().toString().replaceAll("-", "");
-			String t = UserTicketMaker.makeTicket(appId, xlUserId);
+			String t = UserTicketMaker.makeTicket(appId, userId);
 
 			Ticket couple = new Ticket();
 			couple.setUserSecretKey(userSecretKey);
-			couple.setUserId(xlUserId);
+			couple.setUserId(userId);
 			couple.setAppId(appId);
 			couple.setT(t);
 
