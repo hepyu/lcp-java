@@ -54,14 +54,13 @@ public class RedisXFactory {
 								public void configChanged(String key, String value) {
 
 									ZKRedisConfig redisConfig = loadZKRedisConfig(value);
-									redisMap.get(instanceName).getHolder()
-											.setJedisCluster(redisConfig.getServer().get(0));
+									redisMap.get(instanceName).getHolder().setJedisCluster(redisConfig);
 
 								}
 							});
 
 							ZKRedisConfig redisConfig = loadZKRedisConfig(zkClient, redisZKRoot, instanceName);
-							redisMap.put(instanceName, new RedisXImpl(redisConfig.getServer().get(0)));
+							redisMap.put(instanceName, new RedisXImpl(redisConfig));
 						} catch (Exception e) {
 							logger.error(e.getMessage(), e);
 							System.exit(-1);

@@ -1,6 +1,5 @@
 package com.open.passport.cache.impl;
 
-import org.springframework.stereotype.Component;
 import com.open.dbs.cache.ssdb.SSDBLoader;
 import com.open.dbs.cache.ssdb.SSDBX;
 import com.open.passport.MobileCodeType;
@@ -11,7 +10,8 @@ import com.open.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.passport.ticket.Ticket;
 
-@Component
+@Deprecated
+// @Component
 public class PassportSSDBCacheImpl implements PassportCache {
 
 	private final SSDBX cache = SSDBLoader.loadSSDBX("passport");

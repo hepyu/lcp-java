@@ -21,7 +21,7 @@ public class RedisXImpl implements RedisX {
 	private JedisCluster jedisCluster;
 	private RedisDbsZKHolder holder;
 
-	public RedisXImpl(RedisConfig redisConfig) {
+	public RedisXImpl(ZKRedisConfig redisConfig) {
 		holder = new RedisDbsZKHolder(jedisCluster, redisConfig);
 	}
 

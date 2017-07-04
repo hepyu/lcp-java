@@ -1,17 +1,34 @@
 package com.open.dbs.cache.redis.cluster;
 
-import java.util.List;
-
 public class ZKRedisConfig {
+	private int timeout;
 
-	private List<RedisConfig> server;
+	private int maxRedirections;
 
-	public List<RedisConfig> getServer() {
-		return server;
+	private String redisHostAndPorts;
+
+	public int getTimeout() {
+		return timeout;
 	}
 
-	public void setServer(List<RedisConfig> server) {
-		this.server = server;
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
+
+	public int getMaxRedirections() {
+		return maxRedirections;
+	}
+
+	public void setMaxRedirections(int maxRedirections) {
+		this.maxRedirections = maxRedirections;
+	}
+
+	public String getRedisHostAndPorts() {
+		return redisHostAndPorts;
+	}
+
+	public void setRedisHostAndPorts(String redisHostAndPorts) {
+		this.redisHostAndPorts = redisHostAndPorts;
 	}
 
 }

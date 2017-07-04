@@ -3,6 +3,6 @@
 /lcp/dev/ssdb/lcp_app_init {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
 /lcp/dev/ssdb/passport {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
 
-/lcp/dev/redis/passport {}
+/lcp/dev/redis/passport {"redisHostAndPorts":"123.57.204.187:7001,123.57.204.187:7002,123.57.204.187:7003","timeout":"2000","maxRedirections":"500"}
 
 /lcp/dev/mysql/master/lcp_framework { "url": "jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&characterEncoding=utf-8", "userName": "root", "userName": "root", "password":"111111", "driverClassName":"com.mysql.jdbc.Driver"}
