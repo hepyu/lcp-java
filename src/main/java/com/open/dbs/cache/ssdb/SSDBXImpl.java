@@ -11,6 +11,7 @@ import org.nutz.ssdb4j.spi.Response;
 import org.nutz.ssdb4j.spi.SSDB;
 
 import com.open.common.JsonObjectConv;
+import com.open.dbs.cache.Renewal;
 
 public class SSDBXImpl implements SSDBX {
 
@@ -91,6 +92,13 @@ public class SSDBXImpl implements SSDBX {
 		return -1;
 	}
 
+	public int toInt(Response resp) {
+		if (resp.ok()) {
+			return resp.asInt();
+		}
+		return -1;
+	}
+
 	private byte[] getRespData0(Response resp) {
 		if (resp == null)
 			return null;
@@ -156,13 +164,13 @@ public class SSDBXImpl implements SSDBX {
 	}
 
 	@Override
-	public <K, V> long set(K key, V v, long ttl) {
-		return toLong(ssdb().req(Cmd.setx, mixkey(key), jsonConv.bytes(v), jsonConv.bytes(ttl)));
+	public <K, V> long set(K key, V v, int seconds) {
+		return toLong(ssdb().req(Cmd.setx, mixkey(key), jsonConv.bytes(v), jsonConv.bytes(seconds)));
 	}
 
 	@Override
-	public <K, V> long setx(K key, V v, long ttl) {
-		return this.set(key, v, ttl);
+	public <K, V> long setx(K key, V v, int seconds) {
+		return this.set(key, v, seconds);
 	}
 
 	@Override
@@ -176,16 +184,16 @@ public class SSDBXImpl implements SSDBX {
 	}
 
 	@Override
-	public <K, V> long setRenewal(K key, V v, long step, long ttl) {
+	public <K, V> long setRenewal(K key, V v, long step, int seconds) {
 		SSDB b = ssdb().batch();
-		b.req(Cmd.set, mixkey(key), jsonConv.bytes(new Renewal<V>(System.currentTimeMillis() + ttl * 1000, v)));
-		b.req(Cmd.expire, mixkey(key), jsonConv.bytes(ttl));
+		b.req(Cmd.set, mixkey(key), jsonConv.bytes(new Renewal<V>(System.currentTimeMillis() + seconds * 1000, v)));
+		b.req(Cmd.expire, mixkey(key), jsonConv.bytes(seconds));
 		return toLong(b.exec().get(1));
 	}
 
 	@Override
-	public <K> long expired(K key, long ttl) {
-		return toLong(ssdb().req(Cmd.expire, mixkey(key), Long.toString(ttl).getBytes()));
+	public <K> long expired(K key, int seconds) {
+		return toLong(ssdb().req(Cmd.expire, mixkey(key), Long.toString(seconds).getBytes()));
 	}
 
 	@Override
@@ -204,8 +212,8 @@ public class SSDBXImpl implements SSDBX {
 	}
 
 	@Override
-	public <K> long ttl(K key) {
-		return toLong(ssdb().req(Cmd.ttl, mixkey(key)));
+	public <K> int seconds(K key) {
+		return toInt(ssdb().req(Cmd.ttl, mixkey(key)));
 	}
 
 	@Override
@@ -224,9 +232,9 @@ public class SSDBXImpl implements SSDBX {
 	}
 
 	@Override
-	public <K, V> V getRenewal(K key, Class<V> clazz, long step, long ttl) {
-		if (step > ttl) {
-			step = ttl;
+	public <K, V> V getRenewal(K key, Class<V> clazz, long step, int seconds) {
+		if (step > seconds) {
+			step = seconds;
 		}
 		@SuppressWarnings("unchecked")
 		Renewal<V> renewal = this.get(key, Renewal.class);
@@ -234,10 +242,10 @@ public class SSDBXImpl implements SSDBX {
 			return null;
 		}
 		if (renewal.getTick() < System.currentTimeMillis() + step * 1000) {
-			renewal.setTick(System.currentTimeMillis() + ttl * 1000);
+			renewal.setTick(System.currentTimeMillis() + seconds * 1000);
 			SSDB b = ssdb().batch();
 			b.req(Cmd.set, mixkey(key), jsonConv.bytes(renewal));
-			b.req(Cmd.expire, mixkey(key), jsonConv.bytes(ttl));
+			b.req(Cmd.expire, mixkey(key), jsonConv.bytes(seconds));
 			b.exec();
 		}
 		String json = JsonObjectConv.gson.toJson(renewal.getV());
