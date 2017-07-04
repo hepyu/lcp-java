@@ -6,11 +6,6 @@
 .project
 *.log
 .pydevproject
-/target
-/target
-/target
-/target
-/target
 /bin/
 /mvn.assembly.bat
 .idea
