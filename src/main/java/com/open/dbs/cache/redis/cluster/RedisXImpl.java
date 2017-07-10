@@ -122,14 +122,15 @@ public class RedisXImpl implements RedisX {
 
 	@Override
 	public <K, V> long setx(K key, V v, int seconds) {
-		// TODO Auto-generated method stub
-		return 0;
+		byte[] keybytes = jsonConv.bytes(key);
+		getJedisCluster().set(keybytes, jsonConv.bytes(v));
+		getJedisCluster().expire(keybytes, seconds);
+		return 1;
 	}
 
 	@Override
 	public <K, V> long setnx(K key, V v) {
-		// TODO Auto-generated method stub
-		return 0;
+		return getJedisCluster().setnx(jsonConv.bytes(key), jsonConv.bytes(v));
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.List;
 import com.open.common.enums.Gender;
 import com.open.passport.UserAccountType;
 import com.open.passport.dto.CheckTicket;
+import com.open.passport.dto.PassportOAuthAccountDTO;
 import com.open.passport.dto.PassportUserAccountDTO;
 import com.open.passport.dto.RequestUploadAvatarResultDTO;
 
@@ -18,7 +19,7 @@ public interface AccountInfoApi {
 
 	public PassportUserAccountDTO getUserInfoByUserId(Long userId);
 
-	public List<PassportUserAccountDTO> getOAuthAccountListByXlUserId(Long userId);
+	public List<PassportOAuthAccountDTO> getOAuthAccountList(Long userId);
 
 	public int unbindAccount(Long userId, UserAccountType userAccountType);
 
@@ -28,10 +29,8 @@ public interface AccountInfoApi {
 
 	public boolean updateDescription(Long userId, String description);
 
-	public boolean updateNickNameType(Long userId, UserAccountType userAccountType);
+	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId);
 
-	public RequestUploadAvatarResultDTO requestUploadAvatar(String prefix, Long userId);
-
-	public String commitUploadAvatar(String prefix, Long userId);
+	public String commitUploadAvatar(Long userId);
 
 }
