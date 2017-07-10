@@ -22,6 +22,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.open.dbs.cache.redis.RedisCounter;
 import com.open.dbs.cache.ssdb.SSDBCounterByThread;
 import com.open.common.enums.UserType;
 import com.open.lcp.framework.core.api.LcpThreadLocal;
@@ -98,7 +100,12 @@ public class LcpApiController {
 		ApiResult apiResult = new ApiResult();
 		ApiCommandContext context = null;
 		try {
-			{// 缁熻鐩稿叧鍙傛暟
+			//SSDBStat.clear();
+			//SSDBStat.enable();
+			RedisCounter.reset();
+			//JadeStat.enable();
+			//JadeStat.clear();
+			{// 统计相关参数
 				// InetAddress addr = InetAddress.getLocalHost();
 				// serverIpLog = addr.getHostAddress().toString();
 				clientIp = LcpUtils.getRemoteAddr(request);
