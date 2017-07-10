@@ -1,8 +1,20 @@
 package com.open.dbs.cache;
 
+import java.util.List;
 import java.util.Map;
 
+import redis.clients.jedis.GeoRadiusResponse;
+import redis.clients.jedis.GeoUnit;
+import redis.clients.jedis.params.geo.GeoRadiusParam;
+
 public interface CacheX {
+
+	// geo
+
+	public <K, MEMBER> long geoAdd(K key, double longitude, double latitude, MEMBER member);
+
+	public <K> List<GeoRadiusResponse> geoRadius(K key, double longitude, double latitude, double radius, GeoUnit unit,
+			GeoRadiusParam param);
 
 	// ## 基本功能
 

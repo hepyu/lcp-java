@@ -13,6 +13,10 @@ import org.nutz.ssdb4j.spi.SSDB;
 import com.open.common.JsonObjectConv;
 import com.open.dbs.cache.Renewal;
 
+import redis.clients.jedis.GeoRadiusResponse;
+import redis.clients.jedis.GeoUnit;
+import redis.clients.jedis.params.geo.GeoRadiusParam;
+
 public class SSDBXImpl implements SSDBX {
 
 	public static final JsonObjectConv jsonConv = new JsonObjectConv();
@@ -477,6 +481,19 @@ public class SSDBXImpl implements SSDBX {
 	@Override
 	public <K, V> long zexists(K key, V value) {
 		return toLong(ssdb().req(Cmd.zexists, mixkey(key), jsonConv.bytes(value)));
+	}
+
+	@Override
+	public <K, MEMBER> long geoAdd(K key, double longitude, double latitude, MEMBER member) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public <K> List<GeoRadiusResponse> geoRadius(K key, double longitude, double latitude, double radius, GeoUnit unit,
+			GeoRadiusParam param) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

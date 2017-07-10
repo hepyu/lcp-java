@@ -1,9 +1,11 @@
 step1.基础支持
-1.passport,t票支持;并在此基础上完成需要t票和不需要t票的1个接口。
+1.passport,t票支持;passport常用接口.    进行中.
 2.Facade里的req,resp支持枚举，且doc支持枚举自动释义。
 3.定时load改造为guava实现.
 4.增加JVM级缓存的即时更细的底层支持(使用zk watch data change).
-5.ssdb統一改为redis，虽然提供ssdb-api，但以后将不再使用.
+5.ssdb統一改为redis，虽然提供ssdb-api，但以后将不再使用.  进行中.
+6.mysql事物支持&分布式事务支持&以订单举例.
+7.framework中支持geo.
 
 
 step2.线上统计支持(开关控制是否启用)
@@ -12,8 +14,11 @@ step2.线上统计支持(开关控制是否启用)
 
 
 
-setp.n.
+step.n.
 1.python重写mcp.framework选型范围:aiohttp,muffin,tornado.
 
-setp.n+1.
+step.n+1.
 1.php重写mcp.framework选型范围:待考虑.
+
+step.n+2.
+1.go重写mcp.framework选型范围:待考虑.

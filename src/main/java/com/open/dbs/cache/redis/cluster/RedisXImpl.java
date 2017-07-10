@@ -1,5 +1,6 @@
 package com.open.dbs.cache.redis.cluster;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -8,7 +9,10 @@ import com.google.gson.Gson;
 import com.open.common.JsonObjectConv;
 import com.open.dbs.cache.Renewal;
 
+import redis.clients.jedis.GeoRadiusResponse;
+import redis.clients.jedis.GeoUnit;
 import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.params.geo.GeoRadiusParam;
 
 public class RedisXImpl implements RedisX {
 
@@ -32,6 +36,17 @@ public class RedisXImpl implements RedisX {
 	@Override
 	public RedisDbsZKHolder getHolder() {
 		return holder;
+	}
+
+	@Override
+	public <K, MEMBER> long geoAdd(K key, double longitude, double latitude, MEMBER member) {
+		return getJedisCluster().geoadd(jsonConv.bytes(key), longitude, latitude, jsonConv.bytes(member));
+	}
+
+	@Override
+	public <K> List<GeoRadiusResponse> geoRadius(K key, double longitude, double latitude, double radius, GeoUnit unit,
+			GeoRadiusParam param) {
+		return getJedisCluster().georadius(jsonConv.bytes(key), longitude, latitude, radius, unit, param);
 	}
 
 	@Override
