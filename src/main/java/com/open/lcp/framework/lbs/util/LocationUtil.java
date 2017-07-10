@@ -4,7 +4,20 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+//http://blog.csdn.net/lijie18/article/details/54892715
 public class LocationUtil {
+
+	// public static void main(String[] args) {
+	// // 被检测的经纬度点
+	// PageData orderLocation = new PageData();
+	// orderLocation.put("X", "117.228117");
+	// orderLocation.put("Y", "31.830429");
+	// // 商业区域（百度多边形区域经纬度集合）
+	// String partitionLocation =
+	// "31.839064_117.219116,31.83253_117.219403,31.828511_117.218146,31.826763_117.219259,31.826118_117.220517,31.822713_117.23586,31.822958_117.238375,31.838512_117.23798,31.839617_117.226194,31.839586_117.222925";
+	// System.out.println(isInPolygon(orderLocation, partitionLocation));
+	// }
+
 	/**
 	 * 判断当前位置是否在多边形区域内
 	 * 
@@ -14,24 +27,26 @@ public class LocationUtil {
 	 *            区域顶点
 	 * @return
 	 */
-	public static boolean isInPolygon(PageData orderLocation, String partitionLocation) {
-
-		double p_x = Double.parseDouble(orderLocation.getString("X"));
-		double p_y = Double.parseDouble(orderLocation.getString("Y"));
-		Point2D.Double point = new Point2D.Double(p_x, p_y);
-
-		List<Point2D.Double> pointList = new ArrayList<Point2D.Double>();
-		String[] strList = partitionLocation.split(",");
-
-		for (String str : strList) {
-			String[] points = str.split("_");
-			double polygonPoint_x = Double.parseDouble(points[1]);
-			double polygonPoint_y = Double.parseDouble(points[0]);
-			Point2D.Double polygonPoint = new Point2D.Double(polygonPoint_x, polygonPoint_y);
-			pointList.add(polygonPoint);
-		}
-		return IsPtInPoly(point, pointList);
-	}
+	// public static boolean isInPolygon(PageData orderLocation, String
+	// partitionLocation) {
+	//
+	// double p_x = Double.parseDouble(orderLocation.getString("X"));
+	// double p_y = Double.parseDouble(orderLocation.getString("Y"));
+	// Point2D.Double point = new Point2D.Double(p_x, p_y);
+	//
+	// List<Point2D.Double> pointList = new ArrayList<Point2D.Double>();
+	// String[] strList = partitionLocation.split(",");
+	//
+	// for (String str : strList) {
+	// String[] points = str.split("_");
+	// double polygonPoint_x = Double.parseDouble(points[1]);
+	// double polygonPoint_y = Double.parseDouble(points[0]);
+	// Point2D.Double polygonPoint = new Point2D.Double(polygonPoint_x,
+	// polygonPoint_y);
+	// pointList.add(polygonPoint);
+	// }
+	// return IsPtInPoly(point, pointList);
+	// }
 
 	/**
 	 * 返回一个点是否在一个多边形区域内， 如果点位于多边形的顶点或边上，不算做点在多边形内，返回false
