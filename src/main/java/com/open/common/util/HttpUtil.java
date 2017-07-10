@@ -210,9 +210,10 @@ public class HttpUtil {
 		throw new HttpRequestException(url, statusCode, reason);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Map<String, Object> postFormWithMapResult(
 			CloseableHttpClient httpClient, String url, String body) {
-		String result = postForm(httpClient, url, body, null);
+		String result = postForm(httpClient, url, body);//String result = postForm(httpClient, url, body, null);
 		if (StringUtils.isNotEmpty(result)) {
 			try {
 				return objectMapper.readValue(result, Map.class);

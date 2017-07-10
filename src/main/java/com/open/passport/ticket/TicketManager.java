@@ -1,6 +1,5 @@
 package com.open.passport.ticket;
 
-import com.open.common.enums.UserType;
 import com.open.passport.PassportException;
 
 public interface TicketManager {

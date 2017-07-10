@@ -1,7 +1,6 @@
 package com.open.lcp.framework.lbs.util;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.List;
 
 //http://blog.csdn.net/lijie18/article/details/54892715

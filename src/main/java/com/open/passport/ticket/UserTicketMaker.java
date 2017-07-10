@@ -7,8 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.open.common.enums.UserType;
 import com.open.dbs.encoder.DBSEncoder;
 
-//用于老的passportIdentify，与迅雷交互的唯一标识
-@Deprecated
 public class UserTicketMaker {
 	private static final long HARD_CODE = 11491703;
 

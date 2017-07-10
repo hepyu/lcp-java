@@ -12,9 +12,6 @@ import com.open.lcp.framework.core.api.service.dao.entity.LcpAppInfoEntity;
 import com.open.lcp.framework.core.api.service.dao.info.LcpAppAuthInfo;
 import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 import com.open.lcp.framework.core.loader.AppInfoTimerLoader;
-import com.open.passport.service.AccountInfoService;
-import com.open.passport.service.dao.PassportOAuthAccountDAO;
-import com.open.passport.service.dao.PassportUserAccountDAO;
 
 @Service
 public class LcpAppInfoServiceImpl implements LcpAppInfoService {
