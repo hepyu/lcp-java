@@ -28,8 +28,7 @@ public class TicketManagerImpl implements TicketManager {
 			couple.setAppId(appId);
 			couple.setT(t);
 
-			// passportCache.setTicket(couple, t);
-			// passportCache.hsetAppsByPassportUserId(xlUserId, t, appId);
+			passportCache.setTicket(couple, t);
 			return couple;
 		} catch (Exception e) {
 			throw new PassportException(PassportException.EXCEPTION_LOGIN_FAILED, "EXCEPTION_LOGIN_FAILED", e);
@@ -50,23 +49,25 @@ public class TicketManagerImpl implements TicketManager {
 		}
 	}
 
-	@Override
-	public Ticket createSecretKeyCouple2(UserType userType, int appId, Long userId) throws PassportException {
-		try {
-			String userSecretKey = UUID.randomUUID().toString().replaceAll("-", "");
-			String t = UserTicketMaker.makeTicket(userType, appId, userId);
-
-			Ticket couple = new Ticket();
-			couple.setUserSecretKey(userSecretKey);
-			couple.setUserId(userId);
-			couple.setAppId(appId);
-			couple.setT(t);
-
-			passportCache.setTicket(couple, t);
-			// passportCache.hsetAppsByPassportUserId(xlUserId, t, appId);
-			return couple;
-		} catch (Exception e) {
-			throw new PassportException(PassportException.EXCEPTION_LOGIN_FAILED, "EXCEPTION_LOGIN_FAILED", e);
-		}
-	}
+	// @Override
+	// public Ticket createSecretKeyCouple2(UserType userType, int appId, Long
+	// userId) throws PassportException {
+	// try {
+	// String userSecretKey = UUID.randomUUID().toString().replaceAll("-", "");
+	// String t = UserTicketMaker.makeTicket(userType, appId, userId);
+	//
+	// Ticket couple = new Ticket();
+	// couple.setUserSecretKey(userSecretKey);
+	// couple.setUserId(userId);
+	// couple.setAppId(appId);
+	// couple.setT(t);
+	//
+	// passportCache.setTicket(couple, t);
+	// // passportCache.hsetAppsByPassportUserId(xlUserId, t, appId);
+	// return couple;
+	// } catch (Exception e) {
+	// throw new PassportException(PassportException.EXCEPTION_LOGIN_FAILED,
+	// "EXCEPTION_LOGIN_FAILED", e);
+	// }
+	// }
 }
