@@ -16,7 +16,7 @@ step2.线上统计支持(开关控制是否启用)
 
 
 step.n.
-1.python重写mcp.framework选型范围:aiohttp,muffin,tornado.
+1.python重写mcp.framework选型范围:aiohttp,muffin,tornado.http://klen.github.io/py-frameworks-bench/
 
 step.n+1.
 1.php重写mcp.framework选型范围:待考虑.
