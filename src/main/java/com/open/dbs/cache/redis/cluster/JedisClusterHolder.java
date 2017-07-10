@@ -5,25 +5,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+
+import com.open.dbs.cache.redis.ZKRedisConfig;
 
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 
-public class RedisDbsZKHolder {
+public class JedisClusterHolder {
 
 	private JedisCluster jedisCluster;
 
-	public RedisDbsZKHolder(JedisCluster jedisCluster, ZKRedisConfig redisConfig) {
-		this.jedisCluster = jedisCluster;
-		setJedisCluster(redisConfig);
+	public JedisClusterHolder() {
 	}
 
 	public JedisCluster getJedisCluster() {
 		return jedisCluster;
 	}
 
-	public void setJedisCluster(ZKRedisConfig redisConfig) {
+	public void setJedis(ZKRedisConfig redisConfig) {
 		List<HostAndPort> redisHostList = new ArrayList<HostAndPort>();
 		String[] hostAndPortList = redisConfig.getRedisHostAndPorts().split(",");
 		for (String hostAndPort : hostAndPortList) {
@@ -42,7 +43,12 @@ public class RedisDbsZKHolder {
 		// redisConfig.getTimeout(), redisConfig.getTimeout(), 5,
 		// "123456", config);
 
-		jedisCluster = new JedisCluster(jedisClusterNodes, 180000, 180000, 5, "123456", config);
+		if (StringUtils.isEmpty(redisConfig.getPassword())) {
+			jedisCluster = new JedisCluster(jedisClusterNodes, 180000, 180000, 5, config);
+		} else {
+			jedisCluster = new JedisCluster(jedisClusterNodes, 180000, 180000, 5, redisConfig.getPassword(), config);
+		}
+
 		// jedisCluster.set("test", "test");
 		// jedisCluster.auth("123456");
 	}

@@ -1,4 +1,4 @@
-package com.open.dbs.cache.redis.cluster;
+package com.open.dbs.cache.redis;
 
 public class ZKRedisConfig {
 	private int timeout;
@@ -6,6 +6,10 @@ public class ZKRedisConfig {
 	private int maxRedirections;
 
 	private String redisHostAndPorts;
+
+	private String password;
+
+	private boolean isCluster;
 
 	public int getTimeout() {
 		return timeout;
@@ -29,6 +33,22 @@ public class ZKRedisConfig {
 
 	public void setRedisHostAndPorts(String redisHostAndPorts) {
 		this.redisHostAndPorts = redisHostAndPorts;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public boolean isCluster() {
+		return isCluster;
+	}
+
+	public void setCluster(boolean isCluster) {
+		this.isCluster = isCluster;
 	}
 
 }

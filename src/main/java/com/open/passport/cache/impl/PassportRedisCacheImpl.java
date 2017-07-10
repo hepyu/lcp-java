@@ -2,8 +2,8 @@ package com.open.passport.cache.impl;
 
 import org.springframework.stereotype.Component;
 
-import com.open.dbs.cache.redis.cluster.RedisX;
-import com.open.dbs.cache.redis.cluster.RedisXFactory;
+import com.open.dbs.cache.redis.RedisX;
+import com.open.dbs.cache.redis.RedisXFactory;
 import com.open.passport.MobileCodeType;
 import com.open.passport.UserAccountType;
 import com.open.passport.cache.CacheConstants;

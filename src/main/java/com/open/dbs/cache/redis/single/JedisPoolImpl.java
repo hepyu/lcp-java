@@ -1,4 +1,4 @@
-package com.open.dbs.cache.redis.cluster;
+package com.open.dbs.cache.redis.single;
 
 import java.util.List;
 import java.util.Map;
@@ -8,53 +8,55 @@ import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 import com.open.common.JsonObjectConv;
 import com.open.dbs.cache.Renewal;
+import com.open.dbs.cache.redis.RedisX;
+import com.open.dbs.cache.redis.ZKRedisConfig;
 
 import redis.clients.jedis.GeoRadiusResponse;
 import redis.clients.jedis.GeoUnit;
-import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.params.geo.GeoRadiusParam;
 
-public class RedisXImpl implements RedisX {
+public class JedisPoolImpl implements RedisX {
 
-	private static Logger logger = Logger.getLogger(RedisXImpl.class);
+	private static Logger logger = Logger.getLogger(JedisPoolImpl.class);
 
 	public static final JsonObjectConv jsonConv = new JsonObjectConv();
 
 	static Gson gson = new Gson();
 
-	private JedisCluster jedisCluster;
-	private RedisDbsZKHolder holder;
+	private JedisPoolHolder holder;
 
-	public RedisXImpl(ZKRedisConfig redisConfig) {
-		holder = new RedisDbsZKHolder(jedisCluster, redisConfig);
+	public JedisPoolImpl(ZKRedisConfig redisConfig) {
+		holder = new JedisPoolHolder();
+		holder.setJedis(redisConfig);
 	}
 
-	private JedisCluster getJedisCluster() {
-		return holder.getJedisCluster();
-	}
+	// @Override
+	// public void resetRedis(ZKRedisConfig redisConfig) {
+	// holder.setJedis(redisConfig);
+	// }
 
-	@Override
-	public RedisDbsZKHolder getHolder() {
-		return holder;
+	private Jedis getJedis() {
+		return holder.getResource();
 	}
 
 	@Override
 	public <K, MEMBER> long geoAdd(K key, double longitude, double latitude, MEMBER member) {
-		return getJedisCluster().geoadd(jsonConv.bytes(key), longitude, latitude, jsonConv.bytes(member));
+		return getJedis().geoadd(jsonConv.bytes(key), longitude, latitude, jsonConv.bytes(member));
 	}
 
 	@Override
 	public <K> List<GeoRadiusResponse> geoRadius(K key, double longitude, double latitude, double radius, GeoUnit unit,
 			GeoRadiusParam param) {
-		return getJedisCluster().georadius(jsonConv.bytes(key), longitude, latitude, radius, unit, param);
+		return getJedis().georadius(jsonConv.bytes(key), longitude, latitude, radius, unit, param);
 	}
 
 	@Override
 	public <K, V> long set(K key, V v, int seconds) {
 		if (key != null) {
 			byte[] keybytes = jsonConv.bytes(key);
-			getJedisCluster().set(keybytes, jsonConv.bytes(v));
-			getJedisCluster().expire(keybytes, seconds);
+			getJedis().set(keybytes, jsonConv.bytes(v));
+			getJedis().expire(keybytes, seconds);
 			return 1;
 		} else {
 			logger.warn("key is null.");
@@ -66,7 +68,7 @@ public class RedisXImpl implements RedisX {
 	public <K, V> long set(K key, V value) {
 		if (key != null) {
 			byte[] keybytes = jsonConv.bytes(key);
-			getJedisCluster().set(keybytes, jsonConv.bytes(value));
+			getJedis().set(keybytes, jsonConv.bytes(value));
 			return 0;
 		} else {
 			return -1;
@@ -76,7 +78,7 @@ public class RedisXImpl implements RedisX {
 	@Override
 	public <K> long del(K key) {
 		if (key != null) {
-			return getJedisCluster().del(jsonConv.bytes(key));
+			return getJedis().del(jsonConv.bytes(key));
 		} else {
 			return 0;
 		}
@@ -84,16 +86,15 @@ public class RedisXImpl implements RedisX {
 
 	@Override
 	public <K, V> V get(K key, Class<V> clazz) {
-		return jsonConv.toObject(getJedisCluster().get(jsonConv.bytes(key)), clazz);
+		return jsonConv.toObject(getJedis().get(jsonConv.bytes(key)), clazz);
 	}
 
 	@Override
 	public <K, V> long setRenewal(K key, V v, long step, int seconds) {
 		if (key != null) {
 			byte[] keybytes = jsonConv.bytes(key);
-			getJedisCluster().set(keybytes,
-					jsonConv.bytes(new Renewal<V>(System.currentTimeMillis() + seconds * 1000, v)));
-			getJedisCluster().expire(keybytes, seconds);
+			getJedis().set(keybytes, jsonConv.bytes(new Renewal<V>(System.currentTimeMillis() + seconds * 1000, v)));
+			getJedis().expire(keybytes, seconds);
 			return 1;
 		} else {
 			return 0;
@@ -113,8 +114,8 @@ public class RedisXImpl implements RedisX {
 		if (renewal.getTick() < System.currentTimeMillis() + step * 1000) {
 			renewal.setTick(System.currentTimeMillis() + seconds * 1000);
 			byte[] keybytes = jsonConv.bytes(key);
-			getJedisCluster().set(keybytes, jsonConv.bytes(renewal));
-			getJedisCluster().expire(keybytes, seconds);
+			getJedis().set(keybytes, jsonConv.bytes(renewal));
+			getJedis().expire(keybytes, seconds);
 		}
 		String json = JsonObjectConv.gson.toJson(renewal.getV());
 		return JsonObjectConv.gson.fromJson(json, clazz);
@@ -123,14 +124,14 @@ public class RedisXImpl implements RedisX {
 	@Override
 	public <K, V> long setx(K key, V v, int seconds) {
 		byte[] keybytes = jsonConv.bytes(key);
-		getJedisCluster().set(keybytes, jsonConv.bytes(v));
-		getJedisCluster().expire(keybytes, seconds);
+		getJedis().set(keybytes, jsonConv.bytes(v));
+		getJedis().expire(keybytes, seconds);
 		return 1;
 	}
 
 	@Override
 	public <K, V> long setnx(K key, V v) {
-		return getJedisCluster().setnx(jsonConv.bytes(key), jsonConv.bytes(v));
+		return getJedis().setnx(jsonConv.bytes(key), jsonConv.bytes(v));
 	}
 
 	@Override
@@ -354,14 +355,14 @@ public class RedisXImpl implements RedisX {
 	// @Override
 	// public String get(String key) {
 	// if (StringUtils.isNotEmpty(key))
-	// return getJedisCluster().get(key);
+	// return getJedis().get(key);
 	// return null;
 	// }
 
 	// @Override
 	// public boolean exists(String... keys) {
 	// for (String key : keys) {
-	// if (!getJedisCluster().exists(key)) {
+	// if (!getJedis().exists(key)) {
 	// return false;
 	// }
 	// }
@@ -373,7 +374,7 @@ public class RedisXImpl implements RedisX {
 	// int ct = 0;
 	// if (StringUtils.isNotEmpty(key) && null != scoreMembers &&
 	// scoreMembers.size() > 0) {
-	// long index = getJedisCluster().zadd(key, scoreMembers);
+	// long index = getJedis().zadd(key, scoreMembers);
 	// if (index > 0)
 	// ct++;
 	// }
@@ -386,7 +387,7 @@ public class RedisXImpl implements RedisX {
 	// int ct = 0;
 	// if (StringUtils.isNotEmpty(key) && null != scoreMember &&
 	// StringUtils.isNotEmpty(member)) {
-	// long index = getJedisCluster().zadd(key, scoreMember, member);
+	// long index = getJedis().zadd(key, scoreMember, member);
 	// if (index > 0)
 	// ct++;
 	// }
@@ -397,7 +398,7 @@ public class RedisXImpl implements RedisX {
 	// @Override
 	// public Double zscore(String key, String zkey) {
 	// if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(zkey)) {
-	// return getJedisCluster().zscore(key, zkey);
+	// return getJedis().zscore(key, zkey);
 	// }
 	// return null;
 	// }
@@ -405,7 +406,7 @@ public class RedisXImpl implements RedisX {
 	// @Override
 	// public Long zrem(String key, String member) {
 	// if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(member)) {
-	// return getJedisCluster().zrem(key, member);
+	// return getJedis().zrem(key, member);
 	// }
 	//
 	// return null;
@@ -415,7 +416,7 @@ public class RedisXImpl implements RedisX {
 	// public <T> String set(String key, T t) {
 	// try {
 	// if (StringUtils.isNotEmpty(key) && null != t)
-	// return getJedisCluster().set(key, gson.toJson(t));
+	// return getJedis().set(key, gson.toJson(t));
 	// } catch (Exception e) {
 	// logger.error(e);
 	// }
@@ -426,7 +427,7 @@ public class RedisXImpl implements RedisX {
 	// @Override
 	// public String set(String key, String str) {
 	// if (StringUtils.isNotEmpty(key) && null != str)
-	// return getJedisCluster().set(key, str);
+	// return getJedis().set(key, str);
 	// return null;
 	// }
 	//
@@ -434,7 +435,7 @@ public class RedisXImpl implements RedisX {
 	// public <T> T get(String key, Class<T> clazz) {
 	// String str = null;
 	// if (StringUtils.isNotEmpty(key) && null != clazz)
-	// str = getJedisCluster().get(key);
+	// str = getJedis().get(key);
 	// try {
 	// if (StringUtils.isNotEmpty(str))
 	// return gson.fromJson(str, clazz);
@@ -448,7 +449,7 @@ public class RedisXImpl implements RedisX {
 	// @Override
 	// public String get(String key) {
 	// if (StringUtils.isNotEmpty(key))
-	// return getJedisCluster().get(key);
+	// return getJedis().get(key);
 	// return null;
 	// }
 	//
@@ -457,7 +458,7 @@ public class RedisXImpl implements RedisX {
 	// List<T> results = null;
 	// if (StringUtils.isNotEmpty(key) && null != clazz && null != ids &&
 	// ids.length > 0) {
-	// List<String> vals = getJedisCluster().hmget(key, ids);
+	// List<String> vals = getJedis().hmget(key, ids);
 	// if (null != vals && vals.size() > 0) {
 	// for (String val : vals) {
 	// try {
@@ -483,7 +484,7 @@ public class RedisXImpl implements RedisX {
 	// @Override
 	// public Map<String, String> hgetAll(String key) {
 	// if (StringUtils.isNotEmpty(key)) {
-	// return getJedisCluster().hgetAll(key);
+	// return getJedis().hgetAll(key);
 	// }
 	// return null;
 	// }
@@ -491,7 +492,7 @@ public class RedisXImpl implements RedisX {
 	// @Override
 	// public boolean hexists(String key, String field) {
 	// if (StringUtils.isNotEmpty(key)) {
-	// return getJedisCluster().hexists(key, field);
+	// return getJedis().hexists(key, field);
 	// }
 	// return false;
 	// }
@@ -510,7 +511,7 @@ public class RedisXImpl implements RedisX {
 	// }
 	// }
 	// if (null != map && map.size() > 0)
-	// return getJedisCluster().hmset(key, map);
+	// return getJedis().hmset(key, map);
 	// }
 	//
 	// return null;
@@ -519,7 +520,7 @@ public class RedisXImpl implements RedisX {
 	// @Override
 	// public Long hset(String key, String hkey, String value) {
 	// if (StringUtils.isNotEmpty(key)) {
-	// return getJedisCluster().hset(key, hkey, value);
+	// return getJedis().hset(key, hkey, value);
 	// }
 	// return null;
 	// }
@@ -530,7 +531,7 @@ public class RedisXImpl implements RedisX {
 	// String value = null;
 	// try {
 	// value = gson.toJson(t);// objMapper.writeValueAsString(t);
-	// return getJedisCluster().hset(key, hkey, value);
+	// return getJedis().hset(key, hkey, value);
 	// } catch (Exception e) {
 	// logger.error(e);
 	// }
@@ -544,7 +545,7 @@ public class RedisXImpl implements RedisX {
 	//
 	// String str = null;
 	// if (StringUtils.isNotEmpty(key) && null != clazz)
-	// str = getJedisCluster().hget(key, hkey);
+	// str = getJedis().hget(key, hkey);
 	// try {
 	// if (StringUtils.isNotEmpty(str))
 	// return gson.fromJson(str, clazz);// objMapper.readValue(str,
@@ -559,7 +560,7 @@ public class RedisXImpl implements RedisX {
 	// @Override
 	// public Long hdel(String key, String hkey) {
 	// if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(hkey))
-	// return getJedisCluster().hdel(key, hkey);
+	// return getJedis().hdel(key, hkey);
 	//
 	// return null;
 	// }
@@ -567,7 +568,7 @@ public class RedisXImpl implements RedisX {
 	// @Override
 	// public Long zcount(String key, Double min, Double max) {
 	// if (StringUtils.isNotEmpty(key) && null != min && null != max)
-	// return getJedisCluster().zcount(key, min, max);
+	// return getJedis().zcount(key, min, max);
 	//
 	// return null;
 	// }
@@ -575,7 +576,7 @@ public class RedisXImpl implements RedisX {
 	// @Override
 	// public Set<String> zrevrange(String key, Long start, Long end) {
 	// if (StringUtils.isNotEmpty(key) && null != start && null != end)
-	// return getJedisCluster().zrevrange(key, start, end);
+	// return getJedis().zrevrange(key, start, end);
 	// return null;
 	// }
 	//
@@ -583,7 +584,7 @@ public class RedisXImpl implements RedisX {
 	// public Long zrevrank(String key, String member) {
 	//
 	// if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(member)) {
-	// return getJedisCluster().zrevrank(key, member);
+	// return getJedis().zrevrank(key, member);
 	// }
 	// return null;
 	// }
@@ -592,42 +593,42 @@ public class RedisXImpl implements RedisX {
 	// public Set<String> zrevrangeByScore(String key, Double max, Double min,
 	// int offset, int count) {
 	// if (StringUtils.isNotEmpty(key) && null != min && null != max)
-	// return getJedisCluster().zrevrangeByScore(key, max, min, offset, count);
+	// return getJedis().zrevrangeByScore(key, max, min, offset, count);
 	// return null;
 	// }
 	//
 	// @Override
 	// public Set<String> zrangeByScore(String key, Double max, Double min) {
 	// if (StringUtils.isNotEmpty(key) && null != min && null != max)
-	// return getJedisCluster().zrangeByScore(key, max, min);
+	// return getJedis().zrangeByScore(key, max, min);
 	// return null;
 	// }
 	//
 	// @Override
 	// public Set<String> zrangeByScore(String key, Double max, Double min, int
 	// offset, int count) {
-	// return getJedisCluster().zrangeByScore(key, min, max, offset, count);
+	// return getJedis().zrangeByScore(key, min, max, offset, count);
 	// }
 	//
 	// @Override
 	// public Double zincrby(String key, String member, Double score) {
 	// if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(member) && null
 	// != score)
-	// return getJedisCluster().zincrby(key, score, member);
+	// return getJedis().zincrby(key, score, member);
 	// return null;
 	// }
 	//
 	// @Override
 	// public Long zrank(String key, String member) {
 	// if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(member))
-	// return getJedisCluster().zrank(key, member);
+	// return getJedis().zrank(key, member);
 	// return null;
 	// }
 	//
 	// @Override
 	// public Long zcount(String key, String min, String max) {
 	// if (StringUtils.isNotEmpty(key))
-	// return getJedisCluster().zcount(key, min, max);
+	// return getJedis().zcount(key, min, max);
 	// return null;
 	// }
 	//
@@ -635,56 +636,56 @@ public class RedisXImpl implements RedisX {
 	// @Override
 	// public void expire(String key, int seconds) {
 	// if (StringUtils.isNotEmpty(key))
-	// getJedisCluster().expire(key, seconds);
+	// getJedis().expire(key, seconds);
 	// }
 	//
 	// @Override
 	// public long incr(String key) {
-	// return getJedisCluster().incr(key);
+	// return getJedis().incr(key);
 	// }
 	//
 	// @Override
 	// public long decr(String key) {
-	// return getJedisCluster().decr(key);
+	// return getJedis().decr(key);
 	// }
 	//
 	// @Override
 	// public long zcard(String key) {
-	// return getJedisCluster().zcard(key);
+	// return getJedis().zcard(key);
 	// }
 	//
 	// @Override
 	// public long setnx(String key, String value) {
-	// return getJedisCluster().setnx(key, value);
+	// return getJedis().setnx(key, value);
 	// }
 	//
 	// @Override
 	// public Set<Tuple> zrevrangeByScoreWithScores(String key, Double max,
 	// Double min, int offset, int count) {
-	// return getJedisCluster().zrevrangeByScoreWithScores(key, max, min,
+	// return getJedis().zrevrangeByScoreWithScores(key, max, min,
 	// offset, count);
 	// }
 	//
 	// @Override
 	// public Set<Tuple> zrangeByScoreWithScores(String key, Double max, Double
 	// min, int offset, int count) {
-	// return getJedisCluster().zrangeByScoreWithScores(key, min, max, offset,
+	// return getJedis().zrangeByScoreWithScores(key, min, max, offset,
 	// count);
 	// }
 	//
 	// @Override
 	// public Set<Tuple> zrevrangeWithScores(String key, long start, long end) {
-	// return getJedisCluster().zrevrangeWithScores(key, start, end);
+	// return getJedis().zrevrangeWithScores(key, start, end);
 	// }
 	//
 	// @Override
 	// public Set<String> zrange(String key, int start, int end) {
-	// return getJedisCluster().zrange(key, start, end);
+	// return getJedis().zrange(key, start, end);
 	// }
 	//
 	// @Override
 	// public String setex(String key, int seconds, String value) {
-	// return getJedisCluster().setex(key, seconds, value);
+	// return getJedis().setex(key, seconds, value);
 	// }
 	//
 	// @Override
@@ -695,7 +696,7 @@ public class RedisXImpl implements RedisX {
 	// if (ArrayUtils.isEmpty(member))
 	// return 0;
 	//
-	// return getJedisCluster().sadd(key, member);
+	// return getJedis().sadd(key, member);
 	// }
 	//
 	// @Override
@@ -703,22 +704,22 @@ public class RedisXImpl implements RedisX {
 	// if (StringUtils.isEmpty(key))
 	// return 0;
 	//
-	// return getJedisCluster().scard(key);
+	// return getJedis().scard(key);
 	// }
 	//
 	// @Override
 	// public boolean sismember(final String key, final String member) {
-	// return getJedisCluster().sismember(key, member);
+	// return getJedis().sismember(key, member);
 	// }
 	//
 	// @Override
 	// public long srem(String key, String... member) {
-	// return getJedisCluster().srem(key, member);
+	// return getJedis().srem(key, member);
 	// }
 	//
 	// @Override
 	// public Set<String> sinter(String... keys) {
-	// return getJedisCluster().sinter(keys);
+	// return getJedis().sinter(keys);
 	//
 	// }
 

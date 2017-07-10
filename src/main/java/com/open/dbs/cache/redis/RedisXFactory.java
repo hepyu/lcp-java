@@ -1,4 +1,4 @@
-package com.open.dbs.cache.redis.cluster;
+package com.open.dbs.cache.redis;
 
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,6 +14,8 @@ import com.google.gson.Gson;
 import com.mangocity.zk.ConfigChangeListener;
 import com.mangocity.zk.ConfigChangeSubscriber;
 import com.mangocity.zk.ZkConfigChangeSubscriberImpl;
+import com.open.dbs.cache.redis.cluster.JedisClusterImpl;
+import com.open.dbs.cache.redis.single.JedisPoolImpl;
 import com.open.env.finder.ZKFinder;
 
 public class RedisXFactory {
@@ -52,15 +54,11 @@ public class RedisXFactory {
 
 								@Override
 								public void configChanged(String key, String value) {
-
-									ZKRedisConfig redisConfig = loadZKRedisConfig(value);
-									redisMap.get(instanceName).getHolder().setJedisCluster(redisConfig);
-
+									loadRedisX(key, value);
 								}
 							});
 
-							ZKRedisConfig redisConfig = loadZKRedisConfig(zkClient, redisZKRoot, instanceName);
-							redisMap.put(instanceName, new RedisXImpl(redisConfig));
+							loadRedisX(zkClient, redisZKRoot, instanceName);
 						} catch (Exception e) {
 							logger.error(e.getMessage(), e);
 							System.exit(-1);
@@ -75,17 +73,34 @@ public class RedisXFactory {
 		}
 		if (redisMap != null && redisMap.size() > 0) {
 			for (Entry<String, RedisX> entry : redisMap.entrySet()) {
-				logger.debug("--RedisServiceImpl--" + entry.getKey() + "--" + entry.getValue() + "--"
-						+ entry.getValue().getHolder().getJedisCluster());
+				logger.debug("--RedisServiceImpl--" + entry.getKey() + "--" + entry.getValue());
 			}
 		}
 
 		return redisMap.get(instanceName);
 	}
 
-	private static ZKRedisConfig loadZKRedisConfig(ZkClient zkClient, String ssdbZkRoot, String key) {
-		String ssdbStr = zkClient.readData(ssdbZkRoot + "/" + key);
-		return loadZKRedisConfig(ssdbStr);
+	private static void loadRedisX(String instance, String jsonStr) {
+		ZKRedisConfig redisConfig = loadZKRedisConfig(jsonStr);
+		loadRedisX(instance, redisConfig);
+	}
+
+	private static void loadRedisX(ZkClient zkClient, String ssdbZkRoot, String instance) {
+		String ssdbStr = zkClient.readData(ssdbZkRoot + "/" + instance);
+		ZKRedisConfig redisConfig = loadZKRedisConfig(ssdbStr);
+		loadRedisX(instance, redisConfig);
+	}
+
+	private static void loadRedisX(String instance, ZKRedisConfig redisConfig) {
+		RedisX redisX = null;
+		if (redisConfig.isCluster()) {
+			redisX = new JedisPoolImpl(redisConfig);
+		} else {
+			redisX = new JedisClusterImpl(redisConfig);
+		}
+
+		redisX = (RedisX) new RedisProxy(redisX).getProxyInstance();
+		redisMap.put(instance, redisX);
 	}
 
 	private static ZKRedisConfig loadZKRedisConfig(String jsonStr) {

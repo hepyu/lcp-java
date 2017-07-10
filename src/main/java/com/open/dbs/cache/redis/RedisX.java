@@ -1,22 +1,11 @@
-package com.open.dbs.cache.redis.cluster;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.nutz.ssdb4j.spi.Cmd;
+package com.open.dbs.cache.redis;
 
 import com.open.dbs.cache.CacheX;
 
-import redis.clients.jedis.GeoRadiusResponse;
-import redis.clients.jedis.GeoUnit;
-import redis.clients.jedis.Tuple;
-import redis.clients.jedis.params.geo.GeoRadiusParam;
-
 public interface RedisX extends CacheX {
 
-	public RedisDbsZKHolder getHolder();
-	
+	// public void resetRedis(ZKRedisConfig redisConfig);
+
 	public <K, V> long set(K key, V v, int seconds);
 
 	public <K> long del(K key);

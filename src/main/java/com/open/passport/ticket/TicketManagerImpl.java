@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.open.common.enums.UserType;
-import com.open.dbs.cache.redis.cluster.RedisXFactory;
+import com.open.dbs.cache.redis.RedisXFactory;
 import com.open.passport.PassportException;
 import com.open.passport.cache.PassportCache;
 import com.open.passport.ticket.UserTicketMaker.UserTicket;
