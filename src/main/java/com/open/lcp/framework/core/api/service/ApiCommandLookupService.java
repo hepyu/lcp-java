@@ -2,11 +2,10 @@ package com.open.lcp.framework.core.api.service;
 
 import java.util.List;
 import java.util.Map;
-
 import com.open.lcp.framework.core.api.command.ApiCommand;
+import com.open.lcp.framework.core.api.command.ApiFacadeMethod;
 
-
-public interface LcpApiCommandLookupService {
+public interface ApiCommandLookupService {
 
 	/**
 	 * lookup api command from methodValue
@@ -14,7 +13,7 @@ public interface LcpApiCommandLookupService {
 	 * @param methodValue
 	 * @return
 	 */
-	public ApiCommand lookupApiCommand(String methodValue, String version);
+	public ApiCommand lookupApiCommand(ApiFacadeMethod apiFacadeMethod);
 
 	/**
 	 * 接口是否免授权，直接开放。

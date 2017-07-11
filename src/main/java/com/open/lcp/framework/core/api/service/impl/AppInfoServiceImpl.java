@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.open.lcp.framework.core.api.service.LcpAppInfoService;
+import com.open.lcp.framework.core.api.service.AppInfoService;
 import com.open.lcp.framework.core.api.service.dao.LcpAppInfoDAO;
 import com.open.lcp.framework.core.api.service.dao.entity.LcpAppInfoEntity;
 import com.open.lcp.framework.core.api.service.dao.info.LcpAppAuthInfo;
@@ -14,7 +14,7 @@ import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 import com.open.lcp.framework.core.loader.AppInfoTimerLoader;
 
 @Service
-public class LcpAppInfoServiceImpl implements LcpAppInfoService {
+public class AppInfoServiceImpl implements AppInfoService {
 
 	@Autowired
 	private LcpAppInfoDAO appInfoDAO;
@@ -22,7 +22,7 @@ public class LcpAppInfoServiceImpl implements LcpAppInfoService {
 	@Autowired
 	private AppInfoTimerLoader appInfoTimerLoader;
 
-	public LcpAppInfoServiceImpl() {
+	public AppInfoServiceImpl() {
 	}
 
 	@Override

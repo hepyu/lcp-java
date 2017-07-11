@@ -1,11 +1,15 @@
 package com.open.lcp.framework.core.api.command;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.open.common.enums.UserType;
 import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 
 public class RequestBaseContext {
+
+	private final Map<String, Object> stat = new LinkedHashMap<String, Object>();
+
 	private UserType userType;
 	private final int apiV;
 	private final long time;
@@ -101,6 +105,10 @@ public class RequestBaseContext {
 
 	public void setUserId(long userId) {
 		this.userId = userId;
+	}
+
+	public Map<String, Object> getStat() {
+		return stat;
 	}
 
 	@Override

@@ -29,9 +29,9 @@ import com.open.common.util.AESUtils;
 import com.open.common.util.Base64Utils;
 import com.open.lcp.framework.core.consts.HttpConstants;
 
-public class LcpUtils {
+public class LcpUtil {
 
-	private static final Log logger = LogFactory.getLog(LcpUtils.class);
+	private static final Log logger = LogFactory.getLog(LcpUtil.class);
 
 	private static final Pattern ipPattern = Pattern.compile("([0-9]{1,3}\\.){3}[0-9]{1,3}");
 

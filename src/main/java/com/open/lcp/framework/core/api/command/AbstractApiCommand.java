@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.open.lcp.framework.core.api.BlockChecker;
 import com.open.lcp.framework.core.api.RequestChecker;
-import com.open.lcp.framework.core.api.service.LcpApiMaxThreadsService;
+import com.open.lcp.framework.core.api.service.ApiMaxThreadsService;
 import com.open.lcp.framework.core.api.service.AppInitService;
 import com.open.lcp.framework.core.api.service.dao.entity.LcpApiMaxThreadsEntity;
 import com.open.lcp.framework.core.facade.ApiResult;
@@ -58,7 +58,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 	@Autowired
 	private AppInitService appInitService;
 	@Autowired
-	private LcpApiMaxThreadsService apiMaxThreadsService;
+	private ApiMaxThreadsService apiMaxThreadsService;
 
 	/**
 	 * 子类不可重写

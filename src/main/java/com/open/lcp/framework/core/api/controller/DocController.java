@@ -36,28 +36,28 @@ import com.open.common.util.DateUtil;
 import com.open.lcp.framework.core.annotation.LcpMethod;
 import com.open.lcp.framework.core.annotation.LcpReq;
 import com.open.lcp.framework.core.annotation.LcpRequired;
-import com.open.lcp.framework.core.api.LcpFieldLoadHolder;
-import com.open.lcp.framework.core.api.LcpModelDefLanHolder;
+import com.open.lcp.framework.core.api.FieldLoadHolder;
+import com.open.lcp.framework.core.api.ModelDefLanHolder;
 import com.open.lcp.framework.core.api.NZCode;
 import com.open.lcp.framework.core.api.NZCodeHolder;
 import com.open.lcp.framework.core.api.command.ApiCommand;
 import com.open.lcp.framework.core.api.command.ApiFacadeCommand;
 import com.open.lcp.framework.core.api.command.ApiFacadeMethod;
 import com.open.lcp.framework.core.api.command.CommandModelHolder;
-import com.open.lcp.framework.core.api.service.LcpApiCommandLookupService;
+import com.open.lcp.framework.core.api.service.ApiCommandLookupService;
 
 @Controller
 @RequestMapping(method = RequestMethod.GET)
-public class LcpDocController extends AbstractController implements InitializingBean {
+public class DocController extends AbstractController implements InitializingBean {
 
-	private static final Log logger = LogFactory.getLog(LcpDocController.class);
+	private static final Log logger = LogFactory.getLog(DocController.class);
 
 	private static final List<String> oldMethods = new ArrayList<String>();
 
 	private static final Map<Integer, Set<String>> errorCodeMap = new HashMap<Integer, Set<String>>();
 
 	@Autowired
-	private LcpApiCommandLookupService commandLookupService;
+	private ApiCommandLookupService commandLookupService;
 
 	private String[] methods;
 
@@ -101,7 +101,8 @@ public class LcpDocController extends AbstractController implements Initializing
 		Arrays.sort(methods);
 		for (String command : methods) {
 			for (String v : cmdVers.get(command)) {
-				ApiCommand apiCommand = commandLookupService.lookupApiCommand(command, v);
+				final ApiFacadeMethod apiFacadeMethod = CommandModelHolder.getApiFacadeMethod(command, v);
+				ApiCommand apiCommand = commandLookupService.lookupApiCommand(apiFacadeMethod);
 				if (apiCommand instanceof ApiFacadeCommand) {
 					final ApiFacadeMethod mm = CommandModelHolder.getApiFacadeMethod(command, v);
 					if (mm != null) {
@@ -110,7 +111,7 @@ public class LcpDocController extends AbstractController implements Initializing
 							this.addErrorCode(command, lcpReq, null, null);
 						}
 						if (mm.getReqClass() != null && mm.getReqClass() != Void.class) {
-							final List<Field> fieldList = LcpFieldLoadHolder.getFields(mm.getReqClass());
+							final List<Field> fieldList = FieldLoadHolder.getFields(mm.getReqClass());
 							for (Field f : fieldList) {
 								final LcpRequired required = f.getAnnotation(LcpRequired.class);
 								if (required != null && required.errorCode() > 0) {
@@ -291,9 +292,9 @@ public class LcpDocController extends AbstractController implements Initializing
 		}
 		s.append("<h5 id='reqMemo'>" + "请求参数说明:" + "</h5>");
 		if (lcpReq != null) {
-			s.append(LcpModelDefLanHolder.getMtmlMDL(lcpReq, type, errorCodeMap));
+			s.append(ModelDefLanHolder.getMtmlMDL(lcpReq, type, errorCodeMap));
 		} else if (req != null) {
-			s.append(LcpModelDefLanHolder.getMtmlMDL(req, errorCodeMap));
+			s.append(ModelDefLanHolder.getMtmlMDL(req, errorCodeMap));
 		} else {
 			s.append("<h5>此接口无专用参数，仅提供平台必要的参数即可。</h5>");
 		}
@@ -302,13 +303,13 @@ public class LcpDocController extends AbstractController implements Initializing
 		} else {
 			s.append("<h5 id='respMemo'>" + "返回数据说明:" + "</h5>");
 			if (Integer.class == resp) {
-				s.append(LcpModelDefLanHolder.getMtmlMDL(ResultInt.class, errorCodeMap));
+				s.append(ModelDefLanHolder.getMtmlMDL(ResultInt.class, errorCodeMap));
 			} else if (Long.class == resp) {
-				s.append(LcpModelDefLanHolder.getMtmlMDL(ResultLong.class, errorCodeMap));
+				s.append(ModelDefLanHolder.getMtmlMDL(ResultLong.class, errorCodeMap));
 			} else if (String.class == resp) {
-				s.append(LcpModelDefLanHolder.getMtmlMDL(ResultString.class, errorCodeMap));
+				s.append(ModelDefLanHolder.getMtmlMDL(ResultString.class, errorCodeMap));
 			} else {
-				s.append(LcpModelDefLanHolder.getMtmlMDL(resp, errorCodeMap));
+				s.append(ModelDefLanHolder.getMtmlMDL(resp, errorCodeMap));
 			}
 		}
 		return s.toString();

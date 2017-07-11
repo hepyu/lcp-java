@@ -25,33 +25,37 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.open.dbs.cache.redis.RedisCounter;
 import com.open.dbs.cache.ssdb.SSDBCounterByThread;
+import com.open.dbs.cache.ssdb.SSDBStat;
+import com.open.jade.JadeStat;
 import com.open.common.enums.UserType;
 import com.open.lcp.framework.core.api.LcpThreadLocal;
 import com.open.lcp.framework.core.api.command.ApiCommand;
 import com.open.lcp.framework.core.api.command.ApiCommandContext;
+import com.open.lcp.framework.core.api.command.ApiFacadeMethod;
+import com.open.lcp.framework.core.api.command.CommandModelHolder;
 import com.open.lcp.framework.core.api.command.RequestBaseContext;
-import com.open.lcp.framework.core.api.service.LcpApiCommandLookupService;
-import com.open.lcp.framework.core.api.service.LcpAppInfoService;
+import com.open.lcp.framework.core.api.service.ApiCommandLookupService;
+import com.open.lcp.framework.core.api.service.AppInfoService;
 import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 import com.open.lcp.framework.core.consts.HttpConstants;
 import com.open.lcp.framework.core.consts.LcpConstants;
 import com.open.lcp.framework.core.facade.ApiResult;
 import com.open.lcp.framework.core.facade.ApiResultCode;
-import com.open.lcp.framework.util.LcpUtils;
+import com.open.lcp.framework.util.LcpUtil;
 import com.open.passport.dto.CheckTicket;
 import com.open.passport.service.AccountInfoService;
 import com.open.passport.service.AccountTicketService;
 
 @Controller
 @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
-public class LcpApiController {
+public class ApiController {
 	static {
 		SSDBCounterByThread.enable();
 	}
 	/**
 	 * Logger for this class
 	 */
-	private static final Log logger = LogFactory.getLog(LcpApiController.class);
+	private static final Log logger = LogFactory.getLog(ApiController.class);
 	private static final Log httpAccessLogger = LogFactory.getLog("http_access");
 	private static final Log httpAccessNZLogger = LogFactory.getLog("http_access_nz");
 	private static final Log httpAccessSlowLogger = LogFactory.getLog("http_access_slow");
@@ -65,9 +69,9 @@ public class LcpApiController {
 	public static final ApiResult ERR_REQUIRED_PARAM = new ApiResult(ApiResultCode.E_SYS_PARAM);
 	public static final ApiResult ERR_SYS_PARAM = new ApiResult(ApiResultCode.E_SYS_PARAM);
 	@Autowired
-	private LcpAppInfoService appInfoService;
+	private AppInfoService appInfoService;
 	@Autowired
-	private LcpApiCommandLookupService commandLookupService;
+	private ApiCommandLookupService commandLookupService;
 
 	@Autowired
 	private AccountInfoService accountInfoService;
@@ -100,19 +104,19 @@ public class LcpApiController {
 		ApiResult apiResult = new ApiResult();
 		ApiCommandContext context = null;
 		try {
-			//SSDBStat.clear();
-			//SSDBStat.enable();
+			SSDBStat.clear();
+			SSDBStat.enable();
 			RedisCounter.reset();
-			//JadeStat.enable();
-			//JadeStat.clear();
+			JadeStat.enable();
+			JadeStat.clear();
 			{// 统计相关参数
 				// InetAddress addr = InetAddress.getLocalHost();
 				// serverIpLog = addr.getHostAddress().toString();
-				clientIp = LcpUtils.getRemoteAddr(request);
-				clientPort = LcpUtils.getRemotePort(request);
+				clientIp = LcpUtil.getRemoteAddr(request);
+				clientPort = LcpUtil.getRemotePort(request);
 				userAgentLog = request.getHeader("User-Agent");
 			}
-			// 鏋勯�犲弬鏁�
+			// 构造参数
 			final String httpMethod = request.getMethod().toUpperCase();
 			final String httpReqURI = request.getRequestURI();
 			final RequestBaseContext requestBaseContext = new RequestBaseContext(apiV, curTime, httpMethod, httpReqURI,
@@ -126,15 +130,15 @@ public class LcpApiController {
 				ServletInputStream in = request.getInputStream();
 				while ((c = in.read(btsBody, index, btsBody.length - index)) > 0)
 					index += c;
-				if (btsBody.length != index) {// 鍑洪敊
+				if (btsBody.length != index) {// 出错
 					logger.info(String.format("octet-stream error of %s, loaded %s, not content length %s",
 							request.getRequestURI(), index, btsBody.length));
 					btsBody = null;
 					return ERR_REQUIRED_PARAM;
 				}
 			}
-			final Map<String, String> requestParamMap = LcpUtils.fillParamMap(request);
-			if (btsBody != null && btsBody.length > 0) {// 鏈塸ostbody鏃剁殑澶勭悊
+			final Map<String, String> requestParamMap = LcpUtil.fillParamMap(request);
+			if (btsBody != null && btsBody.length > 0) {// 有postbody时的处理
 				final String byteBodyHash = DigestUtils.md5Hex(btsBody).toLowerCase();
 				// String byteBodyHash =
 				// HexUtil.byteArrayToHexString(DigestUtils.md5(btsBody)).toLowerCase();
@@ -149,20 +153,20 @@ public class LcpApiController {
 			}
 			request.setAttribute(LcpConstants.REQ_ATTR_PerSMAP, requestParamMap);
 
-			// 瑙ｆ瀽uri鍒癿ethod鍚嶅瓧锛屼紭鍏堝垽鏂�
-			String methodName = LcpUtils.getCmdMethodFromURI(requestBaseContext.getRequestURI());
+			// 解析uri到method名字，优先判断
+			String methodName = LcpUtil.getCmdMethodFromURI(requestBaseContext.getRequestURI());
 			{
-				if (methodName == null) {// URL涓病鏈夋椂锛屼粠鍙傛暟涓彇涓�娆″閿欍��
+				if (methodName == null) {// URL中没有时，从参数中取一次容错。
 					methodName = requestParamMap.get(HttpConstants.PARAM_METHOD);
 				}
 				methodNameLog = methodName;
-				if (StringUtils.isEmpty(methodName)) { // 娌℃湁鏂规硶鍚�
+				if (StringUtils.isEmpty(methodName)) { // 没有方法名
 					apiResult.setCode(ApiResultCode.E_SYS_UNKNOWN_METHOD);
 					return apiResult;
 				}
 			}
 			request.setAttribute(LcpConstants.REQ_API_METHOD_NAME, methodName);
-			final String queryString = LcpUtils.buildQueryString(requestParamMap);
+			final String queryString = LcpUtil.buildQueryString(requestParamMap);
 			if (StringUtils.isNotBlank(queryString)) {
 				urlFull = httpReqURI + "?" + queryString;
 			} else {
@@ -170,32 +174,33 @@ public class LcpApiController {
 			}
 			requestBaseContext.setRequestParamMap(requestParamMap);
 			final String version = requestParamMap.get(LcpConstants.PARAM_V);
-			final ApiCommand apiCommand = commandLookupService.lookupApiCommand(methodName, version);
+			final ApiFacadeMethod apiFacadeMethod = CommandModelHolder.getApiFacadeMethod(methodName, version);
+			final ApiCommand apiCommand = commandLookupService.lookupApiCommand(apiFacadeMethod);
 			if (apiCommand == null) {
 				// apiCommand is unknown
 				apiResult.setCode(ApiResultCode.E_SYS_UNKNOWN_METHOD);
 				return apiResult;
 			}
-			final Map<String, String> httpHeads = LcpUtils.getHttpHeads(request);
-			// 鏍￠獙骞冲彴绾у弬鏁扮殑鍚堟硶鎬�
+			final Map<String, String> httpHeads = LcpUtil.getHttpHeads(request);
+			// 校验平台级参数的合法性
 			if (!this.validateBaseRequiredParams(httpHeads, requestBaseContext, apiResult, methodName)) {
 				return apiResult;
 			}
-			// 闃查噸鍙�
+			// 防重发
 			if (!this.validateRequestFrequency(requestBaseContext, apiResult)) {
 				return apiResult;
 			}
-			// 鏄惁闇�瑕佺櫥褰�
+			// 是否需要登录
 			userIdLog = requestBaseContext.getUserId();
 			if (requestBaseContext.getUserId() == 0 && this.commandLookupService.isNeedLogin(methodName, version)) {
 				apiResult.setCode(ApiResultCode.E_SYS_INVALID_TICKET);
 				return apiResult;
 			}
-			// 鏉冮檺鏍￠獙
-			// TODO锛氬鏋滈渶瑕佺櫥褰曪紝瀵箄ser鐢ㄦ埛韬唤鐨勬鏌ワ紝渚嬪鏄惁灏佺绛夌瓑
-			// TODO锛歛ntispam鐨勬鏌�
-			// TODO锛氭祦閲忔帶鍒�
-			// 妫�鏌ュ鎴风app鏄惁瀵硅繖涓柟娉曟湁鏉冮檺
+			// 权限校验
+			// TODO：如果需要登录，对user用户身份的检查，例如是否封禁等等
+			// TODO：antispam的检查
+			// TODO：流量控制
+			// 检查客户端app是否对这个方法有权限
 			if (!commandLookupService.isOpen(methodName, version)) {
 				if (!appInfoService.isAllowedApiMethod(requestBaseContext.getAppInfo().getAppId(), methodName,
 						clientIp)) {
@@ -203,7 +208,7 @@ public class LcpApiController {
 					return apiResult;
 				}
 			}
-			// 灏佽command鍙傛暟
+			// 封装command参数
 			Map<String, Object> binaryParams = null;
 			if (request instanceof MultipartHttpServletRequest) {
 				MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
@@ -233,6 +238,12 @@ public class LcpApiController {
 				context.addStatExt("clientIp", clientIp);
 				context.addStatExt("clientPort", clientPort);
 			}
+			{
+				Map<String, Object> stat = requestBaseContext.getStat();
+				if (!stat.isEmpty()) {
+					context.getStatExt().putAll(stat);
+				}
+			}
 			final String blCode = context.getAppInfo().getBlCode();
 			if (blCode != null && blCode.length() > 0) {
 				context.addStatExt("blCode", blCode);
@@ -253,20 +264,20 @@ public class LcpApiController {
 			logger.error("CommandController handleRequestInternal", e);
 			apiResult = new ApiResult();
 			apiResult.setCode(ApiResultCode.E_SYS_UNKNOWN);
-		} finally { // log缁熻
+		} finally { // log统计
 			final long time = System.currentTimeMillis();
 			final long costTime = time - curTime;
 			final String methodName = StringUtils.defaultString(request.getMethod());
 			try {
 				final String httpAccessLogMsg = String.format(httpAccessLogFormat//
-						, time + "" // 鏃堕棿
+						, time + "" // 时间
 						, urlFull // url
 						, userIdLog + "" // userId
 						, methodName // http method
 						, StringUtils.defaultString(userAgentLog) // http agent
 						, StringUtils.defaultString(clientIp) // clientIp
 						, StringUtils.defaultString(methodNameLog) // mcpMethodName
-						, costTime + "" // 娑堣�楃殑鏃堕棿
+						, costTime + "" // 消耗的时间
 						, apiResult.getCode() + "");
 				httpAccessLogger.error(httpAccessLogMsg);
 				// // this.checkServerQuality(costTime);
@@ -283,8 +294,11 @@ public class LcpApiController {
 					httpAccessNZLogger.info(httpAccessLogMsg);
 				}
 				if (context != null) {
-					context.addStatExt("costTime", costTime);
+					context.addStatExt("timeAll", costTime);
+					context.addStatExt("timeSSDB", SSDBCounterByThread.getCost());
 					context.addStatExt("ssdb", SSDBCounterByThread.clear());
+					context.addStatExt("timeRedis", RedisCounter.getCost());
+					context.addStatExt("redis", RedisCounter.reset());
 				}
 			} catch (Exception e) {
 				logger.error("finally method name:" + methodNameLog, e);
@@ -364,11 +378,11 @@ public class LcpApiController {
 		}
 		final String secretKey = requestBaseContext.getSecretKey();
 		if (secretKey != null) {// 鎴愬姛寰楀埌瀵嗛挜鍚庢墠楠宻ig鍊�
-			String normalizedString = LcpUtils.generateNormalizedString(httpHeads, requestParamMap);
+			String normalizedString = LcpUtil.generateNormalizedString(httpHeads, requestParamMap);
 			if (requestBaseContext.getApiV() > 1) {
 				normalizedString = requestBaseContext.getRequestURI() + normalizedString;
 			}
-			String requiredSig = LcpUtils.generateSignature(normalizedString, secretKey);
+			String requiredSig = LcpUtil.generateSignature(normalizedString, secretKey);
 			if (!StringUtils.equalsIgnoreCase(sig, requiredSig)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug(String.format("%s: sig[%s] error. requiredSig[%s] normalString:[%s]", methodName, sig,

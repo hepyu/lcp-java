@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
 
 import com.open.common.util.HttpUtil;
 import com.open.common.util.JsonFormatUtil;
-import com.open.lcp.framework.util.LcpUtils;
+import com.open.lcp.framework.util.LcpUtil;
 
 /**
  * 测试用
@@ -31,8 +31,8 @@ import com.open.lcp.framework.util.LcpUtils;
  */
 @Controller
 @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
-public class LcpTestController extends AbstractController {
-	private static final Log logger = LogFactory.getLog(LcpTestController.class);
+public class TestController extends AbstractController {
+	private static final Log logger = LogFactory.getLog(TestController.class);
 	@Autowired
 	private CloseableHttpClient client;
 	// private static final String[] allowdIps = { "127.0.0.1",
@@ -119,8 +119,8 @@ public class LcpTestController extends AbstractController {
 				}
 			}
 			// 算sig值
-			String normalizedString = LcpUtils.generateNormalizedString(null, reqMap);
-			String sig = LcpUtils.generateSignature(normalizedString, secretKey);
+			String normalizedString = LcpUtil.generateNormalizedString(null, reqMap);
+			String sig = LcpUtil.generateSignature(normalizedString, secretKey);
 			reqMap.put("sig", sig);
 			final String body = HttpUtil.getPostBodyFromMap(reqMap);
 			final String url = ((envs[envId].startsWith(ENV_TEST) && IP_LOCAL.startsWith("192.168.")) ? ENV_TEST_REAL

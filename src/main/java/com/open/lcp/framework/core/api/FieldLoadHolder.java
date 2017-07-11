@@ -19,12 +19,12 @@ import org.apache.commons.beanutils.BeanUtils;
  * 
  * @author 
  */
-public class LcpFieldLoadHolder {
+public class FieldLoadHolder {
 
     /**
      * Logger for this class
      */
-    private static final Log logger = LogFactory.getLog(LcpFieldLoadHolder.class);
+    private static final Log logger = LogFactory.getLog(FieldLoadHolder.class);
 
     private static final Map<Class<?>, List<Field>> fieldMap = new ConcurrentHashMap<Class<?>, List<Field>>();
 

@@ -18,7 +18,7 @@ import com.open.lcp.framework.core.annotation.LcpRequired;
  * 
  * @author
  */
-public class LcpModelDefLanHolder {
+public class ModelDefLanHolder {
 
 	private static final Map<Class<?>, String> MDL_MAP = new ConcurrentHashMap<Class<?>, String>();
 
@@ -54,7 +54,7 @@ public class LcpModelDefLanHolder {
 			sb.append(desc.value().replaceAll("\\\\", "\\\\").replaceAll("\"", "\\\""));
 		}
 		sb.append("\">\r\n");
-		List<Field> fs = LcpFieldLoadHolder.getFields(c);
+		List<Field> fs = FieldLoadHolder.getFields(c);
 		int subLayer = layer + 1;
 		for (Field f : fs) {
 			Class<?> type = f.getType();
@@ -261,7 +261,7 @@ public class LcpModelDefLanHolder {
 			sb.append(desc.value().replaceAll("\\\\", "\\\\").replaceAll("\"", "\\\""));
 		}
 		sb.append("</caption>\r\n");
-		List<Field> fs = LcpFieldLoadHolder.getFields(c);
+		List<Field> fs = FieldLoadHolder.getFields(c);
 		List<Field> fsRequired = new ArrayList<Field>();
 		List<Field> fsNotRequired = new ArrayList<Field>();
 		{

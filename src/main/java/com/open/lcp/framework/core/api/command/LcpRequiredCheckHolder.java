@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.open.lcp.framework.core.annotation.LcpReq;
 import com.open.lcp.framework.core.annotation.LcpRequired;
-import com.open.lcp.framework.core.api.LcpFieldLoadHolder;
+import com.open.lcp.framework.core.api.FieldLoadHolder;
 import com.open.lcp.framework.core.api.RequiredCheck;
 import com.open.lcp.framework.core.api.RequiredCheck.ErrorType;
 
@@ -42,7 +42,7 @@ public class LcpRequiredCheckHolder {
 		if (clazz.getName().startsWith("java.")) {
 			return CHECK_PASS;
 		}
-		List<Field> fields = LcpFieldLoadHolder.getFields(clazz);
+		List<Field> fields = FieldLoadHolder.getFields(clazz);
 		for (Field field : fields) {
 			RequiredCheck result = check(field, o);
 			if (result != null && result.getErrorType() != ErrorType.Pass) {
@@ -66,7 +66,7 @@ public class LcpRequiredCheckHolder {
 		if (clazz.getName().startsWith("java.lang.") || !clazz.getName().contains(".")) {
 			return CHECK_PASS;
 		}
-		List<Field> fields = LcpFieldLoadHolder.getFields(clazz);
+		List<Field> fields = FieldLoadHolder.getFields(clazz);
 		for (Field field : fields) {
 			RequiredCheck result = check(field, o);
 			if (result != null && result.getErrorType() != ErrorType.Pass) {// 未通过校验

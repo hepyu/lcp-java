@@ -19,7 +19,7 @@ import com.open.common.util.StringToListUtils;
 import com.open.lcp.framework.core.annotation.LcpReq;
 import com.open.lcp.framework.core.annotation.LcpRequired;
 import com.open.lcp.framework.core.api.command.CommandContext;
-import com.open.lcp.framework.util.LcpMixEncUtils;
+import com.open.lcp.framework.util.LcpMixEncUtil;
 import com.open.lcp.framework.core.annotation.LcpRequired.Struct;
 
 public class ModelCastHolder {
@@ -189,7 +189,7 @@ public class ModelCastHolder {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.putAll(paramMapSrc);
 			{
-				List<Field> fs = LcpFieldLoadHolder.getFields(targetObj.getClass());
+				List<Field> fs = FieldLoadHolder.getFields(targetObj.getClass());
 				for (Field f : fs) {
 					if (f == null)
 						continue;
@@ -211,14 +211,14 @@ public class ModelCastHolder {
 						if (req.aes()) {
 							final byte[] aesKey = cctx.getAesKey();
 							if (req.gz()) {
-								value = LcpMixEncUtils.AesGzDecode(value, aesKey);
+								value = LcpMixEncUtil.AesGzDecode(value, aesKey);
 							} else {
-								value = LcpMixEncUtils.AesDecode(value, aesKey);
+								value = LcpMixEncUtil.AesDecode(value, aesKey);
 							}
 							cctx.addStatExt(f.getName(), value);
 							paramMap.put(f.getName(), value);
 						} else if (req.gz()) {
-							value = new String(LcpMixEncUtils.ungzBase64(value));
+							value = new String(LcpMixEncUtil.ungzBase64(value));
 							cctx.addStatExt(f.getName(), value);
 							paramMap.put(f.getName(), value);
 						}
@@ -235,9 +235,9 @@ public class ModelCastHolder {
 							if (!value.startsWith("{") && !value.startsWith("[")) {// json缁撴瀯鑷姩鍏煎
 								if (req != null && req.aes()) {
 									final byte[] aeskey = LcpThreadLocal.thCommandContext.get().getAesKey();
-									value = LcpMixEncUtils.AesGzDecode(value, aeskey);
+									value = LcpMixEncUtil.AesGzDecode(value, aeskey);
 								} else {
-									value = new String(LcpMixEncUtils.ungzBase64(value), "UTF-8");
+									value = new String(LcpMixEncUtil.ungzBase64(value), "UTF-8");
 								}
 							}
 							Object oT = gson.fromJson(value, f.getGenericType());
@@ -325,7 +325,7 @@ public class ModelCastHolder {
 	public static <O, N> N cast(O o, N n) {
 		if (o == null || n == null)
 			return null;
-		List<Field> oFields = LcpFieldLoadHolder.getFields(o.getClass());
+		List<Field> oFields = FieldLoadHolder.getFields(o.getClass());
 		Map<String, Object> values = new HashMap<String, Object>();
 		for (Field f : oFields) {
 			f.setAccessible(true);

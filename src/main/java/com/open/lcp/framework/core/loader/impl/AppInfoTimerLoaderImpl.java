@@ -18,7 +18,7 @@ import com.open.lcp.framework.core.api.service.dao.info.LcpAppAuthInfo;
 import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 import com.open.lcp.framework.core.loader.AppInfoTimerLoader;
 import com.open.lcp.framework.core.loader.TimerLoader;
-import com.open.lcp.framework.util.LcpUtils;
+import com.open.lcp.framework.util.LcpUtil;
 
 @Component
 public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
@@ -107,7 +107,7 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 			return false;
 		}
 		for (LcpAppAuthInfo auth : apiAuthList) {
-			if (isClientIPAuthorized(clientIP, auth) && LcpUtils.leftMatch(methodName, auth.getAuthMethod())) {
+			if (isClientIPAuthorized(clientIP, auth) && LcpUtil.leftMatch(methodName, auth.getAuthMethod())) {
 				return true;
 			}
 		}
@@ -122,7 +122,7 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 		}
 
 		for (String authIP : authIPs) {
-			if (LcpUtils.leftMatch(clientIP, authIP)) {
+			if (LcpUtil.leftMatch(clientIP, authIP)) {
 				return true;
 			}
 		}

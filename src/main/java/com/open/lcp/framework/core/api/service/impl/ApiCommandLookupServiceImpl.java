@@ -18,13 +18,13 @@ import com.open.lcp.framework.core.annotation.LcpMethod;
 import com.open.lcp.framework.core.api.command.ApiCommand;
 import com.open.lcp.framework.core.api.command.ApiFacadeMethod;
 import com.open.lcp.framework.core.api.command.CommandModelHolder;
-import com.open.lcp.framework.core.api.service.LcpApiCommandLookupService;
+import com.open.lcp.framework.core.api.service.ApiCommandLookupService;
 import com.open.lcp.framework.core.facade.ApiFacade;
 
 @Service
-public class LcpApiCommandLookupServiceImpl implements LcpApiCommandLookupService, InitializingBean {
+public class ApiCommandLookupServiceImpl implements ApiCommandLookupService, InitializingBean {
 
-	private static final Log logger = LogFactory.getLog(LcpApiCommandLookupServiceImpl.class);
+	private static final Log logger = LogFactory.getLog(ApiCommandLookupServiceImpl.class);
 
 	@Autowired
 	private Collection<ApiFacade> apiFacadeList;
@@ -52,8 +52,7 @@ public class LcpApiCommandLookupServiceImpl implements LcpApiCommandLookupServic
 	}
 
 	@Override
-	public ApiCommand lookupApiCommand(String methodValue, String version) {
-		final ApiFacadeMethod afm = CommandModelHolder.getApiFacadeMethod(methodValue, version);
+	public ApiCommand lookupApiCommand(final ApiFacadeMethod afm) {
 		if (afm != null) {
 			final String apiAndVer = String.format("%s:%s", afm.getLcpMethod().name(), afm.getLcpMethod().ver());
 			AtomicLong counter = apiPvCounter.get(apiAndVer);

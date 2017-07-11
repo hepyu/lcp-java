@@ -5,7 +5,7 @@ import java.util.List;
 import com.open.lcp.framework.core.api.service.dao.info.LcpAppAuthInfo;
 import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 
-public interface LcpAppInfoService {
+public interface AppInfoService {
 
 	public LcpAppInfo getAppInfo(int appId);
 

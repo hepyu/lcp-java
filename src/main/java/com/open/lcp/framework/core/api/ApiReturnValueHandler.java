@@ -29,16 +29,16 @@ import com.open.lcp.framework.core.api.command.ApiCommandContext;
 import com.open.lcp.framework.core.api.command.ApiFacadeMethod;
 import com.open.lcp.framework.core.api.command.CommandContext;
 import com.open.lcp.framework.core.api.command.CommandModelHolder;
-import com.open.lcp.framework.core.api.service.LcpApiExceptionMessageService;
+import com.open.lcp.framework.core.api.service.ApiExceptionMessageService;
 import com.open.lcp.framework.core.api.service.dao.LcpIgnoreMethodLogDAO;
 import com.open.lcp.framework.core.api.service.dao.entity.LcpIgnoreMethodLogEntity;
 import com.open.lcp.framework.core.consts.LcpConstants;
 import com.open.lcp.framework.core.facade.ApiResult;
 import com.open.lcp.framework.core.loader.TimerLoader;
-import com.open.lcp.framework.util.LcpUtils;
+import com.open.lcp.framework.util.LcpUtil;
 
 @Component
-public class LcpApiReturnValueHandler implements HandlerMethodReturnValueHandler, TimerLoader {
+public class ApiReturnValueHandler implements HandlerMethodReturnValueHandler, TimerLoader {
 	private static final Log logReqResp = LogFactory.getLog("mcp_req_resp");
 
 	//private static final String env_host = EnvFinderUtil.getIpcfg().getLocalIp();
@@ -51,7 +51,7 @@ public class LcpApiReturnValueHandler implements HandlerMethodReturnValueHandler
 	private LcpIgnoreMethodLogDAO lcpIgnoreMethodLogDAO;
 
 	@Autowired
-	private LcpApiExceptionMessageService apiExceptionMessageService;
+	private ApiExceptionMessageService apiExceptionMessageService;
 
 	private static final Gson gsonDefault = LcpConstants.gson;
 
@@ -97,7 +97,7 @@ public class LcpApiReturnValueHandler implements HandlerMethodReturnValueHandler
 		if (env_host != null) {
 			resp.addHeader("ViaS", env_host);
 		}
-		final String methodName = LcpUtils.getCmdMethodFromURI(req.getRequestURI());
+		final String methodName = LcpUtil.getCmdMethodFromURI(req.getRequestURI());
 		boolean cacheResult = false;
 		if (methodName != null && !methodName.isEmpty()) {
 			final ApiFacadeMethod apiFacadeMethod = CommandModelHolder.getApiFacadeMethod(methodName, version);
@@ -117,7 +117,7 @@ public class LcpApiReturnValueHandler implements HandlerMethodReturnValueHandler
 					resultJson = cachedJson;
 				} else {
 					final Object resultO = buildObjResult(apiResult.getData());
-					if (LcpUtils.isJsonString(resultO) || LcpUtils.isHtmlString(resultO)) {
+					if (LcpUtil.isJsonString(resultO) || LcpUtil.isHtmlString(resultO)) {
 						resultJson = (String) resultO;
 					} else {
 						resultJson = gson.toJson(resultO);
@@ -142,9 +142,9 @@ public class LcpApiReturnValueHandler implements HandlerMethodReturnValueHandler
 			} else {
 				if (jsCall != null && jsCall.length() > 0) {
 					resp.setContentType("text/javascript;charset=UTF-8");
-				} else if (LcpUtils.isJsonString(resultJson)) {
+				} else if (LcpUtil.isJsonString(resultJson)) {
 					resp.setContentType("text/plain;charset=UTF-8");
-				} else if (LcpUtils.isHtmlString(resultJson)) {
+				} else if (LcpUtil.isHtmlString(resultJson)) {
 					resp.setContentType("text/html;charset=UTF-8");
 				} else {
 					resp.setContentType("text/plain;charset=UTF-8");
@@ -239,10 +239,10 @@ public class LcpApiReturnValueHandler implements HandlerMethodReturnValueHandler
 		if (result == null) {
 			return null;
 		}
-		if (LcpUtils.isJsonString(result)) {
+		if (LcpUtil.isJsonString(result)) {
 			return result;
 		}
-		if (LcpUtils.isHtmlString(result)) {
+		if (LcpUtil.isHtmlString(result)) {
 			return result;
 		}
 		if (result instanceof Boolean) {

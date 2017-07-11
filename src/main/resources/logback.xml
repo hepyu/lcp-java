@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<include resource="org/springframework/boot/logging/logback/base.xml" />
+
+<!-- 	<property name="REQUEST_LOG_FILE" value="/data/logs/mcp/request" /> -->
+<!-- 	<property name="XLMCP_LOG_FILE" value="/data/logs/mcp/xlmcp" /> -->
+<!-- 	<property name="HTTP_LOG_FILE" value="/data/logs/mcp/http" /> -->
+<!-- 	<property name="HTTP_SLOW_LOG_FILE" value="/data/logs/mcp/http_slow" /> -->
+<!-- 	<property name="HTTP_SLOWX_LOG_FILE" value="/data/logs/mcp/http_slowx" /> -->
+<!-- 	<property name="HTTP_SLOWXX_LOG_FILE" value="/data/logs/mcp/http_slowxx" /> -->
+<!-- 	<property name="HTTP_NZ_LOG_FILE" value="/data/logs/mcp/http_nz" /> -->
+<!-- 	<property name="STAT_LOG_FILE" value="/data/logs/mcp/stat" /> -->
+<!-- 	<property name="TEST_LOG_FILE" value="/data/logs/mcp/test" /> -->
+	
+	<property name="REQUEST_LOG_FILE" value="E:/data/logs/mcp/request" />
+	<property name="XLMCP_LOG_FILE" value="E:/data/logs/mcp/xlmcp" />
+	<property name="HTTP_LOG_FILE" value="E:/data/logs/mcp/http" />
+	<property name="HTTP_SLOW_LOG_FILE" value="E:/data/logs/mcp/http_slow" />
+	<property name="HTTP_SLOWX_LOG_FILE" value="E:/data/logs/mcp/http_slowx" />
+	<property name="HTTP_SLOWXX_LOG_FILE" value="E:/data/logs/mcp/http_slowxx" />
+	<property name="HTTP_NZ_LOG_FILE" value="E:/data/logs/mcp/http_nz" />
+	<property name="STAT_LOG_FILE" value="E:/data/logs/mcp/stat" />
+	<property name="TEST_LOG_FILE" value="E:/data/logs/mcp/test" />
+
+	<appender name="xlmcp"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+<!-- 			<pattern>%d - %m%n</pattern> -->
+			<pattern>${FILE_LOG_PATTERN}</pattern>
+		</encoder>
+		<file>${XLMCP_LOG_FILE}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${XLMCP_LOG_FILE}-%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+
+			<MaxHistory>5</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1024MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+
+		</rollingPolicy>
+	</appender>
+
+	<appender name="httpAccess"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>%d - %m%n</pattern>
+		</encoder>
+		<file>${HTTP_LOG_FILE}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${HTTP_LOG_FILE}-%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+			<MaxHistory>50</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1024MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+	<appender name="httpAccessSlow"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>%d - %m%n</pattern>
+		</encoder>
+		<file>${HTTP_SLOW_LOG_FILE}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${HTTP_SLOW_LOG_FILE}-%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+			<MaxHistory>50</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1024MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>	
+	<appender name="httpAccessSlowX"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>%d - %m%n</pattern>
+		</encoder>
+		<file>${HTTP_SLOWX_LOG_FILE}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${HTTP_SLOWX_LOG_FILE}-%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+			<MaxHistory>50</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1024MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+	<appender name="httpAccessSlowXX"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>%d - %m%n</pattern>
+		</encoder>
+		<file>${HTTP_SLOWXX_LOG_FILE}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${HTTP_SLOWXX_LOG_FILE}-%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+			<MaxHistory>50</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1024MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+
+	<appender name="httpAccessNZ"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>%d - %m%n</pattern>
+		</encoder>
+		<file>${HTTP_NZ_LOG_FILE}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${HTTP_NZ_LOG_FILE}-%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+			<MaxHistory>50</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1024MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+	<appender name="mcpReqResp"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>%d - %m%n</pattern>
+		</encoder>
+		<file>${STAT_LOG_FILE}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${STAT_LOG_FILE}-%d{yyyy-MM-dd_HH}.%i.log
+			</fileNamePattern>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+			<MaxHistory>50</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1024MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+
+	<appender name="testlog"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>%d - %m%n</pattern>
+		</encoder>
+		<file>${TEST_LOG_FILE}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${TEST_LOG_FILE}-%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+			<MaxHistory>50</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1024MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+
+
+	<logger name="mcp_req_resp" additivity="false">
+		<level value="info" />
+		<appender-ref ref="mcpReqResp" />
+	</logger>
+	<logger name="http_access" additivity="false">
+		<level value="info" />
+		<appender-ref ref="httpAccess" />
+	</logger>
+	<logger name="http_access_slow" additivity="false">
+		<level value="info" />
+		<appender-ref ref="httpAccessSlow" />
+	</logger>
+	<logger name="http_access_slowX" additivity="false">
+		<level value="info" />
+		<appender-ref ref="httpAccessSlowX" />
+	</logger>
+	<logger name="http_access_slowXX" additivity="false">
+		<level value="info" />
+		<appender-ref ref="httpAccessSlowXX" />
+	</logger>
+	<logger name="http_access_nz" additivity="false">
+		<level value="info" />
+		<appender-ref ref="httpAccessNZ" />
+	</logger>
+
+	<logger name="com.xunlei.xlmc.api.controller.TestController"
+		additivity="false">
+		<level value="info" />
+		<appender-ref ref="testlog" />
+	</logger>
+
+	<logger name="com.xunlei.xlmc" additivity="false">
+		<level value="info" />
+		<appender-ref ref="xlmcp" />
+ 		<appender-ref ref="CONSOLE" />
+	</logger>
+
+	<root level="INFO">
+		<appender-ref ref="xlmcp" />
+ 		<appender-ref ref="CONSOLE" />
+	</root>
+
+
+</configuration>

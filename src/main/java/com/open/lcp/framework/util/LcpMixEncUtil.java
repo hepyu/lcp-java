@@ -9,7 +9,7 @@ import java.util.zip.GZIPOutputStream;
 import com.open.common.util.AESUtils;
 import com.open.common.util.Base64Utils;
 
-public class LcpMixEncUtils {
+public class LcpMixEncUtil {
 	/**
 	 * 鎻愪緵缁檃pp.init鎺ュ彛鐢紝imei鍜宮ac鐨勮В瀵嗐��
 	 * 
