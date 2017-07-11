@@ -30,7 +30,7 @@ import com.open.lcp.framework.core.api.command.ApiFacadeMethod;
 import com.open.lcp.framework.core.api.command.CommandContext;
 import com.open.lcp.framework.core.api.command.CommandModelHolder;
 import com.open.lcp.framework.core.api.service.ApiExceptionMessageService;
-import com.open.lcp.framework.core.api.service.dao.LcpIgnoreMethodLogDAO;
+import com.open.lcp.framework.core.api.service.dao.IgnoreMethodLogDAO;
 import com.open.lcp.framework.core.api.service.dao.entity.LcpIgnoreMethodLogEntity;
 import com.open.lcp.framework.core.consts.LcpConstants;
 import com.open.lcp.framework.core.facade.ApiResult;
@@ -48,7 +48,7 @@ public class ApiReturnValueHandler implements HandlerMethodReturnValueHandler, T
 	private Set<String> sysConfigIgnoreLogMethodSet;
 
 	@Autowired
-	private LcpIgnoreMethodLogDAO lcpIgnoreMethodLogDAO;
+	private IgnoreMethodLogDAO lcpIgnoreMethodLogDAO;
 
 	@Autowired
 	private ApiExceptionMessageService apiExceptionMessageService;

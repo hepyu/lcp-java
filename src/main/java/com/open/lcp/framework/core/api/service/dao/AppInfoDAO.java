@@ -11,7 +11,7 @@ import com.open.lcp.framework.core.api.service.dao.entity.LcpTimeSwitcherEntity;
 import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
 
 @DAO(catalog = "lcp")
-public interface LcpAppInfoDAO {
+public interface AppInfoDAO {
 
 	// *** (1). table lcp_sys_config_app_info ***//
 

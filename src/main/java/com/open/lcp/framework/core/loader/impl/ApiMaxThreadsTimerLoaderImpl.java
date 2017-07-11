@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.open.lcp.framework.core.api.service.dao.LcpAppInfoDAO;
+import com.open.lcp.framework.core.api.service.dao.AppInfoDAO;
 import com.open.lcp.framework.core.api.service.dao.entity.LcpApiMaxThreadsEntity;
 import com.open.lcp.framework.core.loader.ApiMaxThreadsTimerLoader;
 
@@ -17,7 +17,7 @@ public class ApiMaxThreadsTimerLoaderImpl implements ApiMaxThreadsTimerLoader {
 	private Map<String, LcpApiMaxThreadsEntity> map = new HashMap<String, LcpApiMaxThreadsEntity>(0);
 
 	@Autowired
-	private LcpAppInfoDAO appInfoDAO;
+	private AppInfoDAO appInfoDAO;
 
 	@Override
 	public String reload() {

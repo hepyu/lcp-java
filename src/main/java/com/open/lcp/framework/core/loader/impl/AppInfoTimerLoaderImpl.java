@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.open.lcp.framework.core.api.service.dao.LcpAppInfoDAO;
+import com.open.lcp.framework.core.api.service.dao.AppInfoDAO;
 import com.open.lcp.framework.core.api.service.dao.entity.LcpAppAuthInfoEntity;
 import com.open.lcp.framework.core.api.service.dao.entity.LcpAppInfoEntity;
 import com.open.lcp.framework.core.api.service.dao.info.LcpAppAuthInfo;
@@ -30,7 +30,7 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 	private Map<Integer, List<LcpAppAuthInfo>> appAuthMap = null;
 
 	@Autowired
-	private LcpAppInfoDAO appInfoDAO;
+	private AppInfoDAO appInfoDAO;
 
 	private void loadApp() {
 		logger.info("loadApp start");

@@ -6,9 +6,9 @@ public enum ResourceEnum {
 
 	mysql_lcpFramework_master("mysql", "lcp", "lcp_framework"),
 
-	mysql_lcpBiz_master("mysql", "lcp", "lcp_biz"),
+	mysql_lcpBiz_master("mysql", "lcp", "lcp_biz_master"),
 
-	mysql_lcpBiz_slave("mysql", "lcp", "lcp_biz");
+	mysql_lcpBiz_slave("mysql", "lcp", "lcp_biz_slave");
 
 	private String resourceType;
 
