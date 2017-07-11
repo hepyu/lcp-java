@@ -2,21 +2,21 @@ package com.open.lcp.framework.core.api.service;
 
 import java.util.List;
 
-import com.open.lcp.framework.core.api.service.dao.info.LcpAppAuthInfo;
-import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
+import com.open.lcp.framework.core.api.service.dao.info.AppAuthInfo;
+import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 
 public interface AppInfoService {
 
-	public LcpAppInfo getAppInfo(int appId);
+	public AppInfo getAppInfo(int appId);
 
 	public boolean isAllowedApiMethod(int appId, String methodName, String clientIP);
 
-	public List<LcpAppAuthInfo> getAppAuthListByAppId(int appId);
+	public List<AppAuthInfo> getAppAuthListByAppId(int appId);
 
-	public int createApp(LcpAppInfo appInfo);
+	public int createApp(AppInfo appInfo);
 
-	public LcpAppInfo getAppInfoByAppId(int appId);
+	public AppInfo getAppInfoByAppId(int appId);
 
-	public List<LcpAppInfo> getAppInfoList();
+	public List<AppInfo> getAppInfoList();
 
 }

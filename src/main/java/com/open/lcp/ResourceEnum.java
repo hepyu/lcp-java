@@ -2,13 +2,17 @@ package com.open.lcp;
 
 public enum ResourceEnum {
 
-	ssdb_lcp_app_init("ssdb", "lcp", "lcp_app_init"),
+	mysql_lcp_framework_master("mysql", "lcp_framework", "lcp_framework_master"),
+	
+	mysql_lcp_plugin_passport_master("mysql", "lcp_plugin", "lcp_plugin_passport_master"),
+	
+	mysql_lcp_plugin_appinit_master("mysql", "lcp_plugin", "lcp_plugin_appinit_master"),
+	
+	redis_lcp_plugin_app_init("redis", "lcp_plugin", "lcp_app_init"),
 
-	mysql_lcpFramework_master("mysql", "lcp", "lcp_framework"),
+	mysql_lcp_biz_master("mysql", "lcp_biz", "lcp_biz_master"),
 
-	mysql_lcpBiz_master("mysql", "lcp", "lcp_biz_master"),
-
-	mysql_lcpBiz_slave("mysql", "lcp", "lcp_biz_slave");
+	mysql_lcp_biz_slave("mysql", "lcp_biz", "lcp_biz_slave");
 
 	private String resourceType;
 

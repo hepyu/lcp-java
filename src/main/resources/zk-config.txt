@@ -1,8 +1,18 @@
+(1).各种开发环境的hosts主机列表配置
 /lcp/dev/hosts {"hosts":["113.208.115.74"]}
 
+(2).ssdb配置，根据业务区分
 /lcp/dev/ssdb/lcp_app_init {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
 /lcp/dev/ssdb/passport {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
 
+(3).redis配置，根据业务区分
 /lcp/dev/redis/passport {"redisHostAndPorts":"123.57.204.187:7001,123.57.204.187:7002,123.57.204.187:7003","timeout":"2000","maxRedirections":"500","password":"123456","isCluster":true}
 
+(4).lcp_framework只存放lcp平台相关的参数，全部加载在JVM中，定时刷新，所以可以放到一个资源占用很小的db中.
 /lcp/dev/mysql/master/lcp_framework { "url": "jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&characterEncoding=utf-8", "userName": "root", "userName": "root", "password":"111111", "driverClassName":"com.mysql.jdbc.Driver"}
+
+(5).lcp_framework提供各种功能性插件,由于数据库名称的不同，plugIn涉及到的DAO有可能需要修改@DAO注解中的catalog为实际数据库
+
+/lcp/dev/mysql/master/lcp_framework/plugin/passport { "url": "jdbc:mysql://123.57.204.187:3306/lcp_passport?useUnicode=true&characterEncoding=utf-8", "userName": "root", "userName": "root", "password":"111111", "driverClassName":"com.mysql.jdbc.Driver"}
+
+/lcp/dev/mysql/master/lcp_framework/plugin/app_init { "url": "jdbc:mysql://123.57.204.187:3306/lcp_app_init?useUnicode=true&characterEncoding=utf-8", "userName": "root", "userName": "root", "password":"111111", "driverClassName":"com.mysql.jdbc.Driver"}

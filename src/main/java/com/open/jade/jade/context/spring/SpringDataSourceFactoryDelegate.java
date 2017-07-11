@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.ListableBeanFactory;
 
+import com.open.jade.jade.annotation.DataSource;
 import com.open.jade.jade.dataaccess.DataSourceFactory;
 import com.open.jade.jade.dataaccess.DataSourceHolder;
 import com.open.jade.jade.statement.StatementMetaData;
@@ -15,29 +16,32 @@ import com.open.jade.jade.statement.StatementMetaData;
  */
 public class SpringDataSourceFactoryDelegate implements DataSourceFactory {
 
-    private ListableBeanFactory beanFactory;
+	private ListableBeanFactory beanFactory;
 
-    private DataSourceFactory dataSourceFactory;
+	private DataSourceFactory dataSourceFactory;
 
-    public SpringDataSourceFactoryDelegate(ListableBeanFactory beanFactory) {
-        this.beanFactory = beanFactory;
-    }
+	public SpringDataSourceFactoryDelegate(ListableBeanFactory beanFactory) {
+		this.beanFactory = beanFactory;
+	}
 
-    @Override
-    public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> runtimeProperties) {
-        if (dataSourceFactory == null) {
-            ListableBeanFactory beanFactory = this.beanFactory;
-            if (beanFactory != null) {
-                if (beanFactory.containsBeanDefinition("jade.dataSourceFactory")) {
-                    dataSourceFactory = (DataSourceFactory) beanFactory.getBean(
-                            "jade.dataSourceFactory", DataSourceFactory.class);
-                } else {
-                    dataSourceFactory = new SpringDataSourceFactory(beanFactory);
-                }
-                this.beanFactory = null;
-            }
-        }
-        return dataSourceFactory.getHolder(metaData, runtimeProperties);
-    }
+	@Override
+	public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> runtimeProperties) {
+		if (dataSourceFactory == null) {
+			ListableBeanFactory beanFactory = this.beanFactory;
+			if (beanFactory != null) {
+				DataSource ds = metaData.getDAOMetaData().getDAOClass().getAnnotation(DataSource.class);
+				if (beanFactory.containsBean(ds.catalog())) {
+					dataSourceFactory = (DataSourceFactory) beanFactory.getBean(ds.catalog(), DataSourceFactory.class);
+				} else if (beanFactory.containsBeanDefinition("jade.dataSourceFactory")) {
+					dataSourceFactory = (DataSourceFactory) beanFactory.getBean("jade.dataSourceFactory",
+							DataSourceFactory.class);
+				} else {
+					dataSourceFactory = new SpringDataSourceFactory(beanFactory);
+				}
+				this.beanFactory = null;
+			}
+		}
+		return dataSourceFactory.getHolder(metaData, runtimeProperties);
+	}
 
 }

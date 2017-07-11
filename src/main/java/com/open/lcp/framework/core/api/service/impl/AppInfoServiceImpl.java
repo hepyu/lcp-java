@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.open.lcp.framework.core.api.service.AppInfoService;
 import com.open.lcp.framework.core.api.service.dao.AppInfoDAO;
-import com.open.lcp.framework.core.api.service.dao.entity.LcpAppInfoEntity;
-import com.open.lcp.framework.core.api.service.dao.info.LcpAppAuthInfo;
-import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
+import com.open.lcp.framework.core.api.service.dao.entity.AppInfoEntity;
+import com.open.lcp.framework.core.api.service.dao.info.AppAuthInfo;
+import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 import com.open.lcp.framework.core.loader.AppInfoTimerLoader;
 
 @Service
@@ -26,7 +26,7 @@ public class AppInfoServiceImpl implements AppInfoService {
 	}
 
 	@Override
-	public LcpAppInfo getAppInfo(int appId) {
+	public AppInfo getAppInfo(int appId) {
 		return appInfoTimerLoader.getAppInfo(appId);
 	}
 
@@ -36,26 +36,26 @@ public class AppInfoServiceImpl implements AppInfoService {
 	}
 
 	@Override
-	public List<LcpAppAuthInfo> getAppAuthListByAppId(int appId) {
+	public List<AppAuthInfo> getAppAuthListByAppId(int appId) {
 		return appInfoTimerLoader.getAppAuthListByAppId(appId);
 	}
 
 	@Override
-	public int createApp(LcpAppInfo appInfo) {
+	public int createApp(AppInfo appInfo) {
 		return appInfoDAO.createApp(appInfo);
 	}
 
 	@Override
-	public LcpAppInfo getAppInfoByAppId(int appId) {
+	public AppInfo getAppInfoByAppId(int appId) {
 		return appInfoDAO.findAppInfoByAppId(appId);
 	}
 
 	@Override
-	public List<LcpAppInfo> getAppInfoList() {
-		List<LcpAppInfoEntity> list = appInfoDAO.getAppList();
-		List<LcpAppInfo> rtList = new ArrayList<LcpAppInfo>();
+	public List<AppInfo> getAppInfoList() {
+		List<AppInfoEntity> list = appInfoDAO.getAppList();
+		List<AppInfo> rtList = new ArrayList<AppInfo>();
 		if (list != null) {
-			for (LcpAppInfoEntity entity : list) {
+			for (AppInfoEntity entity : list) {
 				rtList.add(entity);
 			}
 		}
