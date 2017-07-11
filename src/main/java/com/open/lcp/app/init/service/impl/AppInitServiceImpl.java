@@ -1,0 +1,69 @@
+package com.open.lcp.app.init.service.impl;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
+
+import com.open.dbs.cache.redis.RedisX;
+import com.open.dbs.cache.redis.RedisXFactory;
+import com.open.dbs.cache.ssdb.SSDBX;
+import com.open.env.finder.ZKFinder;
+import com.open.lcp.ZKResourcePath;
+import com.open.lcp.app.init.service.AppInitService;
+import com.open.lcp.app.init.service.dao.AppInitInfoDAO;
+import com.open.lcp.app.init.service.dao.entity.AppInitInfoEntity;
+
+@Service
+public class AppInitServiceImpl implements AppInitService {
+
+	private static final Log logger = LogFactory.getLog(AppInitServiceImpl.class);
+	private static final String APP_INIT_KEY = "app-init-";
+
+	private RedisX redis = RedisXFactory.loadRedisX(ZKResourcePath.redis_lcp_app_init);
+
+	@Resource
+	AppInitInfoDAO appInitDao;
+
+	@Override
+	public AppInitInfoEntity getAppInitInfo(String deviceId) {
+		try {
+			AppInitInfoEntity appInitInfo = redis.get(APP_INIT_KEY + deviceId, AppInitInfoEntity.class);
+			if (appInitInfo == null) {
+				appInitInfo = appInitDao.getAppInit(deviceId);
+				if (appInitInfo == null) {
+					redis.set(APP_INIT_KEY + deviceId, "{}");
+					return null;
+				}
+				redis.set(APP_INIT_KEY + deviceId, appInitInfo);
+				return appInitInfo;
+			} else {
+				if (StringUtils.isBlank(appInitInfo.getDeviceId())) {
+					return null;
+				}
+				return appInitInfo;
+			}
+		} catch (Exception e) {
+			logger.error("init ssdb query error deviceId:" + deviceId, e);
+		}
+		return appInitDao.getAppInit(deviceId);
+	}
+
+	@Override
+	public boolean setAppInitInfo(AppInitInfoEntity appInitInfo) {
+
+		AppInitInfoEntity app = (AppInitInfoEntity) appInitInfo;
+		if (logger.isDebugEnabled()) {
+			logger.debug("app.init ------- " + app);
+		}
+		int result = appInitDao.saveAppInit(app);
+
+		if (result > 0 && redis.set(APP_INIT_KEY + app.getDeviceId(), app) > -1) {
+			return true;
+		}
+		return false;
+	}
+
+}

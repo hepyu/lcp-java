@@ -12,7 +12,7 @@ import com.open.lcp.framework.core.api.service.dao.entity.TimeSwitcherEntity;
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 
 @DataSource(catalog = "lcp_framework")
-@DAO(catalog = "lcp")
+@DAO(catalog = "lcp_framework")
 public interface AppInfoDAO {
 
 	// *** (1). table lcp_sys_config_app_info ***//

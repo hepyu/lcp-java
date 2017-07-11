@@ -17,81 +17,80 @@ import com.mangocity.zk.ZkConfigChangeSubscriberImpl;
 import com.open.dbs.cache.redis.cluster.JedisClusterImpl;
 import com.open.dbs.cache.redis.single.JedisPoolImpl;
 import com.open.env.finder.ZKFinder;
+import com.open.lcp.ZKResourcePath;
 
 public class RedisXFactory {
 	private static final Log logger = LogFactory.getLog(RedisXFactory.class);
 
-	private static final ConcurrentMap<String, RedisX> redisMap = new ConcurrentHashMap<String, RedisX>();
+	private static final ConcurrentMap<ZKResourcePath, RedisX> redisMap = new ConcurrentHashMap<ZKResourcePath, RedisX>();
 
 	private static final Object INIT_REDISIMPL_MAP = new Object();
 
-	public static RedisX loadRedisX(final String instanceName) {
+	public static RedisX loadRedisX(final ZKResourcePath zkResourcePath) {
 
-		final String redisZKRoot = ZKFinder.findRedisZKRoot();
-		RedisX instance = redisMap.get(instanceName);
+		RedisX instance = redisMap.get(zkResourcePath);
 		if (instance == null) {
 			synchronized (INIT_REDISIMPL_MAP) {
+				instance = redisMap.get(zkResourcePath);
 				if (instance == null) {
-					instance = redisMap.get(instanceName);
-					if (instance == null) {
-						ZkClient zkClient = null;
-						try {
-							zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
+					ZkClient zkClient = null;
+					try {
+						zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
 
-								@Override
-								public byte[] serialize(Object paramObject) throws ZkMarshallingError {
-									return paramObject == null ? null : paramObject.toString().getBytes();
-								}
-
-								@Override
-								public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
-									return new String(paramArrayOfByte);
-								}
-							});
-
-							ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, redisZKRoot);
-							sub.subscribe(instanceName, new ConfigChangeListener() {
-
-								@Override
-								public void configChanged(String key, String value) {
-									loadRedisX(key, value);
-								}
-							});
-
-							loadRedisX(zkClient, redisZKRoot, instanceName);
-						} catch (Exception e) {
-							logger.error(e.getMessage(), e);
-							System.exit(-1);
-						} finally {
-							if (zkClient != null) {
-								zkClient.close();
+							@Override
+							public byte[] serialize(Object paramObject) throws ZkMarshallingError {
+								return paramObject == null ? null : paramObject.toString().getBytes();
 							}
+
+							@Override
+							public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
+								return new String(paramArrayOfByte);
+							}
+						});
+
+						ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient,
+								ZKFinder.findZKResourceParentPath(zkResourcePath));
+						sub.subscribe(zkResourcePath.resourceName(), new ConfigChangeListener() {
+
+							@Override
+							public void configChanged(String key, String value) {
+								loadRedisX(zkResourcePath, value);
+							}
+						});
+
+						loadRedisX(zkResourcePath, zkClient);
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+						System.exit(-1);
+					} finally {
+						if (zkClient != null) {
+							zkClient.close();
 						}
 					}
 				}
 			}
 		}
 		if (redisMap != null && redisMap.size() > 0) {
-			for (Entry<String, RedisX> entry : redisMap.entrySet()) {
+			for (Entry<ZKResourcePath, RedisX> entry : redisMap.entrySet()) {
 				logger.debug("--RedisServiceImpl--" + entry.getKey() + "--" + entry.getValue());
 			}
 		}
 
-		return redisMap.get(instanceName);
+		return redisMap.get(zkResourcePath);
 	}
 
-	private static void loadRedisX(String instance, String jsonStr) {
+	private static void loadRedisX(final ZKResourcePath zkResourcePath, String jsonStr) {
 		ZKRedisConfig redisConfig = loadZKRedisConfig(jsonStr);
-		loadRedisX(instance, redisConfig);
+		loadRedisX(zkResourcePath, redisConfig);
 	}
 
-	private static void loadRedisX(ZkClient zkClient, String ssdbZkRoot, String instance) {
-		String ssdbStr = zkClient.readData(ssdbZkRoot + "/" + instance);
+	private static void loadRedisX(final ZKResourcePath zkResourcePath, ZkClient zkClient) {
+		String ssdbStr = zkClient.readData(ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
 		ZKRedisConfig redisConfig = loadZKRedisConfig(ssdbStr);
-		loadRedisX(instance, redisConfig);
+		loadRedisX(zkResourcePath, redisConfig);
 	}
 
-	private static void loadRedisX(String instance, ZKRedisConfig redisConfig) {
+	private static void loadRedisX(final ZKResourcePath zkResourcePath, ZKRedisConfig redisConfig) {
 		RedisX redisX = null;
 		if (redisConfig.isCluster()) {
 			redisX = new JedisPoolImpl(redisConfig);
@@ -100,7 +99,7 @@ public class RedisXFactory {
 		}
 
 		redisX = (RedisX) new RedisProxy(redisX).getProxyInstance();
-		redisMap.put(instance, redisX);
+		redisMap.put(zkResourcePath, redisX);
 	}
 
 	private static ZKRedisConfig loadZKRedisConfig(String jsonStr) {

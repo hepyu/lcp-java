@@ -1,0 +1,22 @@
+grant all privileges on *.* to root@113.208.115.74 identified by 'xxxxxx' with grant option;
+
+CREATE TABLE `app_init_info` (
+  `device_id` varchar(255) NOT NULL DEFAULT '0',
+  `miui_version` varchar(255) DEFAULT NULL,
+  `product_version` varchar(255) DEFAULT NULL,
+  `miui_type` varchar(255) DEFAULT NULL,
+  `language` varchar(255) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `screen_height` varchar(255) DEFAULT NULL,
+  `device` varchar(255) DEFAULT NULL,
+  `android_version` varchar(255) DEFAULT NULL,
+  `model` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `screen_resolution` varchar(255) DEFAULT NULL,
+  `screen_width` varchar(255) DEFAULT NULL,
+  `screen_density` varchar(255) DEFAULT NULL,
+  `mac` varchar(255) DEFAULT NULL,
+  `imei` varchar(255) DEFAULT NULL,
+  `mac_md5` varchar(255) DEFAULT NULL,
+  `imei_md5` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`device_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

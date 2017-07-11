@@ -42,9 +42,9 @@ import com.open.lcp.framework.core.consts.LcpConstants;
 import com.open.lcp.framework.core.facade.ApiResult;
 import com.open.lcp.framework.core.facade.ApiResultCode;
 import com.open.lcp.framework.util.LcpUtil;
-import com.open.lcp.plugin.passport.dto.CheckTicket;
-import com.open.lcp.plugin.passport.service.AccountInfoService;
-import com.open.lcp.plugin.passport.service.AccountTicketService;
+import com.open.lcp.passport.dto.CheckTicket;
+import com.open.lcp.passport.service.AccountInfoService;
+import com.open.lcp.passport.service.AccountTicketService;
 
 @Controller
 @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })

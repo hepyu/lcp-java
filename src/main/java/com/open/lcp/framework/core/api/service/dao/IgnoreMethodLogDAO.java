@@ -8,7 +8,7 @@ import com.open.jade.jade.annotation.SQL;
 import com.open.lcp.framework.core.api.service.dao.entity.IgnoreMethodLogEntity;
 
 @DataSource(catalog = "lcp_framework")
-@DAO(catalog = "lcp")
+@DAO(catalog = "lcp_framework")
 public interface IgnoreMethodLogDAO {
 
 	@SQL("SELECT method_name, ctime FROM lcp_sys_config_ignore_log_method ORDER BY method_name ASC")

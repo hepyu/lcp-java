@@ -1,9 +1,10 @@
 package com.open.lcp.framework.core.api.command;
 
 import java.util.Map;
+
+import com.open.lcp.app.init.service.dao.info.AppInitInfo;
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
-import com.open.lcp.plugin.appinit.service.dao.info.AppInitInfo;
-import com.open.lcp.plugin.passport.dto.PassportUserAccountDTO;
+import com.open.lcp.passport.dto.PassportUserAccountDTO;
 
 /**
  * 接口执行时的上下文信息

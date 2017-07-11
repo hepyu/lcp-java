@@ -1,7 +1,5 @@
 package com.open.lcp.framework.core.configuration;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -9,14 +7,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.open.dbs.DBConfig;
-import com.open.env.finder.ZKFinder;
+import com.open.dbs.mysql.MysqlLoader;
 import com.open.jade.jade.context.spring.JadeBeanFactoryPostProcessor;
 import com.open.jade.jade.dataaccess.DataSourceFactory;
 import com.open.jade.jade.dataaccess.DataSourceHolder;
-import com.open.jade.jade.dataaccess.datasource.MasterSlaveDataSourceFactory;
 import com.open.jade.jade.statement.StatementMetaData;
-import com.open.lcp.ResourceEnum;
-import javax.sql.DataSource;
+import com.open.lcp.ZKResourcePath;
 
 @Configuration
 public class DataSourceConfiguration {
@@ -43,7 +39,7 @@ public class DataSourceConfiguration {
 		return new DataSourceFactory() {
 			@Override
 			public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> attributes) {
-				DBConfig dbconfig = ZKFinder.findMysqlMaster(ResourceEnum.mysql_lcp_framework_master.resourceName());
+				DBConfig dbconfig = MysqlLoader.loadMaster(ZKResourcePath.mysql_lcp_framework_master);
 				BasicDataSource ds = new BasicDataSource();
 				// ds.setDriverClassName("com.mysql.jdbc.Driver");
 				// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
@@ -61,13 +57,13 @@ public class DataSourceConfiguration {
 			}
 		};
 	}
-	
-	@Bean(name = "lcp_plugin_passport") // only master
+
+	@Bean(name = "lcp_passport") // only master
 	public DataSourceFactory getPassportDataSource() {
 		return new DataSourceFactory() {
 			@Override
 			public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> attributes) {
-				DBConfig dbconfig = ZKFinder.findMysqlMaster(ResourceEnum.mysql_lcp_plugin_passport_master.resourceName());
+				DBConfig dbconfig = MysqlLoader.loadMaster(ZKResourcePath.mysql_lcp_passport_master);
 				BasicDataSource ds = new BasicDataSource();
 				// ds.setDriverClassName("com.mysql.jdbc.Driver");
 				// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
@@ -85,13 +81,13 @@ public class DataSourceConfiguration {
 			}
 		};
 	}
-	
-	@Bean(name = "lcp_plugin_appinit") // only master
+
+	@Bean(name = "lcp_app_init") // only master
 	public DataSourceFactory getAppInitDataSource() {
 		return new DataSourceFactory() {
 			@Override
 			public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> attributes) {
-				DBConfig dbconfig = ZKFinder.findMysqlMaster(ResourceEnum.mysql_lcp_plugin_appinit_master.resourceName());
+				DBConfig dbconfig = MysqlLoader.loadMaster(ZKResourcePath.mysql_lcp_app_init_master);
 				BasicDataSource ds = new BasicDataSource();
 				// ds.setDriverClassName("com.mysql.jdbc.Driver");
 				// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
@@ -111,40 +107,44 @@ public class DataSourceConfiguration {
 	}
 
 	// @Bean(name = "lcpBiz") // master and slave
-//	public MasterSlaveDataSourceFactory getMasterSlaveDataSource() {
-//
-//		DBConfig masterDBConfig = ZKFinder.findMysqlMaster(ResourceEnum.mysql_lcpBiz_master.resourceName());
-//		BasicDataSource master = new BasicDataSource();
-//		// ds.setDriverClassName("com.mysql.jdbc.Driver");
-//		// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
-//		// ds.setUsername("root");
-//		// ds.setPassword("111111");
-//		master.setDriverClassName(masterDBConfig.getDriverClassName());
-//		master.setUrl(masterDBConfig.getUrl());
-//		master.setUsername(masterDBConfig.getUserName());
-//		master.setPassword(masterDBConfig.getPassword());
-//		master.setTimeBetweenEvictionRunsMillis(3600000);
-//		master.setMinEvictableIdleTimeMillis(3600000);
-//
-//		DBConfig slaveDBConfig = ZKFinder.findMysqlSlave(ResourceEnum.mysql_lcpBiz_slave.resourceName());
-//		BasicDataSource slave = new BasicDataSource();
-//		// ds.setDriverClassName("com.mysql.jdbc.Driver");
-//		// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
-//		// ds.setUsername("root");
-//		// ds.setPassword("111111");
-//		slave.setDriverClassName(slaveDBConfig.getDriverClassName());
-//		slave.setUrl(slaveDBConfig.getUrl());
-//		slave.setUsername(slaveDBConfig.getUserName());
-//		slave.setPassword(slaveDBConfig.getPassword());
-//		slave.setTimeBetweenEvictionRunsMillis(3600000);
-//		slave.setMinEvictableIdleTimeMillis(3600000);
-//
-//		List<DataSource> slaves = new ArrayList<DataSource>();
-//		slaves.add(slave);
-//
-//		boolean queryFromMaster = false;
-//		return new MasterSlaveDataSourceFactory(master, slaves, queryFromMaster);
-//	}
+	// public MasterSlaveDataSourceFactory getMasterSlaveDataSource() {
+	//
+	// DBConfig masterDBConfig =
+	// ZKFinder.findMysqlMaster(ResourceEnum.mysql_lcpBiz_master.resourceName());
+	// BasicDataSource master = new BasicDataSource();
+	// // ds.setDriverClassName("com.mysql.jdbc.Driver");
+	// //
+	// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
+	// // ds.setUsername("root");
+	// // ds.setPassword("111111");
+	// master.setDriverClassName(masterDBConfig.getDriverClassName());
+	// master.setUrl(masterDBConfig.getUrl());
+	// master.setUsername(masterDBConfig.getUserName());
+	// master.setPassword(masterDBConfig.getPassword());
+	// master.setTimeBetweenEvictionRunsMillis(3600000);
+	// master.setMinEvictableIdleTimeMillis(3600000);
+	//
+	// DBConfig slaveDBConfig =
+	// ZKFinder.findMysqlSlave(ResourceEnum.mysql_lcpBiz_slave.resourceName());
+	// BasicDataSource slave = new BasicDataSource();
+	// // ds.setDriverClassName("com.mysql.jdbc.Driver");
+	// //
+	// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
+	// // ds.setUsername("root");
+	// // ds.setPassword("111111");
+	// slave.setDriverClassName(slaveDBConfig.getDriverClassName());
+	// slave.setUrl(slaveDBConfig.getUrl());
+	// slave.setUsername(slaveDBConfig.getUserName());
+	// slave.setPassword(slaveDBConfig.getPassword());
+	// slave.setTimeBetweenEvictionRunsMillis(3600000);
+	// slave.setMinEvictableIdleTimeMillis(3600000);
+	//
+	// List<DataSource> slaves = new ArrayList<DataSource>();
+	// slaves.add(slave);
+	//
+	// boolean queryFromMaster = false;
+	// return new MasterSlaveDataSourceFactory(master, slaves, queryFromMaster);
+	// }
 
 	@Bean
 	public JadeBeanFactoryPostProcessor getJadeBeanFactoryPostProcessor() {
