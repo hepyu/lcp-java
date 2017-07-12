@@ -31,11 +31,20 @@ public class JedisClusterImpl implements RedisX {
 		holder.setJedis(redisConfig);
 	}
 
-//	@Override
-//	public void resetRedis(ZKRedisConfig redisConfig) {
-//		holder.setJedis(redisConfig);
-//
-//	}
+	@Override
+	public void close() {
+		try {
+			getJedisCluster().close();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+
+	// @Override
+	// public void resetRedis(ZKRedisConfig redisConfig) {
+	// holder.setJedis(redisConfig);
+	//
+	// }
 
 	private JedisCluster getJedisCluster() {
 		return holder.getJedisCluster();

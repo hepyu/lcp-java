@@ -54,11 +54,17 @@ public class RedisXFactory {
 
 							@Override
 							public void configChanged(String key, String value) {
-								loadRedisX(zkResourcePath, value);
+								RedisX redisX = loadRedisX(zkResourcePath, value);
+
+								RedisX old = redisMap.get(zkResourcePath);
+								redisMap.put(zkResourcePath, redisX);
+								
+								old.close();
 							}
 						});
 
-						loadRedisX(zkResourcePath, zkClient);
+						RedisX redisX = loadRedisX(zkResourcePath, zkClient);
+						redisMap.put(zkResourcePath, redisX);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 						System.exit(-1);
@@ -79,18 +85,18 @@ public class RedisXFactory {
 		return redisMap.get(zkResourcePath);
 	}
 
-	private static void loadRedisX(final LcpResource zkResourcePath, String jsonStr) {
+	private static RedisX loadRedisX(final LcpResource zkResourcePath, String jsonStr) {
 		ZKRedisConfig redisConfig = loadZKRedisConfig(jsonStr);
-		loadRedisX(zkResourcePath, redisConfig);
+		return loadRedisX(zkResourcePath, redisConfig);
 	}
 
-	private static void loadRedisX(final LcpResource zkResourcePath, ZkClient zkClient) {
+	private static RedisX loadRedisX(final LcpResource zkResourcePath, ZkClient zkClient) {
 		String ssdbStr = zkClient.readData(ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
 		ZKRedisConfig redisConfig = loadZKRedisConfig(ssdbStr);
-		loadRedisX(zkResourcePath, redisConfig);
+		return loadRedisX(zkResourcePath, redisConfig);
 	}
 
-	private static void loadRedisX(final LcpResource zkResourcePath, ZKRedisConfig redisConfig) {
+	private static RedisX loadRedisX(final LcpResource zkResourcePath, ZKRedisConfig redisConfig) {
 		RedisX redisX = null;
 		if (redisConfig.isCluster()) {
 			redisX = new JedisClusterImpl(redisConfig);
@@ -99,7 +105,7 @@ public class RedisXFactory {
 		}
 
 		redisX = (RedisX) new RedisProxy(redisX).getProxyInstance();
-		redisMap.put(zkResourcePath, redisX);
+		return redisX;
 	}
 
 	private static ZKRedisConfig loadZKRedisConfig(String jsonStr) {

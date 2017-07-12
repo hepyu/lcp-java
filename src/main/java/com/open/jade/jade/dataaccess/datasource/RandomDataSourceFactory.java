@@ -41,6 +41,15 @@ public class RandomDataSourceFactory implements DataSourceFactory {
 
     public RandomDataSourceFactory() {
     }
+    
+    public DataSourceHolder getHolder(String name){
+    	throw new RuntimeException("not support.");
+    }
+    
+    @Override
+	public void replaceHolder(String name, DataSource dataSource) {
+		throw new RuntimeException("not support.");
+	}
 
     public void addDataSource(DataSource dataSource) {
         if (this.dataSources.size() == 0) {

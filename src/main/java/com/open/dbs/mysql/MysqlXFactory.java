@@ -1,7 +1,8 @@
 package com.open.dbs.mysql;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
 
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkMarshallingError;
@@ -11,9 +12,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.gson.Gson;
+import com.mangocity.zk.ConfigChangeListener;
+import com.mangocity.zk.ConfigChangeSubscriber;
+import com.mangocity.zk.ZkConfigChangeSubscriberImpl;
 import com.open.dbs.DBConfig;
 import com.open.env.finder.ZKFinder;
 import com.open.jade.jade.dataaccess.DataSourceFactory;
+import com.open.jade.jade.dataaccess.DataSourceHolder;
 import com.open.jade.jade.dataaccess.datasource.HierarchicalDataSourceFactory;
 import com.open.lcp.LcpResource;
 
@@ -25,16 +30,14 @@ public class MysqlXFactory {
 
 	private static Gson gson = new Gson();
 
-	private static final Map<LcpResource, DataSourceFactory> dataSourceMap = new ConcurrentHashMap<LcpResource, DataSourceFactory>();
-
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
 	public static DataSourceFactory loadMysqlX(final LcpResource zkResourcePath) {
-		DataSourceFactory ds = dataSourceMap.get(zkResourcePath);
-		if (ds == null) {
+		DataSourceHolder dsHolder = hierarchicalDataSourceFactory.getHolder(zkResourcePath.lcpAnnotationName());
+		if (dsHolder == null) {
 			synchronized (LOCK_OF_NEWPATH) {
-				ds = dataSourceMap.get(zkResourcePath);
-				if (ds == null) {
+				dsHolder = hierarchicalDataSourceFactory.getHolder(zkResourcePath.lcpAnnotationName());
+				if (dsHolder == null) {
 					ZkClient zkClient = null;
 					try {
 						zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
@@ -50,9 +53,34 @@ public class MysqlXFactory {
 							}
 						});
 
+						ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient,
+								ZKFinder.findZKResourceParentPath(zkResourcePath));
+						sub.subscribe(zkResourcePath.zkNodeName(), new ConfigChangeListener() {
+
+							@Override
+							public void configChanged(String key, String value) {
+								DBConfig dbconfig = loadDBConfig(value);
+								DataSource newds = load(zkResourcePath, dbconfig);
+								
+								DataSourceHolder oldDSHolder = hierarchicalDataSourceFactory.getHolder(zkResourcePath.lcpAnnotationName());
+								hierarchicalDataSourceFactory.replaceHolder(zkResourcePath.lcpAnnotationName(),
+										newds);
+								
+								if(oldDSHolder!=null){
+									BasicDataSource ds = (BasicDataSource)oldDSHolder.getDataSource();
+									try {
+										ds.close();
+									} catch (SQLException e) {
+										logger.error(e.getMessage(),e);
+									}
+								}
+							}
+						});
+
 						DBConfig dbconfig = loadDBConfig(zkResourcePath, zkClient);
-						ds = load(zkResourcePath, dbconfig);
-						dataSourceMap.put(zkResourcePath, ds);
+						DataSource ds = load(zkResourcePath, dbconfig);
+
+						hierarchicalDataSourceFactory.registerDataSource(zkResourcePath.lcpAnnotationName(), ds);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 						System.exit(-1);
@@ -64,7 +92,7 @@ public class MysqlXFactory {
 				}
 			}
 		}
-		return dataSourceMap.get(zkResourcePath);
+		return hierarchicalDataSourceFactory;
 	}
 
 	private static DBConfig loadDBConfig(LcpResource zkResourcePath, ZkClient zkClient) {
@@ -77,7 +105,7 @@ public class MysqlXFactory {
 		return dbConfig;
 	}
 
-	private static DataSourceFactory load(final LcpResource lcpResource, final DBConfig dbconfig) {
+	private static DataSource load(final LcpResource lcpResource, final DBConfig dbconfig) {
 		BasicDataSource ds = new BasicDataSource();
 		// ds.setDriverClassName("com.mysql.jdbc.Driver");
 		// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
@@ -89,9 +117,8 @@ public class MysqlXFactory {
 		ds.setPassword(dbconfig.getPassword());
 		ds.setTimeBetweenEvictionRunsMillis(3600000);
 		ds.setMinEvictableIdleTimeMillis(3600000);
-
-		hierarchicalDataSourceFactory.registerDataSource(lcpResource.lcpAnnotationName(), ds);
-		return hierarchicalDataSourceFactory;
+		
+		return ds;
 	}
 
 }

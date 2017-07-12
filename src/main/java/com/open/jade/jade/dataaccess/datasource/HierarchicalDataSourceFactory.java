@@ -55,6 +55,14 @@ public class HierarchicalDataSourceFactory implements DataSourceFactory {
     public HierarchicalDataSourceFactory(DataSource defaultDataSource) {
         this.defaultDataSource = new DataSourceHolder(defaultDataSource);
     }
+    
+    public void replaceHolder(String name, DataSource dataSource){
+    	dataSources.put(name, new DataSourceHolder(dataSource));
+    }
+    
+    public DataSourceHolder getHolder(String name){
+    	return dataSources.get(name);
+    }
 
     /**
      * 注册一个数据源，名称以点号为分隔分成多级。如果名称星号，表示默认数据源。

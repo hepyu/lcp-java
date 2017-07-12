@@ -47,6 +47,15 @@ public class SimpleDataSourceFactory implements DataSourceFactory {
     public SimpleDataSourceFactory(DataSource dataSource) {
         setDataSource(dataSource);
     }
+    
+    public DataSourceHolder getHolder(String name){
+    	return dataSource;
+    }
+    
+    @Override
+	public void replaceHolder(String name, DataSource dataSource) {
+		throw new RuntimeException("not support.");
+	}
 
     /**
      * 设置数据源。

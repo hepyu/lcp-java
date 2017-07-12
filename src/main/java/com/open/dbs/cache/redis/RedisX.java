@@ -4,6 +4,8 @@ import com.open.dbs.cache.CacheX;
 
 public interface RedisX extends CacheX {
 
+	public void close();
+	
 	// public void resetRedis(ZKRedisConfig redisConfig);
 
 	public <K, V> long set(K key, V v, int seconds);
