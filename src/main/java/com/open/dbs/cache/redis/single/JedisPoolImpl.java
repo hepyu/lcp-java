@@ -41,6 +41,11 @@ public class JedisPoolImpl implements RedisX {
 	}
 
 	@Override
+	public void close() {
+		getJedis().close();
+	}
+
+	@Override
 	public <K, MEMBER> long geoAdd(K key, double longitude, double latitude, MEMBER member) {
 		return getJedis().geoadd(jsonConv.bytes(key), longitude, latitude, jsonConv.bytes(member));
 	}

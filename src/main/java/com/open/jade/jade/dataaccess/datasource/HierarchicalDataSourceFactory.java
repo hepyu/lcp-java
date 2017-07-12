@@ -22,6 +22,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.open.jade.jade.annotation.DAO;
 import com.open.jade.jade.dataaccess.DataSourceFactory;
 import com.open.jade.jade.dataaccess.DataSourceHolder;
 import com.open.jade.jade.statement.StatementMetaData;
@@ -53,6 +54,14 @@ public class HierarchicalDataSourceFactory implements DataSourceFactory {
 
     public HierarchicalDataSourceFactory(DataSource defaultDataSource) {
         this.defaultDataSource = new DataSourceHolder(defaultDataSource);
+    }
+    
+    public void replaceHolder(String name, DataSource dataSource){
+    	dataSources.put(name, new DataSourceHolder(dataSource));
+    }
+    
+    public DataSourceHolder getHolder(String name){
+    	return dataSources.get(name);
     }
 
     /**
@@ -101,8 +110,14 @@ public class HierarchicalDataSourceFactory implements DataSourceFactory {
      */
     @Override
     public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> runtime) {
-        String daoName = metaData.getDAOMetaData().getDAOClass().getName();
-        String name = daoName;
+    	
+    	//hepengyuan update begin
+        //String daoName = metaData.getDAOMetaData().getDAOClass().getName();
+        //String name = daoName;
+        String name = metaData.getDAOMetaData().getDAOClass().getDeclaredAnnotation(DAO.class).catalog();
+        String daoName = name;
+        //hepengyuan update end
+    	
         DataSourceHolder dataSource = dataSources.get(name);
         if (dataSource != null) {
             return dataSource;

@@ -59,6 +59,15 @@ public class MasterSlaveDataSourceFactory implements DataSourceFactory {
 
     public MasterSlaveDataSourceFactory() {
     }
+    
+    public DataSourceHolder getHolder(String name){
+    	throw new RuntimeException("not support.");
+    }
+    
+    @Override
+	public void replaceHolder(String name, DataSource dataSource) {
+		throw new RuntimeException("not support.");
+	}
 
     /**
      * 

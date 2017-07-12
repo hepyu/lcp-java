@@ -1,34 +1,43 @@
 package com.open.dbs.mysql;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkMarshallingError;
 import org.I0Itec.zkclient.serialize.ZkSerializer;
-import com.google.gson.Gson;
-import com.open.dbs.DBConfig;
-import com.open.env.finder.ZKFinder;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.google.gson.Gson;
+import com.mangocity.zk.ConfigChangeListener;
+import com.mangocity.zk.ConfigChangeSubscriber;
+import com.mangocity.zk.ZkConfigChangeSubscriberImpl;
+import com.open.dbs.DBConfig;
+import com.open.env.finder.ZKFinder;
+import com.open.jade.jade.dataaccess.DataSourceFactory;
+import com.open.jade.jade.dataaccess.DataSourceHolder;
+import com.open.jade.jade.dataaccess.datasource.HierarchicalDataSourceFactory;
+import com.open.lcp.LcpResource;
 
 public class MysqlXFactory {
 
 	private static final Log logger = LogFactory.getLog(MysqlXFactory.class);
 
+	private static HierarchicalDataSourceFactory hierarchicalDataSourceFactory = new HierarchicalDataSourceFactory();
+
 	private static Gson gson = new Gson();
-
-	private static final Map<String, DBConfig> mysqlMasterConfigMap = new ConcurrentHashMap<String, DBConfig>();
-
-	private static final Map<String, DBConfig> mysqlSlaveConfigMap = new ConcurrentHashMap<String, DBConfig>();
 
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
-	public static DBConfig getMaster(final String instanceName) {
-		final String mysqlMasterZkRoot = ZKFinder.findMysqlMasterZKRoot();
-		DBConfig dbconfig = mysqlMasterConfigMap.get(instanceName);
-		if (dbconfig == null) {
+	public static DataSourceFactory loadMysqlX(final LcpResource zkResourcePath) {
+		DataSourceHolder dsHolder = hierarchicalDataSourceFactory.getHolder(zkResourcePath.lcpAnnotationName());
+		if (dsHolder == null) {
 			synchronized (LOCK_OF_NEWPATH) {
-				if (dbconfig == null) {
+				dsHolder = hierarchicalDataSourceFactory.getHolder(zkResourcePath.lcpAnnotationName());
+				if (dsHolder == null) {
 					ZkClient zkClient = null;
 					try {
 						zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
@@ -44,45 +53,34 @@ public class MysqlXFactory {
 							}
 						});
 
-						dbconfig = loadDBConfig(zkClient, mysqlMasterZkRoot, instanceName);
-						mysqlMasterConfigMap.put(instanceName, dbconfig);
-					} catch (Exception e) {
-						logger.error(e.getMessage(), e);
-						System.exit(-1);
-					} finally {
-						if (zkClient != null) {
-							zkClient.close();
-						}
-					}
-				}
-			}
-		}
-		return mysqlMasterConfigMap.get(instanceName);
-	}
-
-	public static DBConfig getSlave(final String instanceName) {
-		final String mysqlSlaveZkRoot = ZKFinder.findMysqlSlaveZKRoot();
-		DBConfig dbconfig = mysqlSlaveConfigMap.get(instanceName);
-		if (dbconfig == null) {
-			synchronized (LOCK_OF_NEWPATH) {
-				if (dbconfig == null) {
-					ZkClient zkClient = null;
-					try {
-						zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
+						ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient,
+								ZKFinder.findZKResourceParentPath(zkResourcePath));
+						sub.subscribe(zkResourcePath.zkNodeName(), new ConfigChangeListener() {
 
 							@Override
-							public byte[] serialize(Object paramObject) throws ZkMarshallingError {
-								return paramObject == null ? null : paramObject.toString().getBytes();
-							}
-
-							@Override
-							public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
-								return new String(paramArrayOfByte);
+							public void configChanged(String key, String value) {
+								DBConfig dbconfig = loadDBConfig(value);
+								DataSource newds = load(zkResourcePath, dbconfig);
+								
+								DataSourceHolder oldDSHolder = hierarchicalDataSourceFactory.getHolder(zkResourcePath.lcpAnnotationName());
+								hierarchicalDataSourceFactory.replaceHolder(zkResourcePath.lcpAnnotationName(),
+										newds);
+								
+								if(oldDSHolder!=null){
+									BasicDataSource ds = (BasicDataSource)oldDSHolder.getDataSource();
+									try {
+										ds.close();
+									} catch (SQLException e) {
+										logger.error(e.getMessage(),e);
+									}
+								}
 							}
 						});
 
-						dbconfig = loadDBConfig(zkClient, mysqlSlaveZkRoot, instanceName);
-						mysqlSlaveConfigMap.put(instanceName, dbconfig);
+						DBConfig dbconfig = loadDBConfig(zkResourcePath, zkClient);
+						DataSource ds = load(zkResourcePath, dbconfig);
+
+						hierarchicalDataSourceFactory.registerDataSource(zkResourcePath.lcpAnnotationName(), ds);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 						System.exit(-1);
@@ -94,17 +92,33 @@ public class MysqlXFactory {
 				}
 			}
 		}
-		return mysqlSlaveConfigMap.get(instanceName);
+		return hierarchicalDataSourceFactory;
 	}
 
-	private static DBConfig loadDBConfig(ZkClient zkClient, String ssdbZkRoot, String key) {
-		String ssdbStr = zkClient.readData(ssdbZkRoot + "/" + key);
+	private static DBConfig loadDBConfig(LcpResource zkResourcePath, ZkClient zkClient) {
+		String ssdbStr = zkClient.readData(ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
 		return loadDBConfig(ssdbStr);
 	}
 
 	private static DBConfig loadDBConfig(String jsonStr) {
 		DBConfig dbConfig = gson.fromJson(jsonStr, DBConfig.class);
 		return dbConfig;
+	}
+
+	private static DataSource load(final LcpResource lcpResource, final DBConfig dbconfig) {
+		BasicDataSource ds = new BasicDataSource();
+		// ds.setDriverClassName("com.mysql.jdbc.Driver");
+		// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
+		// ds.setUsername("root");
+		// ds.setPassword("111111");
+		ds.setDriverClassName(dbconfig.getDriverClassName());
+		ds.setUrl(dbconfig.getUrl());
+		ds.setUsername(dbconfig.getUserName());
+		ds.setPassword(dbconfig.getPassword());
+		ds.setTimeBetweenEvictionRunsMillis(3600000);
+		ds.setMinEvictableIdleTimeMillis(3600000);
+		
+		return ds;
 	}
 
 }

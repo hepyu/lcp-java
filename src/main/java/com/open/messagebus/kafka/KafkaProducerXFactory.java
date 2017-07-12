@@ -25,51 +25,51 @@ public class KafkaProducerXFactory {
 
 	public static KafkaProducerX<String, String> getKafkaProducerX(final String source) {
 
-		final String ssdbZkRoot = ZKFinder.findSSDBZKRoot();
-		KafkaProducerXImpl<String, String> producer = kafkaxMap.get(source);
-		if (producer == null) {
-			synchronized (LOCK_OF_NEWPATH) {
-				ZkClient zkClient = null;
-				try {
-					zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
-
-						@Override
-						public byte[] serialize(Object paramObject) throws ZkMarshallingError {
-							return paramObject == null ? null : paramObject.toString().getBytes();
-						}
-
-						@Override
-						public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
-							return new String(paramArrayOfByte);
-						}
-					});
-
-					ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, ssdbZkRoot);
-					sub.subscribe(source, new ConfigChangeListener() {
-
-						@Override
-						public void configChanged(String key, String value) {
-
-							ZKKafkaProducerConfig producerConfig = loadKafkaProducerConfig(value);
-							kafkaxMap.get(source).getKafkaProducerHolder().setProducerConfig(producerConfig);
-
-						}
-					});
-					// String initValue = sub.getInitValue(source);
-
-					// {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
-					ZKKafkaProducerConfig producerConfig = loadKafkaConfig(zkClient, ssdbZkRoot, source);
-					kafkaxMap.put(source, new KafkaProducerXImpl<String, String>(producerConfig));
-				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
-					System.exit(-1);
-				} finally {
-					if (zkClient != null) {
-						zkClient.close();
-					}
-				}
-			}
-		}
+//		final String ssdbZkRoot = ZKFinder.findSSDBZKRoot();
+//		KafkaProducerXImpl<String, String> producer = kafkaxMap.get(source);
+//		if (producer == null) {
+//			synchronized (LOCK_OF_NEWPATH) {
+//				ZkClient zkClient = null;
+//				try {
+//					zkClient = new ZkClient(ZKFinder.findZKHosts(), 10000, 10000, new ZkSerializer() {
+//
+//						@Override
+//						public byte[] serialize(Object paramObject) throws ZkMarshallingError {
+//							return paramObject == null ? null : paramObject.toString().getBytes();
+//						}
+//
+//						@Override
+//						public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
+//							return new String(paramArrayOfByte);
+//						}
+//					});
+//
+//					ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, ssdbZkRoot);
+//					sub.subscribe(source, new ConfigChangeListener() {
+//
+//						@Override
+//						public void configChanged(String key, String value) {
+//
+//							ZKKafkaProducerConfig producerConfig = loadKafkaProducerConfig(value);
+//							kafkaxMap.get(source).getKafkaProducerHolder().setProducerConfig(producerConfig);
+//
+//						}
+//					});
+//					// String initValue = sub.getInitValue(source);
+//
+//					// {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
+//					ZKKafkaProducerConfig producerConfig = loadKafkaConfig(zkClient, ssdbZkRoot, source);
+//					kafkaxMap.put(source, new KafkaProducerXImpl<String, String>(producerConfig));
+//				} catch (Exception e) {
+//					logger.error(e.getMessage(), e);
+//					System.exit(-1);
+//				} finally {
+//					if (zkClient != null) {
+//						zkClient.close();
+//					}
+//				}
+//			}
+//		}
 
 		return kafkaxMap.get(source);
 	}

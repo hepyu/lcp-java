@@ -36,15 +36,15 @@ import com.open.lcp.framework.core.api.command.CommandModelHolder;
 import com.open.lcp.framework.core.api.command.RequestBaseContext;
 import com.open.lcp.framework.core.api.service.ApiCommandLookupService;
 import com.open.lcp.framework.core.api.service.AppInfoService;
-import com.open.lcp.framework.core.api.service.dao.info.LcpAppInfo;
+import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 import com.open.lcp.framework.core.consts.HttpConstants;
 import com.open.lcp.framework.core.consts.LcpConstants;
 import com.open.lcp.framework.core.facade.ApiResult;
 import com.open.lcp.framework.core.facade.ApiResultCode;
 import com.open.lcp.framework.util.LcpUtil;
-import com.open.passport.dto.CheckTicket;
-import com.open.passport.service.AccountInfoService;
-import com.open.passport.service.AccountTicketService;
+import com.open.lcp.passport.dto.CheckTicket;
+import com.open.lcp.passport.service.AccountInfoService;
+import com.open.lcp.passport.service.AccountTicketService;
 
 @Controller
 @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
@@ -322,7 +322,7 @@ public class ApiController {
 			RequestBaseContext requestBaseContext, ApiResult apiResult, final String methodName) throws Exception {
 		Map<String, String> requestParamMap = requestBaseContext.getRequestParamMap();
 		final int appId = NumberUtils.toInt(requestParamMap.get(HttpConstants.PARAM_APP_ID));
-		final LcpAppInfo appInfo = appInfoService.getAppInfo(appId);
+		final AppInfo appInfo = appInfoService.getAppInfo(appId);
 		// 鎺ュ叆淇℃伅鏃犳晥
 		if (appInfo == null) {
 			apiResult.setCode(ApiResultCode.E_SYS_INVALID_APP_ID);

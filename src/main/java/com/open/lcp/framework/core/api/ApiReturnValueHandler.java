@@ -31,7 +31,7 @@ import com.open.lcp.framework.core.api.command.CommandContext;
 import com.open.lcp.framework.core.api.command.CommandModelHolder;
 import com.open.lcp.framework.core.api.service.ApiExceptionMessageService;
 import com.open.lcp.framework.core.api.service.dao.IgnoreMethodLogDAO;
-import com.open.lcp.framework.core.api.service.dao.entity.LcpIgnoreMethodLogEntity;
+import com.open.lcp.framework.core.api.service.dao.entity.IgnoreMethodLogEntity;
 import com.open.lcp.framework.core.consts.LcpConstants;
 import com.open.lcp.framework.core.facade.ApiResult;
 import com.open.lcp.framework.core.loader.TimerLoader;
@@ -269,8 +269,8 @@ public class ApiReturnValueHandler implements HandlerMethodReturnValueHandler, T
 	@Override
 	public String reload() {
 		Set<String> tempSet = new HashSet<String>();
-		List<LcpIgnoreMethodLogEntity> list = lcpIgnoreMethodLogDAO.listAll();
-		for (LcpIgnoreMethodLogEntity o : list) {
+		List<IgnoreMethodLogEntity> list = lcpIgnoreMethodLogDAO.listAll();
+		for (IgnoreMethodLogEntity o : list) {
 			tempSet.add(o.getMethodName());
 		}
 

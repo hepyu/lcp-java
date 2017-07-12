@@ -2,6 +2,8 @@ package com.open.jade.jade.context.spring;
 
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.ListableBeanFactory;
 
 import com.open.jade.jade.dataaccess.DataSourceFactory;
@@ -22,6 +24,15 @@ public class SpringDataSourceFactoryDelegate implements DataSourceFactory {
     public SpringDataSourceFactoryDelegate(ListableBeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
+    
+    public DataSourceHolder getHolder(String name){
+    	throw new RuntimeException("not support.");
+    }
+    
+    @Override
+	public void replaceHolder(String name, DataSource dataSource) {
+		throw new RuntimeException("not support.");
+	}
 
     @Override
     public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> runtimeProperties) {

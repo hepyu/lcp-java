@@ -17,6 +17,8 @@ package com.open.jade.jade.dataaccess;
 
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import com.open.jade.jade.context.spring.SpringDataSourceFactory;
 import com.open.jade.jade.statement.StatementMetaData;
 import com.open.jade.jade.statement.StatementRuntime;
@@ -49,4 +51,8 @@ public interface DataSourceFactory {
      * @return
      */
     DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> attributes);
+    
+    void replaceHolder(String name,  DataSource dataSource);
+    
+    DataSourceHolder getHolder(String name);
 }

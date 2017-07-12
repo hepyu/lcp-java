@@ -14,19 +14,20 @@ import com.mangocity.zk.ConfigChangeListener;
 import com.mangocity.zk.ConfigChangeSubscriber;
 import com.mangocity.zk.ZkConfigChangeSubscriberImpl;
 import com.open.env.finder.ZKFinder;
+import com.open.lcp.LcpResource;
 
 public class SSDBXFactory {
 
 	private static final Log logger = LogFactory.getLog(SSDBXFactory.class);
 
-	private static final Map<String, SSDBXImpl> ssdbxMap = new ConcurrentHashMap<String, SSDBXImpl>();
+	private static final Map<LcpResource, SSDBXImpl> ssdbxMap = new ConcurrentHashMap<LcpResource, SSDBXImpl>();
 
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
-	public static SSDBX getSSDBX(final String instanceName) {
-		final String ssdbZkRoot = ZKFinder.findSSDBZKRoot();
-		SSDBXImpl ssdbxImpl = ssdbxMap.get(instanceName);
+	public static SSDBX getSSDBX(final LcpResource zkResourcePath) {
+		SSDBXImpl ssdbxImpl = ssdbxMap.get(zkResourcePath);
 		if (ssdbxImpl == null) {
+			ssdbxImpl = ssdbxMap.get(zkResourcePath);
 			synchronized (LOCK_OF_NEWPATH) {
 				if (ssdbxImpl == null) {
 					ZkClient zkClient = null;
@@ -44,22 +45,23 @@ public class SSDBXFactory {
 							}
 						});
 
-						ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, ssdbZkRoot);
-						sub.subscribe(instanceName, new ConfigChangeListener() {
+						ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient,
+								ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
+						sub.subscribe(zkResourcePath.zkNodeName(), new ConfigChangeListener() {
 
 							@Override
 							public void configChanged(String key, String value) {
 
 								ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(value);
-								ssdbxMap.get(instanceName).getSSDBHolder().setSSDBConfig(ssdbConfig);
+								ssdbxMap.get(zkResourcePath).getSSDBHolder().setSSDBConfig(ssdbConfig);
 
 							}
 						});
 						// String initValue = sub.getInitValue(source);
 
 						// {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
-						ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(zkClient, ssdbZkRoot, instanceName);
-						ssdbxMap.put(instanceName, new SSDBXImpl(ssdbConfig));
+						ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(zkResourcePath, zkClient);
+						ssdbxMap.put(zkResourcePath, new SSDBXImpl(ssdbConfig));
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 						System.exit(-1);
@@ -71,11 +73,11 @@ public class SSDBXFactory {
 				}
 			}
 		}
-		return ssdbxMap.get(instanceName);
+		return ssdbxMap.get(zkResourcePath);
 	}
 
-	private static ZKSSDBConfig loadSSDBCacheConfig(ZkClient zkClient, String ssdbZkRoot, String key) {
-		String ssdbStr = zkClient.readData(ssdbZkRoot + "/" + key);
+	private static ZKSSDBConfig loadSSDBCacheConfig(LcpResource zkResourcePath, ZkClient zkClient) {
+		String ssdbStr = zkClient.readData(ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
 		return loadSSDBCacheConfig(ssdbStr);
 	}
 
