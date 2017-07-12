@@ -2,7 +2,7 @@ package com.open.lcp.passport.cache.impl;
 
 import com.open.dbs.cache.ssdb.SSDBLoader;
 import com.open.dbs.cache.ssdb.SSDBX;
-import com.open.lcp.ZKResourcePath;
+import com.open.lcp.LcpResource;
 import com.open.lcp.passport.MobileCodeType;
 import com.open.lcp.passport.UserAccountType;
 import com.open.lcp.passport.cache.CacheConstants;
@@ -15,7 +15,7 @@ import com.open.lcp.passport.ticket.Ticket;
 // @Component
 public class PassportSSDBCacheImpl implements PassportCache {
 
-	private final SSDBX cache = SSDBLoader.loadSSDBX(ZKResourcePath.ssdb_lcp_passport);
+	private final SSDBX cache = SSDBLoader.loadSSDBX(LcpResource.ssdb_lcp_passport);
 
 	// 1.secretKey set and get
 

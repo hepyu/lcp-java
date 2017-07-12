@@ -110,6 +110,9 @@ public class SpringDataSourceFactory implements DataSourceFactory, ApplicationCo
     }
 
     private DataSourceHolder getDataSourceByKey(Class<?> daoClass, String key) {
+    	//hepengyuan update begin
+    	key = daoClass.getDeclaredAnnotation(DAO.class).catalog();
+    	//hepengyuan update end
         if (applicationContext.containsBean(key)) {
             Object dataSource = applicationContext.getBean(key);
             if (!(dataSource instanceof DataSource) && !(dataSource instanceof DataSourceFactory)) {

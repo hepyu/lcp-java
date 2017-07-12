@@ -14,17 +14,17 @@ import com.mangocity.zk.ConfigChangeListener;
 import com.mangocity.zk.ConfigChangeSubscriber;
 import com.mangocity.zk.ZkConfigChangeSubscriberImpl;
 import com.open.env.finder.ZKFinder;
-import com.open.lcp.ZKResourcePath;
+import com.open.lcp.LcpResource;
 
 public class SSDBXFactory {
 
 	private static final Log logger = LogFactory.getLog(SSDBXFactory.class);
 
-	private static final Map<ZKResourcePath, SSDBXImpl> ssdbxMap = new ConcurrentHashMap<ZKResourcePath, SSDBXImpl>();
+	private static final Map<LcpResource, SSDBXImpl> ssdbxMap = new ConcurrentHashMap<LcpResource, SSDBXImpl>();
 
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
-	public static SSDBX getSSDBX(final ZKResourcePath zkResourcePath) {
+	public static SSDBX getSSDBX(final LcpResource zkResourcePath) {
 		SSDBXImpl ssdbxImpl = ssdbxMap.get(zkResourcePath);
 		if (ssdbxImpl == null) {
 			ssdbxImpl = ssdbxMap.get(zkResourcePath);
@@ -47,7 +47,7 @@ public class SSDBXFactory {
 
 						ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient,
 								ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
-						sub.subscribe(zkResourcePath.resourceName(), new ConfigChangeListener() {
+						sub.subscribe(zkResourcePath.zkNodeName(), new ConfigChangeListener() {
 
 							@Override
 							public void configChanged(String key, String value) {
@@ -76,7 +76,7 @@ public class SSDBXFactory {
 		return ssdbxMap.get(zkResourcePath);
 	}
 
-	private static ZKSSDBConfig loadSSDBCacheConfig(ZKResourcePath zkResourcePath, ZkClient zkClient) {
+	private static ZKSSDBConfig loadSSDBCacheConfig(LcpResource zkResourcePath, ZkClient zkClient) {
 		String ssdbStr = zkClient.readData(ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
 		return loadSSDBCacheConfig(ssdbStr);
 	}

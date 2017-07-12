@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.open.dbs.cache.redis.RedisX;
 import com.open.dbs.cache.redis.RedisXFactory;
-import com.open.lcp.ZKResourcePath;
+import com.open.lcp.LcpResource;
 import com.open.lcp.passport.MobileCodeType;
 import com.open.lcp.passport.UserAccountType;
 import com.open.lcp.passport.cache.CacheConstants;
@@ -16,7 +16,7 @@ import com.open.lcp.passport.ticket.Ticket;
 @Component
 public class PassportRedisCacheImpl implements PassportCache {
 
-	private final RedisX cache = RedisXFactory.loadRedisX(ZKResourcePath.redis_lcp_passport);
+	private final RedisX cache = RedisXFactory.loadRedisX(LcpResource.redis_lcp_passport);
 
 	// 1.secretKey set and get
 

@@ -3,7 +3,6 @@ package com.open.lcp.framework.core.api.service.dao;
 import java.util.List;
 
 import com.open.jade.jade.annotation.DAO;
-import com.open.jade.jade.annotation.DataSource;
 import com.open.jade.jade.annotation.SQL;
 import com.open.lcp.framework.core.api.service.dao.entity.ApiMaxThreadsEntity;
 import com.open.lcp.framework.core.api.service.dao.entity.AppAuthInfoEntity;
@@ -11,8 +10,7 @@ import com.open.lcp.framework.core.api.service.dao.entity.AppInfoEntity;
 import com.open.lcp.framework.core.api.service.dao.entity.TimeSwitcherEntity;
 import com.open.lcp.framework.core.api.service.dao.info.AppInfo;
 
-@DataSource(catalog = "lcp_framework")
-@DAO(catalog = "lcp_framework")
+@DAO(catalog = "mysql_lcp_framework")
 public interface AppInfoDAO {
 
 	// *** (1). table lcp_sys_config_app_info ***//

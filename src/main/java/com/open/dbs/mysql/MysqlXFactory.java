@@ -14,21 +14,22 @@ import com.google.gson.Gson;
 import com.open.dbs.DBConfig;
 import com.open.env.finder.ZKFinder;
 import com.open.jade.jade.dataaccess.DataSourceFactory;
-import com.open.jade.jade.dataaccess.DataSourceHolder;
-import com.open.jade.jade.statement.StatementMetaData;
-import com.open.lcp.ZKResourcePath;
+import com.open.jade.jade.dataaccess.datasource.HierarchicalDataSourceFactory;
+import com.open.lcp.LcpResource;
 
 public class MysqlXFactory {
 
 	private static final Log logger = LogFactory.getLog(MysqlXFactory.class);
 
+	private static HierarchicalDataSourceFactory hierarchicalDataSourceFactory = new HierarchicalDataSourceFactory();
+
 	private static Gson gson = new Gson();
 
-	private static final Map<ZKResourcePath, DataSourceFactory> dataSourceMap = new ConcurrentHashMap<ZKResourcePath, DataSourceFactory>();
+	private static final Map<LcpResource, DataSourceFactory> dataSourceMap = new ConcurrentHashMap<LcpResource, DataSourceFactory>();
 
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
-	public static DataSourceFactory loadMysqlX(final ZKResourcePath zkResourcePath) {
+	public static DataSourceFactory loadMysqlX(final LcpResource zkResourcePath) {
 		DataSourceFactory ds = dataSourceMap.get(zkResourcePath);
 		if (ds == null) {
 			synchronized (LOCK_OF_NEWPATH) {
@@ -50,7 +51,7 @@ public class MysqlXFactory {
 						});
 
 						DBConfig dbconfig = loadDBConfig(zkResourcePath, zkClient);
-						ds = load(dbconfig);
+						ds = load(zkResourcePath, dbconfig);
 						dataSourceMap.put(zkResourcePath, ds);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
@@ -66,7 +67,7 @@ public class MysqlXFactory {
 		return dataSourceMap.get(zkResourcePath);
 	}
 
-	private static DBConfig loadDBConfig(ZKResourcePath zkResourcePath, ZkClient zkClient) {
+	private static DBConfig loadDBConfig(LcpResource zkResourcePath, ZkClient zkClient) {
 		String ssdbStr = zkClient.readData(ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
 		return loadDBConfig(ssdbStr);
 	}
@@ -76,26 +77,21 @@ public class MysqlXFactory {
 		return dbConfig;
 	}
 
-	private static DataSourceFactory load(final DBConfig dbconfig) {
-		return new DataSourceFactory() {
-			@Override
-			public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> attributes) {
-				BasicDataSource ds = new BasicDataSource();
-				// ds.setDriverClassName("com.mysql.jdbc.Driver");
-				// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
-				// ds.setUsername("root");
-				// ds.setPassword("111111");
-				ds.setDriverClassName(dbconfig.getDriverClassName());
-				ds.setUrl(dbconfig.getUrl());
-				ds.setUsername(dbconfig.getUserName());
-				ds.setPassword(dbconfig.getPassword());
-				ds.setTimeBetweenEvictionRunsMillis(3600000);
-				ds.setMinEvictableIdleTimeMillis(3600000);
+	private static DataSourceFactory load(final LcpResource lcpResource, final DBConfig dbconfig) {
+		BasicDataSource ds = new BasicDataSource();
+		// ds.setDriverClassName("com.mysql.jdbc.Driver");
+		// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
+		// ds.setUsername("root");
+		// ds.setPassword("111111");
+		ds.setDriverClassName(dbconfig.getDriverClassName());
+		ds.setUrl(dbconfig.getUrl());
+		ds.setUsername(dbconfig.getUserName());
+		ds.setPassword(dbconfig.getPassword());
+		ds.setTimeBetweenEvictionRunsMillis(3600000);
+		ds.setMinEvictableIdleTimeMillis(3600000);
 
-				DataSourceHolder dataSourceHolder = new DataSourceHolder(ds);
-				return dataSourceHolder;
-			}
-		};
+		hierarchicalDataSourceFactory.registerDataSource(lcpResource.lcpAnnotationName(), ds);
+		return hierarchicalDataSourceFactory;
 	}
 
 }

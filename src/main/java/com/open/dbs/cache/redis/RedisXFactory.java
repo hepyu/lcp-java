@@ -17,16 +17,16 @@ import com.mangocity.zk.ZkConfigChangeSubscriberImpl;
 import com.open.dbs.cache.redis.cluster.JedisClusterImpl;
 import com.open.dbs.cache.redis.single.JedisPoolImpl;
 import com.open.env.finder.ZKFinder;
-import com.open.lcp.ZKResourcePath;
+import com.open.lcp.LcpResource;
 
 public class RedisXFactory {
 	private static final Log logger = LogFactory.getLog(RedisXFactory.class);
 
-	private static final ConcurrentMap<ZKResourcePath, RedisX> redisMap = new ConcurrentHashMap<ZKResourcePath, RedisX>();
+	private static final ConcurrentMap<LcpResource, RedisX> redisMap = new ConcurrentHashMap<LcpResource, RedisX>();
 
 	private static final Object INIT_REDISIMPL_MAP = new Object();
 
-	public static RedisX loadRedisX(final ZKResourcePath zkResourcePath) {
+	public static RedisX loadRedisX(final LcpResource zkResourcePath) {
 
 		RedisX instance = redisMap.get(zkResourcePath);
 		if (instance == null) {
@@ -50,7 +50,7 @@ public class RedisXFactory {
 
 						ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient,
 								ZKFinder.findZKResourceParentPath(zkResourcePath));
-						sub.subscribe(zkResourcePath.resourceName(), new ConfigChangeListener() {
+						sub.subscribe(zkResourcePath.zkNodeName(), new ConfigChangeListener() {
 
 							@Override
 							public void configChanged(String key, String value) {
@@ -71,7 +71,7 @@ public class RedisXFactory {
 			}
 		}
 		if (redisMap != null && redisMap.size() > 0) {
-			for (Entry<ZKResourcePath, RedisX> entry : redisMap.entrySet()) {
+			for (Entry<LcpResource, RedisX> entry : redisMap.entrySet()) {
 				logger.debug("--RedisServiceImpl--" + entry.getKey() + "--" + entry.getValue());
 			}
 		}
@@ -79,23 +79,23 @@ public class RedisXFactory {
 		return redisMap.get(zkResourcePath);
 	}
 
-	private static void loadRedisX(final ZKResourcePath zkResourcePath, String jsonStr) {
+	private static void loadRedisX(final LcpResource zkResourcePath, String jsonStr) {
 		ZKRedisConfig redisConfig = loadZKRedisConfig(jsonStr);
 		loadRedisX(zkResourcePath, redisConfig);
 	}
 
-	private static void loadRedisX(final ZKResourcePath zkResourcePath, ZkClient zkClient) {
+	private static void loadRedisX(final LcpResource zkResourcePath, ZkClient zkClient) {
 		String ssdbStr = zkClient.readData(ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
 		ZKRedisConfig redisConfig = loadZKRedisConfig(ssdbStr);
 		loadRedisX(zkResourcePath, redisConfig);
 	}
 
-	private static void loadRedisX(final ZKResourcePath zkResourcePath, ZKRedisConfig redisConfig) {
+	private static void loadRedisX(final LcpResource zkResourcePath, ZKRedisConfig redisConfig) {
 		RedisX redisX = null;
 		if (redisConfig.isCluster()) {
-			redisX = new JedisPoolImpl(redisConfig);
-		} else {
 			redisX = new JedisClusterImpl(redisConfig);
+		} else {
+			redisX = new JedisPoolImpl(redisConfig);
 		}
 
 		redisX = (RedisX) new RedisProxy(redisX).getProxyInstance();

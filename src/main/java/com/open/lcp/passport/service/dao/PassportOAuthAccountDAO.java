@@ -3,12 +3,10 @@ package com.open.lcp.passport.service.dao;
 import java.util.List;
 
 import com.open.jade.jade.annotation.DAO;
-import com.open.jade.jade.annotation.DataSource;
 import com.open.jade.jade.annotation.SQL;
 import com.open.lcp.passport.service.dao.entity.PassportOAuthAccountEntity;
 
-@DataSource(catalog = "lcp_passport")
-@DAO(catalog = "lcp_passport")
+@DAO(catalog = "mysql_lcp_passport")
 public interface PassportOAuthAccountDAO {
 
 	public static final String SELECT_PART_SQL = " user_id, open_id, type, user_name, nick_name, avatar, gender, update_ip, bind_ip, update_time, bind_time, last_login_time ";

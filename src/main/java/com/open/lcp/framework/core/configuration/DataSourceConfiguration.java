@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import com.open.dbs.mysql.MysqlXFactory;
 import com.open.jade.jade.context.spring.JadeBeanFactoryPostProcessor;
 import com.open.jade.jade.dataaccess.DataSourceFactory;
-import com.open.lcp.ZKResourcePath;
+import com.open.lcp.LcpResource;
 
 @Configuration
 public class DataSourceConfiguration {
@@ -28,19 +28,19 @@ public class DataSourceConfiguration {
 	// </bean>
 	// @Bean(name = "jade.dataSourceFactory")
 	// @Bean(name = "jade.dataSourceFactory") // only master
-	@Bean(name = "lcp_framework") // only master
+	@Bean(name = "mysql_lcp_framework") // only master
 	public DataSourceFactory getFrameworkDataSource() {
-		return MysqlXFactory.loadMysqlX(ZKResourcePath.mysql_lcp_framework_master);
+		return MysqlXFactory.loadMysqlX(LcpResource.mysql_lcp_framework_master);
 	}
 
-	@Bean(name = "lcp_passport") // only master
+	@Bean(name = "mysql_lcp_passport") // only master
 	public DataSourceFactory getPassportDataSource() {
-		return MysqlXFactory.loadMysqlX(ZKResourcePath.mysql_lcp_passport_master);
+		return MysqlXFactory.loadMysqlX(LcpResource.mysql_lcp_passport_master);
 	}
 
-	@Bean(name = "lcp_biz") // only master
+	@Bean(name = "mysql_lcp_biz") // only master
 	public DataSourceFactory getBizDataSource() {
-		return MysqlXFactory.loadMysqlX(ZKResourcePath.mysql_lcp_biz_master);
+		return MysqlXFactory.loadMysqlX(LcpResource.mysql_lcp_biz_master);
 	}
 
 	// @Bean(name = "lcpBiz") // master and slave
