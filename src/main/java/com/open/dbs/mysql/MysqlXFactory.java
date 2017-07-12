@@ -2,16 +2,21 @@ package com.open.dbs.mysql;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkMarshallingError;
 import org.I0Itec.zkclient.serialize.ZkSerializer;
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.google.gson.Gson;
 import com.open.dbs.DBConfig;
 import com.open.env.finder.ZKFinder;
+import com.open.jade.jade.dataaccess.DataSourceFactory;
+import com.open.jade.jade.dataaccess.DataSourceHolder;
+import com.open.jade.jade.statement.StatementMetaData;
 import com.open.lcp.ZKResourcePath;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class MysqlXFactory {
 
@@ -19,18 +24,16 @@ public class MysqlXFactory {
 
 	private static Gson gson = new Gson();
 
-	private static final Map<ZKResourcePath, DBConfig> mysqlMasterConfigMap = new ConcurrentHashMap<ZKResourcePath, DBConfig>();
-
-	private static final Map<ZKResourcePath, DBConfig> mysqlSlaveConfigMap = new ConcurrentHashMap<ZKResourcePath, DBConfig>();
+	private static final Map<ZKResourcePath, DataSourceFactory> dataSourceMap = new ConcurrentHashMap<ZKResourcePath, DataSourceFactory>();
 
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
-	public static DBConfig getMaster(final ZKResourcePath zkResourcePath) {
-		DBConfig dbconfig = mysqlMasterConfigMap.get(zkResourcePath);
-		if (dbconfig == null) {
+	public static DataSourceFactory loadMysqlX(final ZKResourcePath zkResourcePath) {
+		DataSourceFactory ds = dataSourceMap.get(zkResourcePath);
+		if (ds == null) {
 			synchronized (LOCK_OF_NEWPATH) {
-				dbconfig = mysqlMasterConfigMap.get(zkResourcePath);
-				if (dbconfig == null) {
+				ds = dataSourceMap.get(zkResourcePath);
+				if (ds == null) {
 					ZkClient zkClient = null;
 					try {
 						zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
@@ -46,8 +49,9 @@ public class MysqlXFactory {
 							}
 						});
 
-						dbconfig = loadDBConfig(zkResourcePath, zkClient);
-						mysqlMasterConfigMap.put(zkResourcePath, dbconfig);
+						DBConfig dbconfig = loadDBConfig(zkResourcePath, zkClient);
+						ds = load(dbconfig);
+						dataSourceMap.put(zkResourcePath, ds);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 						System.exit(-1);
@@ -59,44 +63,7 @@ public class MysqlXFactory {
 				}
 			}
 		}
-		return mysqlMasterConfigMap.get(zkResourcePath);
-	}
-
-	public static DBConfig getSlave(final ZKResourcePath zkResourcePath) {
-		DBConfig dbconfig = mysqlSlaveConfigMap.get(zkResourcePath);
-		if (dbconfig == null) {
-			dbconfig = mysqlSlaveConfigMap.get(zkResourcePath);
-			synchronized (LOCK_OF_NEWPATH) {
-				if (dbconfig == null) {
-					ZkClient zkClient = null;
-					try {
-						zkClient = new ZkClient(ZKFinder.findZKHosts(), 180000, 180000, new ZkSerializer() {
-
-							@Override
-							public byte[] serialize(Object paramObject) throws ZkMarshallingError {
-								return paramObject == null ? null : paramObject.toString().getBytes();
-							}
-
-							@Override
-							public Object deserialize(byte[] paramArrayOfByte) throws ZkMarshallingError {
-								return new String(paramArrayOfByte);
-							}
-						});
-
-						dbconfig = loadDBConfig(zkResourcePath, zkClient);
-						mysqlSlaveConfigMap.put(zkResourcePath, dbconfig);
-					} catch (Exception e) {
-						logger.error(e.getMessage(), e);
-						System.exit(-1);
-					} finally {
-						if (zkClient != null) {
-							zkClient.close();
-						}
-					}
-				}
-			}
-		}
-		return mysqlSlaveConfigMap.get(zkResourcePath);
+		return dataSourceMap.get(zkResourcePath);
 	}
 
 	private static DBConfig loadDBConfig(ZKResourcePath zkResourcePath, ZkClient zkClient) {
@@ -107,6 +74,28 @@ public class MysqlXFactory {
 	private static DBConfig loadDBConfig(String jsonStr) {
 		DBConfig dbConfig = gson.fromJson(jsonStr, DBConfig.class);
 		return dbConfig;
+	}
+
+	private static DataSourceFactory load(final DBConfig dbconfig) {
+		return new DataSourceFactory() {
+			@Override
+			public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> attributes) {
+				BasicDataSource ds = new BasicDataSource();
+				// ds.setDriverClassName("com.mysql.jdbc.Driver");
+				// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
+				// ds.setUsername("root");
+				// ds.setPassword("111111");
+				ds.setDriverClassName(dbconfig.getDriverClassName());
+				ds.setUrl(dbconfig.getUrl());
+				ds.setUsername(dbconfig.getUserName());
+				ds.setPassword(dbconfig.getPassword());
+				ds.setTimeBetweenEvictionRunsMillis(3600000);
+				ds.setMinEvictableIdleTimeMillis(3600000);
+
+				DataSourceHolder dataSourceHolder = new DataSourceHolder(ds);
+				return dataSourceHolder;
+			}
+		};
 	}
 
 }

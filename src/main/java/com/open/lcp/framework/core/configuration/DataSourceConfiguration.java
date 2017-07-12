@@ -1,17 +1,11 @@
 package com.open.lcp.framework.core.configuration;
 
-import java.util.Map;
-
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.open.dbs.DBConfig;
-import com.open.dbs.mysql.MysqlLoader;
+import com.open.dbs.mysql.MysqlXFactory;
 import com.open.jade.jade.context.spring.JadeBeanFactoryPostProcessor;
 import com.open.jade.jade.dataaccess.DataSourceFactory;
-import com.open.jade.jade.dataaccess.DataSourceHolder;
-import com.open.jade.jade.statement.StatementMetaData;
 import com.open.lcp.ZKResourcePath;
 
 @Configuration
@@ -36,74 +30,17 @@ public class DataSourceConfiguration {
 	// @Bean(name = "jade.dataSourceFactory") // only master
 	@Bean(name = "lcp_framework") // only master
 	public DataSourceFactory getFrameworkDataSource() {
-		return new DataSourceFactory() {
-			@Override
-			public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> attributes) {
-				DBConfig dbconfig = MysqlLoader.loadMaster(ZKResourcePath.mysql_lcp_framework_master);
-				BasicDataSource ds = new BasicDataSource();
-				// ds.setDriverClassName("com.mysql.jdbc.Driver");
-				// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
-				// ds.setUsername("root");
-				// ds.setPassword("111111");
-				ds.setDriverClassName(dbconfig.getDriverClassName());
-				ds.setUrl(dbconfig.getUrl());
-				ds.setUsername(dbconfig.getUserName());
-				ds.setPassword(dbconfig.getPassword());
-				ds.setTimeBetweenEvictionRunsMillis(3600000);
-				ds.setMinEvictableIdleTimeMillis(3600000);
-
-				DataSourceHolder dataSourceHolder = new DataSourceHolder(ds);
-				return dataSourceHolder;
-			}
-		};
+		return MysqlXFactory.loadMysqlX(ZKResourcePath.mysql_lcp_framework_master);
 	}
 
 	@Bean(name = "lcp_passport") // only master
 	public DataSourceFactory getPassportDataSource() {
-		return new DataSourceFactory() {
-			@Override
-			public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> attributes) {
-				DBConfig dbconfig = MysqlLoader.loadMaster(ZKResourcePath.mysql_lcp_passport_master);
-				BasicDataSource ds = new BasicDataSource();
-				// ds.setDriverClassName("com.mysql.jdbc.Driver");
-				// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
-				// ds.setUsername("root");
-				// ds.setPassword("111111");
-				ds.setDriverClassName(dbconfig.getDriverClassName());
-				ds.setUrl(dbconfig.getUrl());
-				ds.setUsername(dbconfig.getUserName());
-				ds.setPassword(dbconfig.getPassword());
-				ds.setTimeBetweenEvictionRunsMillis(3600000);
-				ds.setMinEvictableIdleTimeMillis(3600000);
-
-				DataSourceHolder dataSourceHolder = new DataSourceHolder(ds);
-				return dataSourceHolder;
-			}
-		};
+		return MysqlXFactory.loadMysqlX(ZKResourcePath.mysql_lcp_passport_master);
 	}
 
-	@Bean(name = "lcp_app_init") // only master
-	public DataSourceFactory getAppInitDataSource() {
-		return new DataSourceFactory() {
-			@Override
-			public DataSourceHolder getHolder(StatementMetaData metaData, Map<String, Object> attributes) {
-				DBConfig dbconfig = MysqlLoader.loadMaster(ZKResourcePath.mysql_lcp_app_init_master);
-				BasicDataSource ds = new BasicDataSource();
-				// ds.setDriverClassName("com.mysql.jdbc.Driver");
-				// ds.setUrl("jdbc:mysql://123.57.204.187:3306/lcp?useUnicode=true&amp;characterEncoding=utf-8");
-				// ds.setUsername("root");
-				// ds.setPassword("111111");
-				ds.setDriverClassName(dbconfig.getDriverClassName());
-				ds.setUrl(dbconfig.getUrl());
-				ds.setUsername(dbconfig.getUserName());
-				ds.setPassword(dbconfig.getPassword());
-				ds.setTimeBetweenEvictionRunsMillis(3600000);
-				ds.setMinEvictableIdleTimeMillis(3600000);
-
-				DataSourceHolder dataSourceHolder = new DataSourceHolder(ds);
-				return dataSourceHolder;
-			}
-		};
+	@Bean(name = "lcp_biz") // only master
+	public DataSourceFactory getBizDataSource() {
+		return MysqlXFactory.loadMysqlX(ZKResourcePath.mysql_lcp_biz_master);
 	}
 
 	// @Bean(name = "lcpBiz") // master and slave

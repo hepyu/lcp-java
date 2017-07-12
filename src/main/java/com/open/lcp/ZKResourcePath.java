@@ -2,18 +2,21 @@ package com.open.lcp;
 
 public enum ZKResourcePath {
 
+	//(1).lcp_framework resources
 	mysql_lcp_framework_master("mysql", "framework", "/master", "framework"),
 
+	//(2).lcp_passport resources
 	mysql_lcp_passport_master("mysql", "passport", "/master", "passport"),
-
-	mysql_lcp_app_init_master("mysql", "app_init", "/master", "biz"),
-
-	redis_lcp_passport("redis", "passport", "", "passport"),
-
-	redis_lcp_app_init("redis", "app_init", "", "app_init"),
-
+	
+	redis_lcp_passport("redis", "passport", "", "passport"),	//废弃
+	
 	@Deprecated
-	ssdb_lcp_passport("ssdb", "passport", "", "passport");
+	ssdb_lcp_passport("ssdb", "passport", "", "passport"),
+
+	//(3).lcp_biz resources
+	mysql_lcp_biz_master("mysql", "biz", "/master", "biz"),
+
+	redis_lcp_biz("redis", "biz", "", "biz");
 
 	private String resourceType;
 
