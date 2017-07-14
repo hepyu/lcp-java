@@ -1,6 +1,6 @@
-package com.open.lcp.core.framework.api.service.dao.info;
+package com.open.lcp.core.base.info;
 
-public interface AppInfo {
+public interface BaseAppInfo {
 
 	public int getAppId();
 

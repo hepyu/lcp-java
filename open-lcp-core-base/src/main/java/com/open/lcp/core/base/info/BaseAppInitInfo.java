@@ -1,6 +1,6 @@
-package com.open.lcp.biz.app.init.service.dao.info;
+package com.open.lcp.core.base.info;
 
-public interface AppInitInfo {
+public interface BaseAppInitInfo {
 
 	public String getDeviceId();
 

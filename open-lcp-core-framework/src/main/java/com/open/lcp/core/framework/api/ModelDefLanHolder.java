@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.open.lcp.core.framework.annotation.LcpDesc;
-import com.open.lcp.core.framework.annotation.LcpReq;
-import com.open.lcp.core.framework.annotation.LcpRequired;
+import com.open.lcp.core.base.annotation.LcpParamDesc;
+import com.open.lcp.core.base.annotation.LcpHttpRequest;
+import com.open.lcp.core.base.annotation.LcpParamRequired;
 
 /**
  * 对象生成ODML
@@ -49,7 +49,7 @@ public class ModelDefLanHolder {
 		appendTab(sb, layer);
 		sb.append("<class name=\"");
 		sb.append(c.getName());
-		LcpDesc desc = c.getAnnotation(LcpDesc.class);
+		LcpParamDesc desc = c.getAnnotation(LcpParamDesc.class);
 		if (desc != null) {
 			sb.append(" desc=\"");
 			sb.append(desc.value().replaceAll("\\\\", "\\\\").replaceAll("\"", "\\\""));
@@ -60,7 +60,7 @@ public class ModelDefLanHolder {
 		for (Field f : fs) {
 			Class<?> type = f.getType();
 			String typeName = type.getName();
-			LcpRequired req = f.getAnnotation(LcpRequired.class);
+			LcpParamRequired req = f.getAnnotation(LcpParamRequired.class);
 			appendTab(sb, subLayer);
 			sb.append("<field name=\"");
 			sb.append(f.getName());
@@ -119,7 +119,7 @@ public class ModelDefLanHolder {
 		return sb.toString();
 	}
 
-	public static String getMtmlMDL(LcpReq lcpReq, Type type, Map<Integer, Set<String>> errorCodes) {
+	public static String getMtmlMDL(LcpHttpRequest lcpReq, Type type, Map<Integer, Set<String>> errorCodes) {
 		if (lcpReq == null) {
 			return null;
 		}
@@ -257,7 +257,7 @@ public class ModelDefLanHolder {
 		sb.append("<table border='0' cellspacing='0' cellpadding='0' class='mcp_model'>\r\n<caption>");
 		sb.append(c.getSimpleName());
 		sb.append(" | ");
-		LcpDesc desc = c.getAnnotation(LcpDesc.class);
+		LcpParamDesc desc = c.getAnnotation(LcpParamDesc.class);
 		if (desc != null) {
 			sb.append(desc.value().replaceAll("\\\\", "\\\\").replaceAll("\"", "\\\""));
 		}
@@ -267,7 +267,7 @@ public class ModelDefLanHolder {
 		List<Field> fsNotRequired = new ArrayList<Field>();
 		{
 			for (Field f : fs) {
-				LcpRequired req = f.getAnnotation(LcpRequired.class);
+				LcpParamRequired req = f.getAnnotation(LcpParamRequired.class);
 				if (req != null && req.value()) {
 					fsRequired.add(f);
 				} else {
@@ -286,7 +286,7 @@ public class ModelDefLanHolder {
 		for (Field f : fs) {
 			Class<?> type = f.getType();
 			String typeName = type.getName();
-			LcpRequired req = f.getAnnotation(LcpRequired.class);
+			LcpParamRequired req = f.getAnnotation(LcpParamRequired.class);
 			boolean isRequired = req != null && req.value();
 			sb.append("<tr>");
 			if (isRequired && !requiredBegin) {

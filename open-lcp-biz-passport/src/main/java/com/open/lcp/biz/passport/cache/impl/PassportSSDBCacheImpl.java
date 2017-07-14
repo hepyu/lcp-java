@@ -7,7 +7,7 @@ import com.open.lcp.biz.passport.cache.PassportCache;
 import com.open.lcp.biz.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.lcp.biz.passport.ticket.Ticket;
-import com.open.lcp.core.model.LcpResource;
+import com.open.lcp.core.base.LcpResource;
 import com.open.lcp.dbs.cache.ssdb.SSDBLoader;
 import com.open.lcp.dbs.cache.ssdb.SSDBX;
 

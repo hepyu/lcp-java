@@ -16,10 +16,10 @@ import org.apache.commons.logging.LogFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.open.lcp.common.util.StringToListUtils;
-import com.open.lcp.core.framework.annotation.LcpReq;
-import com.open.lcp.core.framework.annotation.LcpRequired;
-import com.open.lcp.core.framework.annotation.LcpRequired.Struct;
-import com.open.lcp.core.framework.api.command.CommandContext;
+import com.open.lcp.core.base.annotation.LcpHttpRequest;
+import com.open.lcp.core.base.annotation.LcpParamRequired;
+import com.open.lcp.core.base.annotation.LcpParamRequired.Struct;
+import com.open.lcp.core.base.command.CommandContext;
 import com.open.lcp.core.framework.util.LcpMixEncUtil;
 
 public class ModelCastHolder {
@@ -54,7 +54,7 @@ public class ModelCastHolder {
 		return null;
 	}
 
-	public static <T> Object mappingParameter(Map<String, ?> paramMap, LcpReq lcpReq, Type t) {
+	public static <T> Object mappingParameter(Map<String, ?> paramMap, LcpHttpRequest lcpReq, Type t) {
 		if (paramMap == null || lcpReq == null) {
 			return null;
 		}
@@ -201,8 +201,8 @@ public class ModelCastHolder {
 					if (o.getClass() != String.class)
 						continue;
 					String value = (String) o;
-					final LcpRequired req = f.getAnnotation(LcpRequired.class);
-					final LcpRequired.Struct struct = req == null ? null : req.struct();
+					final LcpParamRequired req = f.getAnnotation(LcpParamRequired.class);
+					final LcpParamRequired.Struct struct = req == null ? null : req.struct();
 					if (req != null) {
 						if (req.trim()) {
 							value = value.trim();

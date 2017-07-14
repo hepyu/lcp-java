@@ -33,9 +33,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import com.open.lcp.common.util.DateUtil;
-import com.open.lcp.core.framework.annotation.LcpMethod;
-import com.open.lcp.core.framework.annotation.LcpReq;
-import com.open.lcp.core.framework.annotation.LcpRequired;
+import com.open.lcp.core.base.annotation.LcpHttpMethod;
+import com.open.lcp.core.base.annotation.LcpHttpRequest;
+import com.open.lcp.core.base.annotation.LcpParamRequired;
 import com.open.lcp.core.framework.api.FieldLoadHolder;
 import com.open.lcp.core.framework.api.ModelDefLanHolder;
 import com.open.lcp.core.framework.api.NZCode;
@@ -106,14 +106,14 @@ public class DocController extends AbstractController implements InitializingBea
 				if (apiCommand instanceof ApiFacadeCommand) {
 					final ApiFacadeMethod mm = CommandModelHolder.getApiFacadeMethod(command, v);
 					if (mm != null) {
-						final LcpReq lcpReq = mm.getLcpReq();
+						final LcpHttpRequest lcpReq = mm.getLcpReq();
 						if (lcpReq != null && lcpReq.errorCode() > 0) {
 							this.addErrorCode(command, lcpReq, null, null);
 						}
 						if (mm.getReqClass() != null && mm.getReqClass() != Void.class) {
 							final List<Field> fieldList = FieldLoadHolder.getFields(mm.getReqClass());
 							for (Field f : fieldList) {
-								final LcpRequired required = f.getAnnotation(LcpRequired.class);
+								final LcpParamRequired required = f.getAnnotation(LcpParamRequired.class);
 								if (required != null && required.errorCode() > 0) {
 									this.addErrorCode(command, null, f.getName(), required);
 								}
@@ -228,7 +228,7 @@ public class DocController extends AbstractController implements InitializingBea
 		return s;
 	}
 
-	private void addErrorCode(final String command, LcpReq lcpReq, String fieldName, LcpRequired required) {
+	private void addErrorCode(final String command, LcpHttpRequest lcpReq, String fieldName, LcpParamRequired required) {
 		int errorCode = 0;
 		String errorCodeMethod = "";
 		if (required != null && required.errorCode() > 0) {
@@ -254,7 +254,7 @@ public class DocController extends AbstractController implements InitializingBea
 	 * @param model
 	 * @return
 	 */
-	private String getDetailResp(LcpMethod lcpMethod, LcpReq lcpReq, Type type, Class<?> req, Class<?> resp) {
+	private String getDetailResp(LcpHttpMethod lcpMethod, LcpHttpRequest lcpReq, Type type, Class<?> req, Class<?> resp) {
 		StringBuilder s = new StringBuilder();
 		s.append("<p></br></p>");
 		s.append("<h5>" + "接口名:" + "</h5>");

@@ -11,11 +11,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.open.lcp.core.base.info.BaseAppInfo;
 import com.open.lcp.core.framework.api.service.dao.AppInfoDAO;
 import com.open.lcp.core.framework.api.service.dao.entity.AppAuthInfoEntity;
 import com.open.lcp.core.framework.api.service.dao.entity.AppInfoEntity;
 import com.open.lcp.core.framework.api.service.dao.info.AppAuthInfo;
-import com.open.lcp.core.framework.api.service.dao.info.AppInfo;
 import com.open.lcp.core.framework.loader.AppInfoTimerLoader;
 import com.open.lcp.core.framework.loader.TimerLoader;
 import com.open.lcp.core.framework.util.LcpUtil;
@@ -25,7 +25,7 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 
 	private static final Log logger = LogFactory.getLog(AppInfoTimerLoaderImpl.class);
 
-	private Map<Integer, AppInfo> appIdAppInfoMap = null;
+	private Map<Integer, BaseAppInfo> appIdAppInfoMap = null;
 
 	private Map<Integer, List<AppAuthInfo>> appAuthMap = null;
 
@@ -37,7 +37,7 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 		long startTime = System.currentTimeMillis();
 		List<AppInfoEntity> appInfos = appInfoDAO.getAppList();
 
-		Map<Integer, AppInfo> appIdAppInfoMap = new HashMap<Integer, AppInfo>();
+		Map<Integer, BaseAppInfo> appIdAppInfoMap = new HashMap<Integer, BaseAppInfo>();
 		Map<Integer, List<AppAuthInfo>> appAuthMap = new HashMap<Integer, List<AppAuthInfo>>();
 
 		List<AppAuthInfoEntity> allAuths = appInfoDAO.loadAllAuthorities();
@@ -49,7 +49,7 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 			appAuthMap.get(appId).add(auth);
 		}
 
-		for (AppInfo app : appInfos) {
+		for (BaseAppInfo app : appInfos) {
 			appIdAppInfoMap.put(app.getAppId(), app);
 		}
 
@@ -76,7 +76,7 @@ public class AppInfoTimerLoaderImpl implements TimerLoader, AppInfoTimerLoader {
 	}
 
 	@Override
-	public AppInfo getAppInfo(int appId) {
+	public BaseAppInfo getAppInfo(int appId) {
 		if (appId == 0 || this.appIdAppInfoMap == null) {
 			return null;
 		}

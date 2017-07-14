@@ -2,9 +2,9 @@ package com.open.lcp.core.framework.api.service.dao.entity;
 
 import java.io.Serializable;
 
-import com.open.lcp.core.framework.api.service.dao.info.AppInfo;
+import com.open.lcp.core.base.info.BaseAppInfo;
 
-public class AppInfoEntity implements Serializable, AppInfo {
+public class AppInfoEntity implements Serializable, BaseAppInfo {
 
 	private static final long serialVersionUID = -1119697844347595668L;
 	public static final int IS_0 = 0;

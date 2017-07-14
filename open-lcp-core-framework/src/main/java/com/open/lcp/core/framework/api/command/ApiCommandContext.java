@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.math.NumberUtils;
-
-import com.open.lcp.biz.app.init.service.dao.info.AppInitInfo;
-import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
-import com.open.lcp.biz.passport.service.AccountInfoService;
 import com.open.lcp.common.enums.UserType;
-import com.open.lcp.core.framework.api.service.dao.info.AppInfo;
+import com.open.lcp.core.base.command.CommandContext;
+import com.open.lcp.core.base.info.BaseAppInfo;
+import com.open.lcp.core.base.info.BaseAppInitInfo;
+import com.open.lcp.core.base.info.BaseUserAccountInfo;
+import com.open.lcp.core.base.service.BaseUserAccountInfoService;
 import com.open.lcp.core.framework.consts.LcpConstants;
 
 public class ApiCommandContext implements CommandContext {
@@ -19,7 +19,7 @@ public class ApiCommandContext implements CommandContext {
 	// LogFactory.getLog(ApiCommandContext.class);
 	// private final AccountApi accountApi;
 
-	private AccountInfoService accountInfoService;
+	private BaseUserAccountInfoService accountInfoService;
 
 	private long beginTime;
 
@@ -30,7 +30,7 @@ public class ApiCommandContext implements CommandContext {
 	private long userId;
 	private UserType userType;
 	/** 客户端接入授权信息 */
-	private AppInfo appInfo;
+	private BaseAppInfo appInfo;
 
 	/** 设备唯一标识 */
 	private String deviceId;
@@ -66,14 +66,14 @@ public class ApiCommandContext implements CommandContext {
 	private final String clientIp;
 	/** 用户的端口 */
 	private int clientPort;
-	private AppInitInfo appInitInfo = null;
+	private BaseAppInitInfo appInitInfo = null;
 
 	private byte[] aesKey;
 	private byte[] octetBody;
 
-	public ApiCommandContext(long beginTime, AppInfo appInfo, Map<String, String> stringParams,
+	public ApiCommandContext(long beginTime, BaseAppInfo appInfo, Map<String, String> stringParams,
 			Map<String, Object> binaryParams, String ticket, String secretKey, String methodName,
-			Map<String, String> reqHeads, String clientIp, int clientPort, AccountInfoService userAccountService) {
+			Map<String, String> reqHeads, String clientIp, int clientPort, BaseUserAccountInfoService userAccountService) {
 		this.beginTime = beginTime;
 		this.appInfo = appInfo;
 		this.reqHeads = reqHeads;
@@ -151,11 +151,11 @@ public class ApiCommandContext implements CommandContext {
 	}
 
 	@Override
-	public AppInfo getAppInfo() {
+	public BaseAppInfo getAppInfo() {
 		return appInfo;
 	}
 
-	public void setAppInfo(AppInfo appInfo) {
+	public void setAppInfo(BaseAppInfo appInfo) {
 		this.appInfo = appInfo;
 	}
 
@@ -293,11 +293,11 @@ public class ApiCommandContext implements CommandContext {
 	}
 
 	@Override
-	public AppInitInfo getAppInitInfo() {
+	public BaseAppInitInfo getAppInitInfo() {
 		return appInitInfo;
 	}
 
-	public void setAppInitInfo(AppInitInfo appInitInfo) {
+	public void setAppInitInfo(BaseAppInitInfo appInitInfo) {
 		this.appInitInfo = appInitInfo;
 	}
 
@@ -335,17 +335,17 @@ public class ApiCommandContext implements CommandContext {
 		return this.v;
 	}
 
-	private PassportUserAccountDTO userInfo = null;
+	private BaseUserAccountInfo userInfo = null;
 
 	@Override
-	public PassportUserAccountDTO getUserInfo() {
+	public BaseUserAccountInfo getUserAccountInfo() {
 		if (this.userId <= 0) {
 			return null;
 		}
 		if (userInfo != null) {
 			return userInfo;
 		}
-		this.userInfo = accountInfoService.getUserInfo(this.userId);// accountApi.getUserInfoByXlUserId(this.userId);
+		this.userInfo = accountInfoService.getUserAccountInfo(this.userId);// accountApi.getUserInfoByXlUserId(this.userId);
 		return this.userInfo;
 	}
 

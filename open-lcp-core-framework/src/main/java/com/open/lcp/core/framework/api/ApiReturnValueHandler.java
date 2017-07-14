@@ -24,16 +24,16 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
-import com.open.lcp.core.framework.annotation.LcpMethod;
+import com.open.lcp.core.base.annotation.LcpHttpMethod;
+import com.open.lcp.core.base.command.CommandContext;
+import com.open.lcp.core.base.facade.ApiResult;
 import com.open.lcp.core.framework.api.command.ApiCommandContext;
 import com.open.lcp.core.framework.api.command.ApiFacadeMethod;
-import com.open.lcp.core.framework.api.command.CommandContext;
 import com.open.lcp.core.framework.api.command.CommandModelHolder;
 import com.open.lcp.core.framework.api.service.ApiExceptionMessageService;
 import com.open.lcp.core.framework.api.service.dao.IgnoreMethodLogDAO;
 import com.open.lcp.core.framework.api.service.dao.entity.IgnoreMethodLogEntity;
 import com.open.lcp.core.framework.consts.LcpConstants;
-import com.open.lcp.core.framework.facade.ApiResult;
 import com.open.lcp.core.framework.loader.TimerLoader;
 import com.open.lcp.core.framework.util.LcpUtil;
 
@@ -102,7 +102,7 @@ public class ApiReturnValueHandler implements HandlerMethodReturnValueHandler, T
 		if (methodName != null && !methodName.isEmpty()) {
 			final ApiFacadeMethod apiFacadeMethod = CommandModelHolder.getApiFacadeMethod(methodName, version);
 			if (apiFacadeMethod != null) {
-				final LcpMethod mcpMethod = apiFacadeMethod.getLcpMethod();
+				final LcpHttpMethod mcpMethod = apiFacadeMethod.getLcpMethod();
 				if (mcpMethod != null && mcpMethod.cacheResult()) {// 确认打开了cacheResult
 					cacheResult = true;
 				}

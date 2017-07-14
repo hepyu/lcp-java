@@ -1,11 +1,9 @@
-package com.open.lcp.core.framework.api.command;
+package com.open.lcp.core.base.command;
 
 import java.util.Map;
-
-import com.open.lcp.biz.app.init.service.dao.info.AppInitInfo;
-import com.open.lcp.core.framework.api.service.dao.info.AppInfo;
-import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
-
+import com.open.lcp.core.base.info.BaseAppInfo;
+import com.open.lcp.core.base.info.BaseAppInitInfo;
+import com.open.lcp.core.base.info.BaseUserAccountInfo;
 
 /**
  * 接口执行时的上下文信息
@@ -21,9 +19,9 @@ public interface CommandContext {
 	/** 登录的userId */
 	public long getUserId();
 
-	public PassportUserAccountDTO getUserInfo();
+	public BaseUserAccountInfo getUserAccountInfo();
 
-	public AppInfo getAppInfo();
+	public BaseAppInfo getAppInfo();
 
 	public String getDeviceId();
 
@@ -73,5 +71,5 @@ public interface CommandContext {
 	public String getHttpHead(String name);
 
 	/** 仅当McpMethod注解中的loadAppInitData=true时，才加载 */
-	public AppInitInfo getAppInitInfo();
+	public BaseAppInitInfo getAppInitInfo();
 }

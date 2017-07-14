@@ -11,8 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.util.Assert;
 
-import com.open.lcp.core.framework.annotation.LcpMethod;
-import com.open.lcp.core.framework.annotation.LcpReq;
+import com.open.lcp.core.base.annotation.LcpHttpMethod;
+import com.open.lcp.core.base.annotation.LcpHttpRequest;
+import com.open.lcp.core.base.command.CommandContext;
 
 /**
  * CommandModel加载的工具类，已经改为支持无参接口和仅一个参数的接口。
@@ -66,7 +67,7 @@ public class CommandModelHolder {
 		while (true) {
 			Method[] ms = clazz.getDeclaredMethods();
 			for (Method m : ms) {
-				LcpMethod mcpMethod = m.getAnnotation(LcpMethod.class);
+				LcpHttpMethod mcpMethod = m.getAnnotation(LcpHttpMethod.class);
 				if (mcpMethod == null) {
 					continue;
 				}
@@ -106,7 +107,7 @@ public class CommandModelHolder {
 				// }
 				// if (m.getReturnType() == void.class) continue;//鐜板湪鏀寔void
 				Class<?> req = null;/// 无参时，此数据为null
-				LcpReq lcpReq = null;// 首参直接指定时，此值为非null
+				LcpHttpRequest lcpReq = null;// 首参直接指定时，此值为非null
 				Type lcpReqType = null;
 				if (ps.length == 2 || (ps.length == 1 && !isCtx(ps[0]))) {
 					req = ps[0];
@@ -114,8 +115,8 @@ public class CommandModelHolder {
 					if (ass.length > 0) {
 						Annotation[] as = ass[0];
 						for (Annotation a : as) {
-							if (LcpReq.class.isInstance(a)) {
-								lcpReq = (LcpReq) a;
+							if (LcpHttpRequest.class.isInstance(a)) {
+								lcpReq = (LcpHttpRequest) a;
 								lcpReqType = m.getGenericParameterTypes()[0];
 								break;
 							}

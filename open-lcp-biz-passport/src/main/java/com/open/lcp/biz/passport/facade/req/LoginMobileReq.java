@@ -1,22 +1,22 @@
 package com.open.lcp.biz.passport.facade.req;
 
-import com.open.lcp.core.framework.annotation.LcpRequired;
+import com.open.lcp.core.base.annotation.LcpParamRequired;
 
 public class LoginMobileReq {
 
-	@LcpRequired(value = true, desc = "mobile")
+	@LcpParamRequired(value = true, desc = "mobile")
 	private String mobile;
 
-	@LcpRequired(value = true, desc = "mobileCode")
+	@LcpParamRequired(value = true, desc = "mobileCode")
 	private String mobileCode;
 
-	@LcpRequired(value = true, desc = "deviceId")
+	@LcpParamRequired(value = true, desc = "deviceId")
 	private String deviceId;
 
-	@LcpRequired(value = true, desc = "ip")
+	@LcpParamRequired(value = true, desc = "ip")
 	private String ip;
 
-	@LcpRequired(value = true, desc = "ua")
+	@LcpParamRequired(value = true, desc = "ua")
 	private String ua;
 
 	public String getMobile() {

@@ -6,8 +6,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.open.lcp.core.framework.annotation.LcpReq;
-import com.open.lcp.core.framework.annotation.LcpRequired;
+import com.open.lcp.core.base.annotation.LcpHttpRequest;
+import com.open.lcp.core.base.annotation.LcpParamRequired;
 import com.open.lcp.core.framework.api.FieldLoadHolder;
 import com.open.lcp.core.framework.api.RequiredCheck;
 import com.open.lcp.core.framework.api.RequiredCheck.ErrorType;
@@ -117,7 +117,7 @@ public class LcpRequiredCheckHolder {
 
 	private static RequiredCheck check(Field field, Object o) {
 		// Class<?> clazz = o.getClass();
-		LcpRequired required = field.getAnnotation(LcpRequired.class);
+		LcpParamRequired required = field.getAnnotation(LcpParamRequired.class);
 		if (required == null) {
 			return null;
 		}
@@ -180,7 +180,7 @@ public class LcpRequiredCheckHolder {
 		return null;
 	}
 
-	public static RequiredCheck check(LcpReq lcpReq, Object value) {
+	public static RequiredCheck check(LcpHttpRequest lcpReq, Object value) {
 		if (lcpReq == null) {
 			return null;
 		}

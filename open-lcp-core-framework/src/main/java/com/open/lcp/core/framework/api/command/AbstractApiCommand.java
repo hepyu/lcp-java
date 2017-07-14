@@ -2,19 +2,17 @@ package com.open.lcp.core.framework.api.command;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.open.lcp.biz.app.init.service.AppInitService;
+import com.open.lcp.core.base.facade.ApiResult;
+import com.open.lcp.core.base.facade.ApiResultCode;
+import com.open.lcp.core.base.service.BaseAppInitService;
 import com.open.lcp.core.framework.api.BlockChecker;
 import com.open.lcp.core.framework.api.RequestChecker;
 import com.open.lcp.core.framework.api.service.ApiMaxThreadsService;
 import com.open.lcp.core.framework.api.service.dao.entity.ApiMaxThreadsEntity;
-import com.open.lcp.core.framework.facade.ApiResult;
-import com.open.lcp.core.framework.facade.ApiResultCode;
 
 public abstract class AbstractApiCommand implements ApiCommand {
 
@@ -56,7 +54,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 	private static int blockLogPeriod = 60 * 1000;// 1分钟
 
 	@Autowired
-	private AppInitService appInitService;
+	private BaseAppInitService appInitService;
 	@Autowired
 	private ApiMaxThreadsService apiMaxThreadsService;
 

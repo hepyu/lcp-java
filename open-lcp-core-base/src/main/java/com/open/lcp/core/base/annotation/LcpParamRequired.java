@@ -1,4 +1,4 @@
-package com.open.lcp.core.framework.annotation;
+package com.open.lcp.core.base.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LcpRequired {
+public @interface LcpParamRequired {
 
 	/** 是否必选，默认必选 */
 	boolean value() default true;

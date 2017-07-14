@@ -6,11 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.open.lcp.core.base.info.BaseAppInfo;
 import com.open.lcp.core.framework.api.service.AppInfoService;
 import com.open.lcp.core.framework.api.service.dao.AppInfoDAO;
 import com.open.lcp.core.framework.api.service.dao.entity.AppInfoEntity;
 import com.open.lcp.core.framework.api.service.dao.info.AppAuthInfo;
-import com.open.lcp.core.framework.api.service.dao.info.AppInfo;
 import com.open.lcp.core.framework.loader.AppInfoTimerLoader;
 
 @Service
@@ -26,7 +26,7 @@ public class AppInfoServiceImpl implements AppInfoService {
 	}
 
 	@Override
-	public AppInfo getAppInfo(int appId) {
+	public BaseAppInfo getAppInfo(int appId) {
 		return appInfoTimerLoader.getAppInfo(appId);
 	}
 
@@ -41,19 +41,19 @@ public class AppInfoServiceImpl implements AppInfoService {
 	}
 
 	@Override
-	public int createApp(AppInfo appInfo) {
+	public int createApp(BaseAppInfo appInfo) {
 		return appInfoDAO.createApp(appInfo);
 	}
 
 	@Override
-	public AppInfo getAppInfoByAppId(int appId) {
+	public BaseAppInfo getAppInfoByAppId(int appId) {
 		return appInfoDAO.findAppInfoByAppId(appId);
 	}
 
 	@Override
-	public List<AppInfo> getAppInfoList() {
+	public List<BaseAppInfo> getAppInfoList() {
 		List<AppInfoEntity> list = appInfoDAO.getAppList();
-		List<AppInfo> rtList = new ArrayList<AppInfo>();
+		List<BaseAppInfo> rtList = new ArrayList<BaseAppInfo>();
 		if (list != null) {
 			for (AppInfoEntity entity : list) {
 				rtList.add(entity);

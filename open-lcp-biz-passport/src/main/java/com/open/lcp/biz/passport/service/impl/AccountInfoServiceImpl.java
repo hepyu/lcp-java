@@ -18,6 +18,7 @@ import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.lcp.biz.passport.util.AccountUtil;
 import com.open.lcp.biz.passport.util.PlaceholderAvatarUtil;
 import com.open.lcp.common.enums.Gender;
+import com.open.lcp.core.base.info.BaseUserAccountInfo;
 
 @Service
 public class AccountInfoServiceImpl extends AbstractAccount implements AccountInfoService {
@@ -76,8 +77,7 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 	}
 
 	@Override
-	public PassportUserAccountDTO getUserInfo(Long userId) {
-
+	public BaseUserAccountInfo getUserAccountInfo(Long userId) {
 		PassportUserAccountEntity entity = obtainPassportUserAccount(userId);
 		PassportUserAccountDTO dto = null;
 		if (entity != null) {

@@ -11,9 +11,9 @@ import com.open.lcp.biz.passport.dto.LoginByOAuthResultDTO;
 import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
 import com.open.lcp.biz.passport.facade.req.LoginMobileReq;
 import com.open.lcp.biz.passport.facade.req.LoginThirdReq;
-import com.open.lcp.core.framework.annotation.LcpMethod;
-import com.open.lcp.core.framework.api.command.CommandContext;
-import com.open.lcp.core.framework.facade.ApiFacade;
+import com.open.lcp.core.base.annotation.LcpHttpMethod;
+import com.open.lcp.core.base.command.CommandContext;
+import com.open.lcp.core.base.facade.ApiFacade;
 
 @Component
 public class PassportFacade implements ApiFacade {
@@ -27,21 +27,21 @@ public class PassportFacade implements ApiFacade {
 	@Autowired
 	private AccountInfoApi accountInfoApi;
 
-	@LcpMethod(name = "passport.login.third", ver = "1.0", desc = "第三方登录", logon = false)
+	@LcpHttpMethod(name = "passport.login.third", ver = "1.0", desc = "第三方登录", logon = false)
 	public LoginByOAuthResultDTO loginThird(LoginThirdReq req, CommandContext context) {
 		return accountOAuthApi.login(context.getAppInfo().getAppId(), req.getThirdAppId(), req.getOpenId(),
 				req.getAccessToken(), req.getDeviceId(), req.getIp(), req.getAccountType(), req.getUa());
 	}
 
-	@LcpMethod(name = "passport.login.mobile", ver = "1.0", desc = "手机号登录", logon = false)
+	@LcpHttpMethod(name = "passport.login.mobile", ver = "1.0", desc = "手机号登录", logon = false)
 	public LoginByMobileResultDTO loginMobile(LoginMobileReq req, CommandContext context) {
 		return accountMobileApi.login(context.getAppInfo().getAppId(), req.getMobile(), req.getMobileCode(),
 				req.getDeviceId(), req.getIp(), req.getUa());
 	}
 
-	@LcpMethod(name = "passport.user.get", ver = "1.0", desc = "手机号登录", logon = true)
+	@LcpHttpMethod(name = "passport.user.get", ver = "1.0", desc = "手机号登录", logon = true)
 	public PassportUserAccountDTO getUser(CommandContext context) {
-		return accountInfoApi.getUserInfoByTicket(context.getTicket());
+		return (PassportUserAccountDTO) accountInfoApi.getUserInfoByTicket(context.getTicket());
 	}
 
 }

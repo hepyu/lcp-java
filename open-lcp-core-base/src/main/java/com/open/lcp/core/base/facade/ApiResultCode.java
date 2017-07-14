@@ -1,4 +1,4 @@
-package com.open.lcp.core.framework.facade;
+package com.open.lcp.core.base.facade;
 
 /**
  * "E"表示“error”(错误)；"SYS"表示"system"（系统平台级的）;"biz"表示“business”（业务级的）

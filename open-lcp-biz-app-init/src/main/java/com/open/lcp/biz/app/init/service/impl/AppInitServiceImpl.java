@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.open.lcp.biz.app.init.service.AppInitService;
 import com.open.lcp.biz.app.init.service.dao.AppInitInfoDAO;
 import com.open.lcp.biz.app.init.service.dao.entity.AppInitInfoEntity;
-import com.open.lcp.core.model.LcpResource;
+import com.open.lcp.core.base.LcpResource;
 import com.open.lcp.dbs.cache.redis.RedisX;
 import com.open.lcp.dbs.cache.redis.RedisXFactory;
 import com.open.lcp.env.finder.ZKFinder;

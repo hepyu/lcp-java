@@ -9,8 +9,9 @@ import com.open.lcp.biz.passport.dto.RequestUploadAvatarResultDTO;
 import com.open.lcp.biz.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.lcp.common.enums.Gender;
+import com.open.lcp.core.base.service.BaseUserAccountInfoService;
 
-public interface AccountInfoService {
+public interface AccountInfoService extends BaseUserAccountInfoService {
 
 	public void createAccount(PassportUserAccountEntity passportUserAccountEntity,
 			PassportOAuthAccountEntity passportOAuthAccountEntity);
@@ -19,8 +20,6 @@ public interface AccountInfoService {
 
 	public void login(PassportUserAccountEntity passportUserAccountEntity,
 			PassportOAuthAccountEntity passportOAuthAccountEntity);
-
-	public PassportUserAccountDTO getUserInfo(Long userId);
 
 	public List<PassportOAuthAccountDTO> getOAuthAccountList(Long userId);
 

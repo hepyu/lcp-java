@@ -3,8 +3,8 @@ package com.open.lcp.core.framework.api.command;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import com.open.lcp.core.framework.annotation.LcpMethod;
-import com.open.lcp.core.framework.annotation.LcpReq;
+import com.open.lcp.core.base.annotation.LcpHttpMethod;
+import com.open.lcp.core.base.annotation.LcpHttpRequest;
 
 /**
  * 方法接口定义
@@ -17,7 +17,7 @@ public class ApiFacadeMethod {
 	}
 
 	public static ApiFacadeMethod build(Object o, Method method, Class<?> reqClass, Class<?> respClass,
-			LcpMethod lcpMethod) {
+			LcpHttpMethod lcpMethod) {
 		ApiFacadeMethod mm = new ApiFacadeMethod();
 		mm.methodOfObject = o;
 		mm.method = method;
@@ -40,7 +40,7 @@ public class ApiFacadeMethod {
 	//
 	// private String desc;
 
-	private LcpMethod lcpMethod;
+	private LcpHttpMethod lcpMethod;
 
 	private Class<?> reqClass;
 
@@ -48,7 +48,7 @@ public class ApiFacadeMethod {
 
 	private Type mcpReqType;
 
-	private LcpReq lcpReq;
+	private LcpHttpRequest lcpReq;
 
 	private transient boolean isVoidMethod;
 
@@ -60,7 +60,7 @@ public class ApiFacadeMethod {
 		return respClass;
 	}
 
-	public LcpMethod getLcpMethod() {
+	public LcpHttpMethod getLcpMethod() {
 		return lcpMethod;
 	}
 
@@ -84,11 +84,11 @@ public class ApiFacadeMethod {
 		this.mcpReqType = mcpReqType;
 	}
 
-	public LcpReq getLcpReq() {
+	public LcpHttpRequest getLcpReq() {
 		return lcpReq;
 	}
 
-	public void setMcpReq(LcpReq lcpReq) {
+	public void setMcpReq(LcpHttpRequest lcpReq) {
 		this.lcpReq = lcpReq;
 	}
 

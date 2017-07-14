@@ -1,4 +1,4 @@
-package com.open.lcp.core.framework.facade;
+package com.open.lcp.core.base.facade;
 
 import java.io.Serializable;
 

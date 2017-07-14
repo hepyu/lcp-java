@@ -1,4 +1,4 @@
-package com.open.lcp.core.model;
+package com.open.lcp.core.base;
 
 public enum LcpResource {
 

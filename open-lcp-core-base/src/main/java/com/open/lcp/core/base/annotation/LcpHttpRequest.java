@@ -1,4 +1,4 @@
-package com.open.lcp.core.framework.annotation;
+package com.open.lcp.core.base.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LcpReq {
+public @interface LcpHttpRequest {
 
 	/** 是否必选，默认必选 */
 	String name();

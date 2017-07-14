@@ -11,6 +11,7 @@ import com.open.lcp.biz.passport.dto.LoginByOAuthResultDTO;
 import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
 import com.open.lcp.biz.passport.sdk.ThirdAccountSDKPortrait;
 import com.open.lcp.biz.passport.ticket.Ticket;
+import com.open.lcp.core.base.info.BaseUserAccountInfo;
 
 @Component
 public class SimpleAccountOAuthApiImpl extends AbstractAccountApi implements AccountOAuthApi {
@@ -53,7 +54,7 @@ public class SimpleAccountOAuthApiImpl extends AbstractAccountApi implements Acc
 		// 6.生成sk,uk
 		Ticket couple = ticketManager.createSecretKeyCouple(appId, userId);
 
-		PassportUserAccountDTO userAccount = accountInfoService.getUserInfo(userId);
+		BaseUserAccountInfo userAccount = accountInfoService.getUserAccountInfo(userId);
 
 		LoginByOAuthResultDTO resultDTO = new LoginByOAuthResultDTO();
 		resultDTO.setAvatar(userAccount.getAvatar());

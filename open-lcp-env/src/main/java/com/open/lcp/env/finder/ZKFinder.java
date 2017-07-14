@@ -2,7 +2,7 @@ package com.open.lcp.env.finder;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.open.lcp.core.model.LcpResource;
+import com.open.lcp.core.base.LcpResource;
 
 public class ZKFinder {
 

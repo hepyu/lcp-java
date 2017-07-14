@@ -14,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.open.lcp.core.framework.annotation.LcpMethod;
+import com.open.lcp.core.base.annotation.LcpHttpMethod;
+import com.open.lcp.core.base.facade.ApiFacade;
 import com.open.lcp.core.framework.api.command.ApiCommand;
 import com.open.lcp.core.framework.api.command.ApiFacadeMethod;
 import com.open.lcp.core.framework.api.command.CommandModelHolder;
 import com.open.lcp.core.framework.api.service.ApiCommandLookupService;
-import com.open.lcp.core.framework.facade.ApiFacade;
 
 @Service
 public class ApiCommandLookupServiceImpl implements ApiCommandLookupService, InitializingBean {
@@ -70,7 +70,7 @@ public class ApiCommandLookupServiceImpl implements ApiCommandLookupService, Ini
 		if (afm == null) {
 			return false;
 		}
-		final LcpMethod mm = afm.getLcpMethod();
+		final LcpHttpMethod mm = afm.getLcpMethod();
 		if (mm == null) {
 			return false;
 		}

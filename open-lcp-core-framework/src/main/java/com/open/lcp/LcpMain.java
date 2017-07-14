@@ -23,7 +23,7 @@ import com.open.lcp.env.finder.EnvFinder;
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, WebMvcAutoConfiguration.class })
 @ComponentScan
 @EnableCaching
-public class ApiMain {
+public class LcpMain {
 
 	public static void main(String[] args) throws Exception {
 		// for (int i = 0; i < args.length; i++) {
@@ -37,6 +37,6 @@ public class ApiMain {
 		// logger.info(
 		// String.format("ApiMain: start @ %s, profile: %s",
 		// XunleiEnvFinder.getIpcfg().toString(), proFileName));
-		new SpringApplicationBuilder(ApiMain.class).run(args);
+		new SpringApplicationBuilder(LcpMain.class).run(args);
 	}
 }

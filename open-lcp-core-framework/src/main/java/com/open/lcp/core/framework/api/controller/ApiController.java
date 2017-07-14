@@ -22,11 +22,13 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import com.open.lcp.biz.passport.dto.CheckTicket;
-import com.open.lcp.biz.passport.service.AccountInfoService;
-import com.open.lcp.biz.passport.service.AccountTicketService;
 import com.open.lcp.common.enums.UserType;
+import com.open.lcp.core.base.facade.ApiResult;
+import com.open.lcp.core.base.facade.ApiResultCode;
+import com.open.lcp.core.base.info.BaseAppInfo;
+import com.open.lcp.core.base.info.BaseUserAccountTicketInfo;
+import com.open.lcp.core.base.service.BaseUserAccountInfoService;
+import com.open.lcp.core.base.service.BaseUserAccountTicketService;
 import com.open.lcp.core.framework.api.LcpThreadLocal;
 import com.open.lcp.core.framework.api.command.ApiCommand;
 import com.open.lcp.core.framework.api.command.ApiCommandContext;
@@ -35,11 +37,8 @@ import com.open.lcp.core.framework.api.command.CommandModelHolder;
 import com.open.lcp.core.framework.api.command.RequestBaseContext;
 import com.open.lcp.core.framework.api.service.ApiCommandLookupService;
 import com.open.lcp.core.framework.api.service.AppInfoService;
-import com.open.lcp.core.framework.api.service.dao.info.AppInfo;
 import com.open.lcp.core.framework.consts.HttpConstants;
 import com.open.lcp.core.framework.consts.LcpConstants;
-import com.open.lcp.core.framework.facade.ApiResult;
-import com.open.lcp.core.framework.facade.ApiResultCode;
 import com.open.lcp.core.framework.util.LcpUtil;
 import com.open.lcp.dbs.cache.redis.RedisCounter;
 import com.open.lcp.dbs.cache.ssdb.SSDBCounterByThread;
@@ -74,10 +73,10 @@ public class ApiController {
 	private ApiCommandLookupService commandLookupService;
 
 	@Autowired
-	private AccountInfoService accountInfoService;
+	private BaseUserAccountInfoService accountInfoService;
 
 	@Autowired
-	private AccountTicketService accountTicketService;
+	private BaseUserAccountTicketService accountTicketService;
 
 	@RequestMapping("/api/**")
 	public ApiResult apiV1() {
@@ -322,7 +321,7 @@ public class ApiController {
 			RequestBaseContext requestBaseContext, ApiResult apiResult, final String methodName) throws Exception {
 		Map<String, String> requestParamMap = requestBaseContext.getRequestParamMap();
 		final int appId = NumberUtils.toInt(requestParamMap.get(HttpConstants.PARAM_APP_ID));
-		final AppInfo appInfo = appInfoService.getAppInfo(appId);
+		final BaseAppInfo appInfo = appInfoService.getAppInfo(appId);
 		// 鎺ュ叆淇℃伅鏃犳晥
 		if (appInfo == null) {
 			apiResult.setCode(ApiResultCode.E_SYS_INVALID_APP_ID);
@@ -343,7 +342,7 @@ public class ApiController {
 		final String version = requestParamMap.get(LcpConstants.PARAM_V);
 		requestBaseContext.setTicket(t);
 		if (StringUtils.isNotEmpty(t)) {
-			CheckTicket ticket = null;
+			BaseUserAccountTicketInfo ticket = null;
 			try {
 				ticket = accountTicketService.validateTicket(t);
 			} catch (Exception e) {

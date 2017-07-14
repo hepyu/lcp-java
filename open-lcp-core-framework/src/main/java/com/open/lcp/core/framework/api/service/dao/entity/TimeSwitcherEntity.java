@@ -1,18 +1,18 @@
 package com.open.lcp.core.framework.api.service.dao.entity;
 
-import com.open.lcp.core.framework.annotation.LcpRequired;
+import com.open.lcp.core.base.annotation.LcpParamRequired;
 
 public class TimeSwitcherEntity {
 
-	@LcpRequired(value = true, min = 0, desc = "开关编号")
+	@LcpParamRequired(value = true, min = 0, desc = "开关编号")
 	private int tsid;
-	@LcpRequired(value = false, desc = "开关名称")
+	@LcpParamRequired(value = false, desc = "开关名称")
 	private String tsname;
-	@LcpRequired(value = false, desc = "开关开始")
+	@LcpParamRequired(value = false, desc = "开关开始")
 	private long tsbegin;
-	@LcpRequired(value = false, desc = "开关结束")
+	@LcpParamRequired(value = false, desc = "开关结束")
 	private long tsend;
-	@LcpRequired(value = false, desc = "开关其它设置")
+	@LcpParamRequired(value = false, desc = "开关其它设置")
 	private String tsext;
 
 	public int getTsid() {

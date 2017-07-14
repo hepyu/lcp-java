@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import com.open.lcp.biz.passport.UserAccountType;
-import com.open.lcp.biz.passport.dto.CheckTicket;
+import com.open.lcp.biz.passport.dto.UserAccountTicket;
 import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
 import com.open.lcp.biz.passport.service.AbstractAccount;
 import com.open.lcp.biz.passport.service.AccountTicketService;
@@ -15,6 +15,7 @@ import com.open.lcp.biz.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.lcp.biz.passport.ticket.Ticket;
 import com.open.lcp.biz.passport.util.AccountUtil;
+import com.open.lcp.core.base.info.BaseUserAccountTicketInfo;
 
 @Service
 public class AccountTicketServiceImpl extends AbstractAccount implements AccountTicketService {
@@ -22,11 +23,11 @@ public class AccountTicketServiceImpl extends AbstractAccount implements Account
 	private final Log logger = LogFactory.getLog(AccountTicketServiceImpl.class);
 
 	@Override
-	public CheckTicket validateTicket(String t) {
+	public BaseUserAccountTicketInfo validateTicket(String t) {
 		try {
 			Ticket couple = super.checkTicket(t);
 
-			CheckTicket dto = new CheckTicket();
+			UserAccountTicket dto = new UserAccountTicket();
 			dto.setUserSecretKey(couple.getUserSecretKey());
 			dto.setUserId(couple.getUserId());
 			return dto;

@@ -5,8 +5,8 @@ import java.lang.reflect.Field;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.open.lcp.core.framework.annotation.LcpReq;
-import com.open.lcp.core.framework.annotation.LcpRequired;
+import com.open.lcp.core.base.annotation.LcpHttpRequest;
+import com.open.lcp.core.base.annotation.LcpParamRequired;
 
 /**
  * 对象校验结果
@@ -23,7 +23,7 @@ public class RequiredCheck {
     private RequiredCheck() {
     }
 
-    public static final RequiredCheck buildMcpReq(Object value, LcpReq lcpReq, ErrorType errorType) {
+    public static final RequiredCheck buildMcpReq(Object value, LcpHttpRequest lcpReq, ErrorType errorType) {
         RequiredCheck requiredCheck = new RequiredCheck();
         requiredCheck.value = value;
         requiredCheck.lcpReq = lcpReq;
@@ -36,7 +36,7 @@ public class RequiredCheck {
         requiredCheck.value = value;
         requiredCheck.field = field;
         if (requiredCheck.field != null) {
-            requiredCheck.lcpRequired = requiredCheck.field.getAnnotation(LcpRequired.class);
+            requiredCheck.lcpRequired = requiredCheck.field.getAnnotation(LcpParamRequired.class);
         }
         requiredCheck.errorType = errorType;
         return requiredCheck;
@@ -47,7 +47,7 @@ public class RequiredCheck {
         requiredCheck.value = value;
         requiredCheck.field = field;
         if (requiredCheck.field != null) {
-            requiredCheck.lcpRequired = requiredCheck.field.getAnnotation(LcpRequired.class);
+            requiredCheck.lcpRequired = requiredCheck.field.getAnnotation(LcpParamRequired.class);
         }
         requiredCheck.errorType = ErrorType.ArrayHasNull;
         requiredCheck.arrayIndex = index;
@@ -62,11 +62,11 @@ public class RequiredCheck {
 
     private Field field;
 
-    private LcpReq lcpReq;
+    private LcpHttpRequest lcpReq;
 
     private ErrorType errorType;
 
-    private LcpRequired lcpRequired = null;
+    private LcpParamRequired lcpRequired = null;
 
     private int arrayIndex;
 
@@ -82,7 +82,7 @@ public class RequiredCheck {
         return value;
     }
 
-    public LcpRequired getRequired() {
+    public LcpParamRequired getRequired() {
         return lcpRequired;
     }
 

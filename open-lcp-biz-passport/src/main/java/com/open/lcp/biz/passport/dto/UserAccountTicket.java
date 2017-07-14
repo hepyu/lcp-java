@@ -1,6 +1,8 @@
 package com.open.lcp.biz.passport.dto;
 
-public class CheckTicket {
+import com.open.lcp.core.base.info.BaseUserAccountTicketInfo;
+
+public class UserAccountTicket implements BaseUserAccountTicketInfo {
 
 	private Long userId;
 

@@ -29,6 +29,7 @@ import com.open.lcp.biz.passport.ticket.TicketManager;
 import com.open.lcp.biz.passport.util.PlaceholderAvatarUtil;
 import com.open.lcp.common.enums.Gender;
 import com.open.lcp.common.util.IPUtil;
+import com.open.lcp.core.base.info.BaseUserAccountInfo;
 
 public class AbstractAccountApi {
 
@@ -229,14 +230,8 @@ public class AbstractAccountApi {
 		}
 	}
 
-	protected PassportUserAccountDTO obtainPassportUserAccount(Long userId) throws PassportException {
-		PassportUserAccountDTO userAccount = accountInfoService.getUserInfo(userId);
-
-		if (userAccount == null) {
-			return null;
-		}
-
-		return userAccount;
+	protected BaseUserAccountInfo obtainPassportUserAccount(Long userId) throws PassportException {
+		return accountInfoService.getUserAccountInfo(userId);
 	}
 
 	protected void multiDeviceProcess(long xlUserId, String deviceId) {

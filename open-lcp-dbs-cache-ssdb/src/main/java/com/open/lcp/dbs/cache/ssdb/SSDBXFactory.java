@@ -10,7 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.gson.Gson;
-import com.open.lcp.core.model.LcpResource;
+import com.open.lcp.core.base.LcpResource;
 import com.open.lcp.env.finder.ZKFinder;
 import com.open.lcp.mangocity.zk.ConfigChangeListener;
 import com.open.lcp.mangocity.zk.ConfigChangeSubscriber;

@@ -17,6 +17,7 @@ import com.open.lcp.biz.passport.sdk.ThirdAccountSDKPortrait;
 import com.open.lcp.biz.passport.ticket.Ticket;
 import com.open.lcp.biz.passport.util.NickNameUtil;
 import com.open.lcp.common.enums.Gender;
+import com.open.lcp.core.base.info.BaseUserAccountInfo;
 import com.open.lcp.env.finder.EnvEnum;
 import com.open.lcp.env.finder.EnvFinder;
 
@@ -50,7 +51,7 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 
 				String description = passportUserAccountDAO.getUserInfoByUserId(userId).getDescription();
 
-				PassportUserAccountDTO userAccount = obtainPassportUserAccount(userId);
+				BaseUserAccountInfo userAccount = obtainPassportUserAccount(userId);
 
 				LoginByMobileResultDTO resultDTO = new LoginByMobileResultDTO();
 				resultDTO.setAvatar(userAccount.getAvatar());
@@ -93,7 +94,7 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 			// 6.生成sk,uk
 			Ticket couple = ticketManager.createSecretKeyCouple(appId, userId);
 
-			PassportUserAccountDTO userAccount = accountInfoService.getUserInfo(userId);
+			BaseUserAccountInfo userAccount = accountInfoService.getUserAccountInfo(userId);
 
 			LoginByMobileResultDTO resultDTO = new LoginByMobileResultDTO();
 			resultDTO.setAvatar(userAccount.getAvatar());

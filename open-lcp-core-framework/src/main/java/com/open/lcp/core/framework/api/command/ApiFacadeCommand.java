@@ -13,16 +13,17 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.open.lcp.core.framework.annotation.LcpReq;
-import com.open.lcp.core.framework.annotation.LcpRequired;
+import com.open.lcp.core.base.annotation.LcpHttpRequest;
+import com.open.lcp.core.base.annotation.LcpParamRequired;
+import com.open.lcp.core.base.command.CommandContext;
+import com.open.lcp.core.base.facade.ApiResult;
+import com.open.lcp.core.base.facade.ApiResultCode;
 import com.open.lcp.core.framework.api.ApiException;
 import com.open.lcp.core.framework.api.FieldLoadHolder;
 import com.open.lcp.core.framework.api.ModelCastHolder;
 import com.open.lcp.core.framework.api.RequiredCheck;
 import com.open.lcp.core.framework.api.RequiredCheck.ErrorType;
 import com.open.lcp.core.framework.api.listener.CommandListener;
-import com.open.lcp.core.framework.facade.ApiResult;
-import com.open.lcp.core.framework.facade.ApiResultCode;
 import com.open.lcp.core.framework.util.LcpUtil;
 
 /**
@@ -244,7 +245,7 @@ public class ApiFacadeCommand extends AbstractApiCommand implements Initializing
 	 * @param ctx
 	 * @throws ApiException
 	 */
-	protected void checkReqModel(Object reqModel, LcpReq lcpReq, ApiCommandContext ctx) throws ApiException {
+	protected void checkReqModel(Object reqModel, LcpHttpRequest lcpReq, ApiCommandContext ctx) throws ApiException {
 		RequiredCheck result = null;
 		if (lcpReq != null) {// 按单个参数加注解的形式来处理
 			result = LcpRequiredCheckHolder.check(lcpReq, reqModel);
@@ -254,7 +255,7 @@ public class ApiFacadeCommand extends AbstractApiCommand implements Initializing
 		if (result != null && result.getErrorType() != ErrorType.Pass) {
 			logger.warn(String.format(SF_REQ_ERROR, ctx.getUserId(), ctx.getSig(), ctx.getMethodName(),
 					result.toMessage(), FieldLoadHolder.toString(result.getValue())));
-			LcpRequired required = result.getRequired();
+			LcpParamRequired required = result.getRequired();
 			if (required != null && required.errorCode() > 0) {
 				int errorCode = required.errorCode();
 				String errorMsg = required.errorMsg();

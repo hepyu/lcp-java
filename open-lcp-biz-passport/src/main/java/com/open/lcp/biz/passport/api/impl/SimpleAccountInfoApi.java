@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.open.lcp.biz.passport.UserAccountType;
 import com.open.lcp.biz.passport.api.AbstractAccountApi;
 import com.open.lcp.biz.passport.api.AccountInfoApi;
-import com.open.lcp.biz.passport.dto.CheckTicket;
+import com.open.lcp.biz.passport.dto.UserAccountTicket;
 import com.open.lcp.biz.passport.dto.PassportOAuthAccountDTO;
 import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
 import com.open.lcp.biz.passport.dto.RequestUploadAvatarResultDTO;
@@ -15,15 +15,16 @@ import com.open.lcp.biz.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.lcp.biz.passport.ticket.Ticket;
 import com.open.lcp.common.enums.Gender;
+import com.open.lcp.core.base.info.BaseUserAccountInfo;
 
 @Component
 public class SimpleAccountInfoApi extends AbstractAccountApi implements AccountInfoApi {
 
 	@Override
-	public CheckTicket validateTicket(String t) {
+	public UserAccountTicket validateTicket(String t) {
 		Ticket couple = super.checkTicket(t);
 
-		CheckTicket dto = new CheckTicket();
+		UserAccountTicket dto = new UserAccountTicket();
 		dto.setUserSecretKey(couple.getUserSecretKey());
 		dto.setUserId(couple.getUserId());
 		return dto;
@@ -63,14 +64,14 @@ public class SimpleAccountInfoApi extends AbstractAccountApi implements AccountI
 	}
 
 	@Override
-	public PassportUserAccountDTO getUserInfoByTicket(String t) {
+	public BaseUserAccountInfo getUserInfoByTicket(String t) {
 		Ticket ticket = super.checkTicket(t);
 		Long userId = ticket.getUserId();
 		return obtainPassportUserAccount(userId);
 	}
 
 	@Override
-	public PassportUserAccountDTO getUserInfoByUserId(Long userId) {
+	public BaseUserAccountInfo getUserInfoByUserId(Long userId) {
 
 		if (userId == null || userId <= 0) {
 			return null;

@@ -3,21 +3,21 @@ package com.open.lcp.biz.passport.api;
 import java.util.List;
 
 import com.open.lcp.biz.passport.UserAccountType;
-import com.open.lcp.biz.passport.dto.CheckTicket;
+import com.open.lcp.biz.passport.dto.UserAccountTicket;
 import com.open.lcp.biz.passport.dto.PassportOAuthAccountDTO;
-import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
 import com.open.lcp.biz.passport.dto.RequestUploadAvatarResultDTO;
 import com.open.lcp.common.enums.Gender;
+import com.open.lcp.core.base.info.BaseUserAccountInfo;
 
 public interface AccountInfoApi {
 
-	public CheckTicket validateTicket(String t);
+	public UserAccountTicket validateTicket(String t);
 
 	public boolean suicide(String t);
 
-	public PassportUserAccountDTO getUserInfoByTicket(String t);
+	public BaseUserAccountInfo getUserInfoByTicket(String t);
 
-	public PassportUserAccountDTO getUserInfoByUserId(Long userId);
+	public BaseUserAccountInfo getUserInfoByUserId(Long userId);
 
 	public List<PassportOAuthAccountDTO> getOAuthAccountList(Long userId);
 

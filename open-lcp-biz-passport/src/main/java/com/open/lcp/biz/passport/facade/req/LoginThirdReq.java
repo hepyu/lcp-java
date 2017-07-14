@@ -1,29 +1,29 @@
 package com.open.lcp.biz.passport.facade.req;
 
 import com.open.lcp.biz.passport.UserAccountType;
-import com.open.lcp.core.framework.annotation.LcpRequired;
+import com.open.lcp.core.base.annotation.LcpParamRequired;
 
 public class LoginThirdReq {
 
-	@LcpRequired(value = true, desc = "thirdAppId")
+	@LcpParamRequired(value = true, desc = "thirdAppId")
 	private String thirdAppId;
 
-	@LcpRequired(value = true, desc = "openId")
+	@LcpParamRequired(value = true, desc = "openId")
 	private String openId;
 	
-	@LcpRequired(value = true, desc = "accessToken")
+	@LcpParamRequired(value = true, desc = "accessToken")
 	private String accessToken;
 	
-	@LcpRequired(value = true, desc = "accountType")
+	@LcpParamRequired(value = true, desc = "accountType")
 	private UserAccountType accountType;
 	
-	@LcpRequired(value = true, desc = "deviceId")
+	@LcpParamRequired(value = true, desc = "deviceId")
 	private String deviceId;
 
-	@LcpRequired(value = true, desc = "ip")
+	@LcpParamRequired(value = true, desc = "ip")
 	private String ip;
 
-	@LcpRequired(value = true, desc = "ua")
+	@LcpParamRequired(value = true, desc = "ua")
 	private String ua;
 
 	public String getThirdAppId() {
