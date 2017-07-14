@@ -1,0 +1,16 @@
+eclipse.preferences.version=1
+encoding//src/main/java=UTF-8
+encoding//src/main/java/com/open/lcp/ApiMain.java=UTF-8
+encoding//src/main/java/com/open/lcp/core/framework/LcpScheduler.java=UTF-8
+encoding//src/main/java/com/open/lcp/core/framework/api/ModelCastHolder.java=UTF-8
+encoding//src/main/java/com/open/lcp/core/framework/api/command/ApiCommandContext.java=UTF-8
+encoding//src/main/java/com/open/lcp/core/framework/api/command/CommandModelHolder.java=UTF-8
+encoding//src/main/java/com/open/lcp/core/framework/api/controller/ApiController.java=UTF-8
+encoding//src/main/java/com/open/lcp/core/framework/api/controller/DocController.java=UTF-8
+encoding//src/main/java/com/open/lcp/core/framework/api/controller/TestController.java=UTF-8
+encoding//src/main/java/com/open/lcp/core/framework/configuration/AsyncThreadPoolConfiguration.java=UTF-8
+encoding//src/main/java/com/open/lcp/core/framework/facade/CommonResultResp.java=UTF-8
+encoding//src/main/java/com/open/lcp/core/framework/util/LcpMixEncUtil.java=UTF-8
+encoding//src/main/java/com/open/lcp/core/framework/util/LcpUtil.java=UTF-8
+encoding//src/test/java=UTF-8
+encoding/<project>=UTF-8
