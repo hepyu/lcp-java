@@ -16,7 +16,12 @@ public enum LcpResource {
 	// (3).lcp_biz resources
 	mysql_lcp_biz_master("mysql", "/mysql/master", "biz", "mysql_lcp_biz"),
 
-	redis_lcp_biz("redis", "/redis", "biz", "redis_lcp_biz");
+	redis_lcp_biz("redis", "/redis", "biz", "redis_lcp_biz"),
+
+	// (4).lcp_comment resources
+	hbase_lcp_biz_comment("hbase", "/hbase", "biz", "hbase_lcp_biz_comment"),
+	
+	redis_lcp_biz_comment("redis", "/redis", "biz", "redis_lcp_biz_comment");
 
 	private String resourceType;
 
