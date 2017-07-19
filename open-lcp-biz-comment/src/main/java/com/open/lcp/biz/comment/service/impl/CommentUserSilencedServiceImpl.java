@@ -1,30 +1,22 @@
 package com.open.lcp.biz.comment.service.impl;
 
-import com.bchbc.dbs.cache.SSDBX;
-import com.xunlei.mcp.model.UserInfo;
-import com.xunlei.xlmc.comment.dao.CommentUserSilencedDAO;
-import com.xunlei.xlmc.comment.dao.CommentUserSilencedLogDAO;
-import com.xunlei.xlmc.comment.domain.CommentUserSilencedDTO;
-import com.xunlei.xlmc.comment.domain.CommentUserSilencedLog;
-import com.xunlei.xlmc.comment.facade.req.CommentUserSilenceReq;
-import com.xunlei.xlmc.comment.facade.req.CommentUserSilencedListReq;
-import com.xunlei.xlmc.comment.facade.req.CommentUserSilencedLogReq;
-import com.xunlei.xlmc.comment.facade.resp.CommentUserSilencedResp;
-import com.xunlei.xlmc.comment.service.CommentUserSilencedService;
-import com.xunlei.xlmc.useraccount.service.UserAccountService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.open.lcp.biz.comment.CommentConstant;
+import com.open.lcp.biz.comment.service.CommentUserSilencedService;
+import com.open.lcp.biz.comment.service.dao.CommentUserSilencedDAO;
+import com.open.lcp.biz.comment.service.dao.CommentUserSilencedLogDAO;
+import com.open.lcp.biz.comment.service.dao.entity.CommentUserSilencedEntity;
+import com.open.lcp.biz.comment.service.dao.entity.CommentUserSilencedLogEntity;
+import com.open.lcp.biz.passport.service.AccountInfoService;
+import com.open.lcp.core.base.info.BaseUserAccountInfo;
+
 import javax.annotation.Resource;
 import java.util.List;
-
-import static com.xunlei.xlmc.comment.config.CommentSSDBConfig.SSDB_COMMENT_NEW;
-import static com.xunlei.xlmc.comment.util.CommentConstant.COMMENT_SILENCED_KEY;
-import static com.xunlei.xlmc.comment.util.CommentConstant.FOR_EVER;
-import static com.xunlei.xlmc.comment.util.CommentConstant.ONE_DAY_MSEC;
 
 /**
  * @author Alex
@@ -40,9 +32,7 @@ public class CommentUserSilencedServiceImpl implements CommentUserSilencedServic
     @Resource
     private CommentUserSilencedLogDAO commentUserSilencedLogDAO;
     @Resource
-    private UserAccountService userAccountService;
-    @Resource(name = SSDB_COMMENT_NEW)
-    SSDBX ssdbx;
+    private AccountInfoService userAccountService;
 
     public long saveCommentUserSilenced(CommentUserSilenceReq req) {
         long current = System.currentTimeMillis();
@@ -55,12 +45,12 @@ public class CommentUserSilencedServiceImpl implements CommentUserSilencedServic
             commentUserSilencedDAO.deleteByUserId(userId);
         } else {
             if (silencedDays > 0) {
-                end = current + ONE_DAY_MSEC * req.getSilencedDays();
+                end = current + CommentConstant.ONE_DAY_MSEC * req.getSilencedDays();
             } else if (silencedDays == -1) {
-                end = FOR_EVER;
+                end = CommentConstant.FOR_EVER;
             }
             req.setEnd(end);
-            UserInfo userInfo = userAccountService.getUserInfo(req.getUserId());
+            BaseUserAccountInfo userInfo = userAccountService.getUserInfo(req.getUserId());
             if (userInfo == null || StringUtils.isBlank(userInfo.getNickName())) {
                 req.setNickName(String.valueOf(userId));
             } else {
@@ -74,12 +64,12 @@ public class CommentUserSilencedServiceImpl implements CommentUserSilencedServic
 
     private void updateCache(long userId, long end) {
         try {
-            String silencedKey = String.format(COMMENT_SILENCED_KEY, userId);
+            String silencedKey = String.format(CommentConstant.COMMENT_SILENCED_KEY, userId);
             if (end == 0) {
                 ssdbx.del(silencedKey);
             } else {
                 ssdbx.set(silencedKey, end);
-                if (end != FOR_EVER) {
+                if (end != CommentConstant.FOR_EVER) {
                     ssdbx.expired(silencedKey, (end - System.currentTimeMillis()) / 1000);
                 }
             }
@@ -107,14 +97,14 @@ public class CommentUserSilencedServiceImpl implements CommentUserSilencedServic
         if (!CollectionUtils.isEmpty(commentUserSilenceds)) {
             for (CommentUserSilencedEntity commentUserSilencedDTO : commentUserSilenceds) {
                 long end = commentUserSilencedDTO.getEnd();
-                if (end == FOR_EVER) {
+                if (end == CommentConstant.FOR_EVER) {
                     commentUserSilencedDTO.setSilencedType(-1);
                 } else {
                     commentUserSilencedDTO.setSilencedType(1);
                 }
-                UserInfo userInfo = userAccountService.getUserInfo(commentUserSilencedDTO.getUserId());
+                BaseUserAccountInfo userInfo = userAccountService.getUserInfo(commentUserSilencedDTO.getUserId());
                 if (userInfo != null) {
-                    commentUserSilencedDTO.setPortrait(userInfo.getPortrait());
+                    commentUserSilencedDTO.setPortrait(userInfo.getAvatar());
                 }
             }
             commentUserSilencedResp.setCommentUserSilenceds(commentUserSilenceds.toArray(new CommentUserSilencedEntity[0]));

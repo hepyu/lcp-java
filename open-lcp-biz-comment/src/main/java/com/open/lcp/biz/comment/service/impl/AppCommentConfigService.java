@@ -3,20 +3,15 @@ package com.open.lcp.biz.comment.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
-
-import com.xunlei.mcp.model.ApiException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
-
-import com.xunlei.xlmc.api.service.AutoReloadMinutely;
-import com.xunlei.xlmc.comment.dao.CommentMySqlDao;
-import com.xunlei.xlmc.comment.domain.CommentConfig;
-
-import static com.xunlei.xlmc.comment.util.CommentConstant.OK;
-import static com.xunlei.xlmc.comment.util.CommentConstant.ERROR;
+import com.mysql.jdbc.Constants;
+import com.open.lcp.biz.comment.CommentConstant;
+import com.open.lcp.biz.comment.service.dao.CommentConfigDAO;
+import com.open.lcp.biz.comment.service.dao.entity.CommentConfigEntity;
+import com.open.lcp.core.framework.api.ApiException;
 
 
 /**
@@ -46,16 +41,16 @@ public class AppCommentConfigService implements AutoReloadMinutely {
 	public String reload() {
 		try {
 			List<CommentConfigEntity> commentConfigs = commentMySqlDao.listCommentConfig();
-			Map<Integer, CommentConfigEntity> newMap = new HashMap<>();
+			Map<Integer, CommentConfigEntity> newMap = new HashMap<Integer, CommentConfigEntity>();
 			for (CommentConfigEntity commentConfig : commentConfigs) {
 				newMap.put(commentConfig.getAppId(), commentConfig);
 			}
 			this.appCommentConf = newMap;
-			return OK;
+			return CommentConstant.OK;
 		} catch (Exception e) {
             logger.error("reload commentConfig error", e);
 		}
-		return ERROR;
+		return CommentConstant.ERROR;
 	}
 
     CommentConfigEntity getCommentConf(int appId) {
