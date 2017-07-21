@@ -81,126 +81,126 @@ public class CommentServiceImpl implements CommentService {
 //	@Value("${act.appSecretKey}")
 //	private String actAppSecretKey;
 
-	/**
-	 * 这个方法有毒，请勿随意修改
-	 */
-	@Override
-	public CommentAddResp addComment(int appId, final int typeId, String tid, final Long cid, String ip, String device,
-			String comment, BaseUserAccountInfo user, String sourceId, String triggerId, String clientPort,
-			String recommendPlatform, String downLoadSpeed, boolean isAnonymous, String bandwidth,
-			String extParamsJson) {
-		long userId = user.getUserId();
-		CommentAddResp commentAddResp = this.validateAddComment(userId, triggerId, comment);
-		if (commentAddResp != null) {
-			return commentAddResp;
-		}
-		CommentConfigEntity commentConf = appCommentConfigService.getCommentConf(appId);
-		int appCommentId = commentConf.getAppCommentId();
-
-		// 评论id生成规则为从高到低递减,即最新的id最小
-		long newCommentId = Long.MAX_VALUE - idWorker.nextId();
-
-		// 评论id不为空时,该条评论属于回复评论,并且需要挖出被回复的评论信息，如果循环回复，则挖的层数取决于应用的配置
-		boolean isReply = false;
-		List<CommentReplyResp> replyResps = null;
-		long replyCommentUid = 0L;
-		if (cid != null) {
-			isReply = true;
-			// 查询被回复人的评论信息
-			replyResps = listReply(appCommentId, typeId, tid, cid, commentConf);
-			if (replyResps != null && replyResps.size() != 0) {
-				// 这里存了一串 有回复的，有被回复的，傻傻分不清
-				replyCommentUid = replyResps.get(replyResps.size() - 1).getUid();
-			} else {
-				// 被回复的评论未审核通过 这种情况在回复自己的时候发生
-				isReply = false;
-			}
-		}
-		// 查询用户类型设置评论类型
-		String commentType = "";
-		// 只有短视频需要打标给范刚计算有料值
-		if (typeId == 1) {
-			try {
-				commentType = buildCommentTyle(newCommentId, appId, userId, isReply, recommendPlatform, replyCommentUid,
-						sourceId);
-			} catch (Exception e) {
-				logger.warn("build comment type error", e);
-			}
-		}
-		long time = System.currentTimeMillis();
-		final IdColumn idColumn = createIdColumn(appCommentId, appId, typeId, tid, newCommentId, cid, null, ip, time,
-				device, sourceId, clientPort, commentType);
-		final ContentColumn contentColumn = createContentColumn(comment, replyResps);
-		final UserColumn userColumn = createUserColumn(user);
-		CountColumn countColumn = createCountColumn(0, 0, 0);
-		ExtColumn extColumn = createExtColumn(commentConf.getLevel(), downLoadSpeed, isAnonymous, bandwidth,
-				extParamsJson);
-
-		String idColumnValue = gson.toJson(idColumn);
-		String userColumnValue = gson.toJson(userColumn);
-		String commentColumnValue = gson.toJson(contentColumn);
-		String countColumnValue = gson.toJson(countColumn);
-		String extColumnValue = gson.toJson(extColumn);
-
-		List<CommentCheckColumn> commentColumns = new ArrayList<>(1);
-		CommentCheckColumn commentColumn = new CommentCheckColumn();
-		commentColumn.setCommentId(newCommentId);
-		commentColumn.setIdColumnValue(idColumnValue);
-		commentColumn.setUserColumnValue(userColumnValue);
-		commentColumn.setCommentColumnValue(commentColumnValue);
-		commentColumn.setCountColumnValue(countColumnValue);
-		commentColumn.setExtColumnValue(extColumnValue);
-		commentColumn.setAuthor(user.getNickName());
-		commentColumn.setAuthorId(user.getId());
-		commentColumn.setContent(comment);
-
-		CheckStatus checkStatus = verifyComment(comment);
-
-		if (checkStatus == CheckStatus.YES) {
-			commentColumn.setChecker("spam");
-			commentColumn.setCheckTime(time);
-			commentColumns.add(commentColumn);
-			try {
-				if (commentDao.addCheckNoPassComments(typeId, commentColumns)) {
-					return commentAddResp(0, newCommentId, true);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new ApiException(4006, "addCheckNoPassComment error");
-			}
-		} else {
-			commentColumn.setChecker("SW");
-			commentColumn.setCheckTime(time);
-			commentColumns.add(commentColumn);
-			try {
-				if (commentDao.addReviewComments(typeId, commentColumns)) {
-					// TODO 紧急上线临时取消kafka环节
-					// kafkaExecutor.execute(new Runnable() {
-					// @Override
-					// public void run() {
-					// try {
-					// logger.info("start send comment to kafka {}",
-					// idColumn.getCid());
-					// sendKafkaToAudit(CommentAuditStatusEnum.TOPASS, typeId,
-					// idColumn, userColumn, contentColumn.getContent());
-					// logger.info("success send comment to kafka {}",
-					// idColumn.getCid());
-					// } catch (Exception e) {
-					// logger.warn("error send comment to kafka {}",
-					// idColumn.getCid(), e);
-					// }
-					// }
-					// });
-					addReviewCommentCache(idColumn, contentColumn, userColumn, extColumn);
-					return commentAddResp(0, newCommentId, true);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new ApiException(4005, "addReviewComment error");
-			}
-		}
-		return commentAddResp(4009, null, false);
-	}
+//	/**
+//	 * 这个方法有毒，请勿随意修改
+//	 */
+//	@Override
+//	public CommentAddResp addComment(int appId, final int typeId, String tid, final Long cid, String ip, String device,
+//			String comment, BaseUserAccountInfo user, String sourceId, String triggerId, String clientPort,
+//			String recommendPlatform, String downLoadSpeed, boolean isAnonymous, String bandwidth,
+//			String extParamsJson) {
+//		long userId = user.getUserId();
+//		CommentAddResp commentAddResp = this.validateAddComment(userId, triggerId, comment);
+//		if (commentAddResp != null) {
+//			return commentAddResp;
+//		}
+//		CommentConfigEntity commentConf = appCommentConfigService.getCommentConf(appId);
+//		int appCommentId = commentConf.getAppCommentId();
+//
+//		// 评论id生成规则为从高到低递减,即最新的id最小
+//		long newCommentId = Long.MAX_VALUE - idWorker.nextId();
+//
+//		// 评论id不为空时,该条评论属于回复评论,并且需要挖出被回复的评论信息，如果循环回复，则挖的层数取决于应用的配置
+//		boolean isReply = false;
+//		List<CommentReplyResp> replyResps = null;
+//		long replyCommentUid = 0L;
+//		if (cid != null) {
+//			isReply = true;
+//			// 查询被回复人的评论信息
+//			replyResps = listReply(appCommentId, typeId, tid, cid, commentConf);
+//			if (replyResps != null && replyResps.size() != 0) {
+//				// 这里存了一串 有回复的，有被回复的，傻傻分不清
+//				replyCommentUid = replyResps.get(replyResps.size() - 1).getUid();
+//			} else {
+//				// 被回复的评论未审核通过 这种情况在回复自己的时候发生
+//				isReply = false;
+//			}
+//		}
+//		// 查询用户类型设置评论类型
+//		String commentType = "";
+//		// 只有短视频需要打标给范刚计算有料值
+//		if (typeId == 1) {
+//			try {
+//				commentType = buildCommentTyle(newCommentId, appId, userId, isReply, recommendPlatform, replyCommentUid,
+//						sourceId);
+//			} catch (Exception e) {
+//				logger.warn("build comment type error", e);
+//			}
+//		}
+//		long time = System.currentTimeMillis();
+//		final IdColumn idColumn = createIdColumn(appCommentId, appId, typeId, tid, newCommentId, cid, null, ip, time,
+//				device, sourceId, clientPort, commentType);
+//		final ContentColumn contentColumn = createContentColumn(comment, replyResps);
+//		final UserColumn userColumn = createUserColumn(user);
+//		CountColumn countColumn = createCountColumn(0, 0, 0);
+//		ExtColumn extColumn = createExtColumn(commentConf.getLevel(), downLoadSpeed, isAnonymous, bandwidth,
+//				extParamsJson);
+//
+//		String idColumnValue = gson.toJson(idColumn);
+//		String userColumnValue = gson.toJson(userColumn);
+//		String commentColumnValue = gson.toJson(contentColumn);
+//		String countColumnValue = gson.toJson(countColumn);
+//		String extColumnValue = gson.toJson(extColumn);
+//
+//		List<CommentCheckColumn> commentColumns = new ArrayList<>(1);
+//		CommentCheckColumn commentColumn = new CommentCheckColumn();
+//		commentColumn.setCommentId(newCommentId);
+//		commentColumn.setIdColumnValue(idColumnValue);
+//		commentColumn.setUserColumnValue(userColumnValue);
+//		commentColumn.setCommentColumnValue(commentColumnValue);
+//		commentColumn.setCountColumnValue(countColumnValue);
+//		commentColumn.setExtColumnValue(extColumnValue);
+//		commentColumn.setAuthor(user.getNickName());
+//		commentColumn.setAuthorId(user.getId());
+//		commentColumn.setContent(comment);
+//
+//		CheckStatus checkStatus = verifyComment(comment);
+//
+//		if (checkStatus == CheckStatus.YES) {
+//			commentColumn.setChecker("spam");
+//			commentColumn.setCheckTime(time);
+//			commentColumns.add(commentColumn);
+//			try {
+//				if (commentDao.addCheckNoPassComments(typeId, commentColumns)) {
+//					return commentAddResp(0, newCommentId, true);
+//				}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//				throw new ApiException(4006, "addCheckNoPassComment error");
+//			}
+//		} else {
+//			commentColumn.setChecker("SW");
+//			commentColumn.setCheckTime(time);
+//			commentColumns.add(commentColumn);
+//			try {
+//				if (commentDao.addReviewComments(typeId, commentColumns)) {
+//					// TODO 紧急上线临时取消kafka环节
+//					// kafkaExecutor.execute(new Runnable() {
+//					// @Override
+//					// public void run() {
+//					// try {
+//					// logger.info("start send comment to kafka {}",
+//					// idColumn.getCid());
+//					// sendKafkaToAudit(CommentAuditStatusEnum.TOPASS, typeId,
+//					// idColumn, userColumn, contentColumn.getContent());
+//					// logger.info("success send comment to kafka {}",
+//					// idColumn.getCid());
+//					// } catch (Exception e) {
+//					// logger.warn("error send comment to kafka {}",
+//					// idColumn.getCid(), e);
+//					// }
+//					// }
+//					// });
+//					addReviewCommentCache(idColumn, contentColumn, userColumn, extColumn);
+//					return commentAddResp(0, newCommentId, true);
+//				}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//				throw new ApiException(4005, "addReviewComment error");
+//			}
+//		}
+//		return commentAddResp(4009, null, false);
+//	}
 
 	// private void sendKafkaToAudit(String auditUserNmae,
 	// CommentAuditStatusEnum commentAuditStatusEnum,
@@ -280,29 +280,29 @@ public class CommentServiceImpl implements CommentService {
 	// return adminCommentDTO;
 	// }
 	//
-	private CommentAddResp validateAddComment(long userId, String triggerId, String comment) {
-		// 禁言验证
-		Long end = ssdbCommentNew.get(String.format(CommentConstant.COMMENT_SILENCED_KEY, userId), Long.class);
-		if (end != null && end != 0) {
-			if (end == CommentConstant.FOR_EVER) {
-				return commentAddResp(4012, null, false);
-			} else {
-				return commentAddResp(4011, null, false);
-			}
-		}
-		// 长度验证
-		if (comment.length() > 140) {
-			return commentAddResp(4001, null, false);
-		}
-		// 重入验证
-		String triggerKey = String.format(COMMENT_TRIGGER_KEY, userId, triggerId);
-		if (redisService.setnx(triggerKey, String.valueOf(1)) < 1) {
-			return commentAddResp(4002, null, false);
-		} else {
-			redisService.expire(triggerKey, 3600 * 24);
-		}
-		return null;
-	}
+//	private CommentAddResp validateAddComment(long userId, String triggerId, String comment) {
+//		// 禁言验证
+//		Long end = ssdbCommentNew.get(String.format(CommentConstant.COMMENT_SILENCED_KEY, userId), Long.class);
+//		if (end != null && end != 0) {
+//			if (end == CommentConstant.FOR_EVER) {
+//				return commentAddResp(4012, null, false);
+//			} else {
+//				return commentAddResp(4011, null, false);
+//			}
+//		}
+//		// 长度验证
+//		if (comment.length() > 140) {
+//			return commentAddResp(4001, null, false);
+//		}
+//		// 重入验证
+//		String triggerKey = String.format(COMMENT_TRIGGER_KEY, userId, triggerId);
+//		if (redisService.setnx(triggerKey, String.valueOf(1)) < 1) {
+//			return commentAddResp(4002, null, false);
+//		} else {
+//			redisService.expire(triggerKey, 3600 * 24);
+//		}
+//		return null;
+//	}
 	//
 	// /**
 	// * 构建评论类型

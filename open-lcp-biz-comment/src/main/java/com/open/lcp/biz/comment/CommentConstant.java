@@ -5,17 +5,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author Alex
- * @time 2017/2/8 17:36
- */
 public class CommentConstant {
 
 	public static final String OK = "ok";
 
 	public static final String ERROR = "error";
 
-	//禁言
+	// 禁言
 	public static final String COMMENT_SILENCED_KEY = "comment_silenced_%d";
 
 	// 永久禁言

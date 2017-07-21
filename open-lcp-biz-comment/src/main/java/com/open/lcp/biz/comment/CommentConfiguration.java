@@ -11,12 +11,16 @@ import com.open.lcp.dbs.hbase.HBaseXFactory;
 @Configuration
 public class CommentConfiguration {
 
-	@Bean(name = "hbase_comment")
+	private final static String BEAN_NAME_HBASE_COMMENT = "hbase_comment";
+
+	private final static String BEAN_NAME_REDIS_COMMENT = "redis_comment";
+
+	@Bean(name = BEAN_NAME_HBASE_COMMENT)
 	public Connection hbaseConnection() {
 		return HBaseXFactory.createConnection(LcpResource.hbase_lcp_biz_comment);
 	}
 
-	@Bean(name = "redis_comment")
+	@Bean(name = BEAN_NAME_REDIS_COMMENT)
 	public RedisX getCommentListRedis() {
 		return RedisXFactory.loadRedisX(LcpResource.redis_lcp_biz_comment);
 	}

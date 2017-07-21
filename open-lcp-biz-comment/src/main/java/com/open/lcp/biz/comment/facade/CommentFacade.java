@@ -69,9 +69,10 @@ public class CommentFacade implements ApiFacade {
 		String recommendPlatform = ctx.getAppInfo().getRecommendPlatform();
 		String extParams = req.getExtParams();
 		String extParamsJson = CommentUtil.transformExtParams(extParams, ctx.getStringParams());
-		return commentService.addComment(appId, typeId, tid, cid, ip, device, comment, user, sourceId, triggerId,
-				clientPort, recommendPlatform, req.getDownLoadSpeed(), req.isAnonymous(), req.getBandwidth(),
-				extParamsJson);
+//		return commentService.addComment(appId, typeId, tid, cid, ip, device, comment, user, sourceId, triggerId,
+//				clientPort, recommendPlatform, req.getDownLoadSpeed(), req.isAnonymous(), req.getBandwidth(),
+//				extParamsJson);
+		return new CommentAddResp();
 	}
 
 	// @McpMethod(name = "comment.del", ver = DEFAULT_VERSION, desc = "撤销评论",

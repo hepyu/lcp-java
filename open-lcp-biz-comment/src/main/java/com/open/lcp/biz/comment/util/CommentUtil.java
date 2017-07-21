@@ -1,17 +1,15 @@
 package com.open.lcp.biz.comment.util;
 
-import com.google.common.base.Splitter;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-import java.util.*;
-
-/**
- * @author Alex
- * @version 2017/6/27 10:37
- */
 public class CommentUtil {
 
 	public static final Gson gson = new GsonBuilder().disableHtmlEscaping().serializeSpecialFloatingPointValues()

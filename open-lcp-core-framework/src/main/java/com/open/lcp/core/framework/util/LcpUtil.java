@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.open.lcp.common.util.AESUtils;
 import com.open.lcp.common.util.Base64Utils;
+import com.open.lcp.common.util.GsonUtil;
 import com.open.lcp.core.framework.consts.HttpConstants;
 
 public class LcpUtil {
@@ -34,11 +35,6 @@ public class LcpUtil {
 	private static final Log logger = LogFactory.getLog(LcpUtil.class);
 
 	private static final Pattern ipPattern = Pattern.compile("([0-9]{1,3}\\.){3}[0-9]{1,3}");
-
-	public static Gson gson = new GsonBuilder().disableHtmlEscaping().serializeSpecialFloatingPointValues().create();
-
-	public static Gson gsonOnlyExpose = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation()
-			.create();
 
 	public static long rpcTimeCost(long t, Object msg) {
 		return logTimeCost(t, "RPC_CALL " + msg, logger);
@@ -263,7 +259,7 @@ public class LcpUtil {
 		if (json == null || json.length() == 0) {
 			return null;
 		}
-		return gson.fromJson(json, t);
+		return GsonUtil.gson.fromJson(json, t);
 	}
 
 	/**
@@ -523,7 +519,7 @@ public class LcpUtil {
 			// 鍏煎 AutoLoadCommand 鐩存帴杈撳嚭json
 			return (String) result;
 		}
-		return gson.toJson(buildObjResult(result));
+		return GsonUtil.gson.toJson(buildObjResult(result));
 
 	}
 

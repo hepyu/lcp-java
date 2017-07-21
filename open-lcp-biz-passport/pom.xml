@@ -20,12 +20,10 @@
 		<dependency>
 			<groupId>com.open.lcp</groupId>
 			<artifactId>open-lcp-dbs-cache</artifactId>
-			<version>2.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
 			<artifactId>open-lcp-dbs-cache-redis</artifactId>
-			<version>2.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
@@ -35,12 +33,10 @@
 		<dependency>
 			<groupId>com.open.lcp</groupId>
 			<artifactId>open-lcp-orm-jade</artifactId>
-			<version>2.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
 			<artifactId>open-lcp-core-base</artifactId>
-			<version>2.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

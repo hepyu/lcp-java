@@ -13,9 +13,6 @@ public class CommentUserSilencedEntity {
 
 	private transient long end;
 
-	// 禁言状态 -1永久禁言 1禁言3天
-	// private int silencedType;
-
 	// 操作者名称
 	private String operator;
 

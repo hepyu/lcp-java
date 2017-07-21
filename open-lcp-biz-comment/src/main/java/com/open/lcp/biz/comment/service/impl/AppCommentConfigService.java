@@ -7,18 +7,17 @@ import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
-import com.mysql.jdbc.Constants;
 import com.open.lcp.biz.comment.CommentConstant;
 import com.open.lcp.biz.comment.service.dao.CommentConfigDAO;
 import com.open.lcp.biz.comment.service.dao.entity.CommentConfigEntity;
 import com.open.lcp.core.framework.api.ApiException;
-
+import com.open.lcp.core.framework.loader.TimerLoader;
 
 /**
  * 5min更新评论共享配置
  */
 @Component
-public class AppCommentConfigService implements AutoReloadMinutely {
+public class AppCommentConfigService implements TimerLoader {
 
 	private static final Log logger = LogFactory.getLog(AppCommentConfigService.class);
 
@@ -48,16 +47,16 @@ public class AppCommentConfigService implements AutoReloadMinutely {
 			this.appCommentConf = newMap;
 			return CommentConstant.OK;
 		} catch (Exception e) {
-            logger.error("reload commentConfig error", e);
+			logger.error("reload commentConfig error", e);
 		}
 		return CommentConstant.ERROR;
 	}
 
-    CommentConfigEntity getCommentConf(int appId) {
-        final Map<Integer, CommentConfigEntity> appCommentConfFinal = this.appCommentConf;
-        if (appCommentConfFinal == null || appCommentConfFinal.size()==0 || appCommentConfFinal.get(appId)==null) {
-            throw new ApiException(4003, "cant find commentConf，appId:"+appId);
-        }
-        return appCommentConfFinal.get(appId);
-    }
+	CommentConfigEntity getCommentConf(int appId) {
+		final Map<Integer, CommentConfigEntity> appCommentConfFinal = this.appCommentConf;
+		if (appCommentConfFinal == null || appCommentConfFinal.size() == 0 || appCommentConfFinal.get(appId) == null) {
+			throw new ApiException(4003, "cant find commentConf，appId:" + appId);
+		}
+		return appCommentConfFinal.get(appId);
+	}
 }
