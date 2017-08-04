@@ -169,5 +169,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.cpdetector</groupId>
+			<artifactId>cpdetector</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.open.lcp</groupId>
+			<artifactId>open-lcp-common</artifactId>
+		</dependency>
 	</dependencies>
 </project>

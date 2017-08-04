@@ -2,6 +2,7 @@ package com.open.lcp.biz.lbs.util;
 
 import java.awt.geom.Point2D;
 import java.util.List;
+import com.open.lcp.biz.lbs.model.LngLat;
 
 //http://blog.csdn.net/lijie18/article/details/54892715
 public class LocationUtil {
@@ -164,5 +165,28 @@ public class LocationUtil {
 		} else { // 奇数在多边形内
 			return true;
 		}
+	}
+
+	public static LngLat getCenterPoint(List<LngLat> lngLatList) {
+		int total = lngLatList.size();
+		double X = 0, Y = 0, Z = 0;
+		for (LngLat g : lngLatList) {
+			double lat, lon, x, y, z;
+			lat = g.getLantitude() * Math.PI / 180;
+			lon = g.getLongitude() * Math.PI / 180;
+			x = Math.cos(lat) * Math.cos(lon);
+			y = Math.cos(lat) * Math.sin(lon);
+			z = Math.sin(lat);
+			X += x;
+			Y += y;
+			Z += z;
+		}
+		X = X / total;
+		Y = Y / total;
+		Z = Z / total;
+		double Lon = Math.atan2(Y, X);
+		double Hyp = Math.sqrt(X * X + Y * Y);
+		double Lat = Math.atan2(Z, Hyp);
+		return new LngLat(Lon * 180 / Math.PI, Lat * 180 / Math.PI);
 	}
 }

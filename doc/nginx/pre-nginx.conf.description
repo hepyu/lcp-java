@@ -1,0 +1,128 @@
+# 启动用户
+#user  nginx; 
+worker_processes  8;
+
+# 日志
+error_log   /data/logs/nginx/error.log  info;
+  
+pid        /usr/local/nginx/nginx.pid;
+
+#worker_rlimit_nofile:
+#更改worker进程的最大打开文件数限制。如果没设置的话，这个值为操作系统的限制。设置后你的操作系统和Nginx可以处理比“ulimit -a”更多的文件，所以把这个值设高，这样nginx就不会有“too many open files”问题了。
+worker_rlimit_nofile 655350;
+
+events {
+    use epoll;
+    worker_connections  655350;
+}
+ 
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+ 
+    # 去掉nginx版本号
+    server_tokens off;   
+ 
+    sendfile       on;
+    tcp_nopush     on;
+ 
+    # keepalive打开，每个连接最大请求数
+    # keepalive_timeout 
+    # 给客户端分配keep-alive链接超时时间。服务器将在这个超时时间过后关闭链接。我们将它设置低些可以让ngnix持续工作的时间更长。
+    # nginx默认设置的http连接超时时间为75s，超过75s，会断掉当前的http连接，而大文件上传时经常会超过75s，这就导致大文件无法上传成功，当时的解决方案是，设置nginx http连接超时时间为30分钟(1800)
+    # 语法 keepalive_timeout timeout [ header_timeout ]
+    # 默认值 75s
+    # 说明 第一个参数指定了与client的keep-alive连接超时时间。服务器将会在这个时间后关闭连接。可选的第二个参数指定了在响应头Keep-Alive: timeout=time中的time值。这个头能够让一些浏览器主动关闭连接，这样服务器就不必要去关闭连接了。没有这个参数，nginx不会发送Keep-Alive响应头（尽管并不是由这个头来决定连接是否“keep-alive”）
+    # 两个参数的值可并不相同
+    # 注意不同浏览器怎么处理“keep-alive”头
+    #     MSIE和Opera忽略掉"Keep-Alive: timeout=<N>" header.
+    #     MSIE保持连接大约60-65秒，然后发送TCP RST
+    #     Opera永久保持长连接
+    #     Mozilla keeps the connection alive for N plus about 1-10 seconds.
+    #     Konqueror保持长连接N秒
+    keepalive_timeout  65;
+    keepalive_requests 10000;
+ 
+ 
+    # uWSGI 相关配置
+    uwsgi_buffer_size 256k;
+    uwsgi_buffers     128 256k;
+
+    proxy_max_temp_file_size 0;
+ 
+    # 默认打开gzip，注意sxsvr需要把gzip关掉
+    gzip on;
+    #gzip_http_version 1.1;
+    #gzip_proxied any;
+    #gzip_types text/plain text/html text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+ 
+    # 日志
+    log_format  brackets  '[$remote_addr][$remote_user][$time_local]["$request"][$server_port]'
+                          '[$status][$body_bytes_sent][$http_referer]'
+                          '[$http_user_agent][$http_x_forwarded_for]'
+                          '[$request_time][$upstream_response_time]';
+    access_log /data/logs/nginx/access.log brackets;
+    #access_log off;
+    proxy_cache_path /usr/local/nginx/proxy_cache/checknew levels=1:2 keys_zone=checknew:100m  inactive=50m max_size=500m;
+    proxy_cache_path /usr/local/nginx/proxy_cache/list levels=1:2 keys_zone=list:100m  inactive=50m max_size=500m;
+
+
+    upstream api{
+      server 10.33.3.85:9001;
+      server 10.33.3.86:9001;
+      server 10.33.3.87:9001;
+      keepalive 150;
+      
+    }
+
+    upstream npng {
+
+      server 10.33.3.85:11491;
+      server 10.33.3.86:11491;
+      server 10.33.3.87:11491;
+
+      server 10.33.3.85:11492;
+      server 10.33.3.86:11492;
+      server 10.33.3.87:11492;
+    }
+
+    server
+    {
+        listen 80;
+        server_name localhost;
+        charset utf8;
+        include vhost/*.location;
+    }
+
+    server
+    {
+        listen 80;
+        server_name api.tw06.xlmc.sandai.net api.tw06.bchbc.com;
+        charset utf8;
+        include vhost/*.location;
+    }        
+
+   server
+    {
+        listen 443;
+        ssl on;     
+        ssl_certificate /usr/local/nginx/cert/api.tw06.bchbc.com.crt;     # 指定证书路径，写绝对路径
+        ssl_certificate_key /usr/local/nginx/cert/api.tw06.bchbc.com.key.unsecure; # 指定证书路径，写绝对路径
+        server_name api.tw06.xlmc.sandai.net api.tw06.bchbc.com;
+        charset utf8;
+        location /doc {
+            proxy_set_header  x-forwarded-for  $remote_addr;
+            proxy_pass http://api;
+        
+        }
+        location /docx {
+            proxy_set_header  x-forwarded-for  $remote_addr;
+            proxy_pass http://10.33.3.84:11491;
+        
+        }
+        include ./vhost/*.location;
+    }
+	
+	include vhost/*.conf;
+
+}

@@ -169,5 +169,17 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.cpdetector</groupId>
+			<artifactId>cpdetector</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mozilla.intl</groupId>
+			<artifactId>chardet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>antlr</groupId>
+			<artifactId>antlr</artifactId>
+		</dependency>
 	</dependencies>
 </project>

@@ -105,6 +105,11 @@
 		<open-lcp-core-framework.version>2.0-SNAPSHOT</open-lcp-core-framework.version>
 		<open-lcp-biz-passport.version>2.0-SNAPSHOT</open-lcp-biz-passport.version>
 		<open-lcp-biz-passport.version>2.0-SNAPSHOT</open-lcp-biz-passport.version>
+		<open-lcp-common.version>2.0-SNAPSHOT</open-lcp-common.version>
+
+		<cpdetector.version>1.0.7</cpdetector.version>
+		<chardet.version>1.0</chardet.version>
+		<antlr.version>2.7.7</antlr.version>
 
 	</properties>
 
@@ -116,6 +121,11 @@
 				<groupId>com.open.lcp</groupId>
 				<artifactId>open-lcp-core-framework</artifactId>
 				<version>${open-lcp-core-framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.open.lcp</groupId>
+				<artifactId>open-lcp-common</artifactId>
+				<version>${open-lcp-common.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.open.lcp</groupId>
@@ -378,6 +388,26 @@
 				<artifactId>hbase-client</artifactId>
 				<version>${hbase-client.version}</version>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/com.baidu.mapapi/base -->
+			<!-- https://mvnrepository.com/artifact/net.sourceforge.cpdetector/cpdetector -->
+			<dependency>
+				<groupId>net.sourceforge.cpdetector</groupId>
+				<artifactId>cpdetector</artifactId>
+				<version>${cpdetector.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.mozilla.intl/chardet -->
+			<dependency>
+				<groupId>org.mozilla.intl</groupId>
+				<artifactId>chardet</artifactId>
+				<version>${chardet.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/antlr/antlr -->
+			<dependency>
+				<groupId>antlr</groupId>
+				<artifactId>antlr</artifactId>
+				<version>${antlr.version}</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
