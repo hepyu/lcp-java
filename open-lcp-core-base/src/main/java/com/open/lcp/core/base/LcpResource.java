@@ -8,7 +8,7 @@ public enum LcpResource {
 	// (2).lcp_passport resources
 	mysql_lcp_passport_master("mysql", "/mysql/master", "passport", "mysql_lcp_passport"),
 
-	redis_lcp_passport("redis", "/redis", "passport", "redis_lcp_passport"), // 废弃
+	redis_lcp_passport("redis", "/redis", "passport", "redis_lcp_passport"),
 
 	@Deprecated
 	ssdb_lcp_passport("ssdb", "/ssdb", "passport", "ssdb_lcp_passport"),
@@ -20,8 +20,13 @@ public enum LcpResource {
 
 	// (4).lcp_comment resources
 	hbase_lcp_biz_comment("hbase", "/hbase", "biz", "hbase_lcp_biz_comment"),
-	
-	redis_lcp_biz_comment("redis", "/redis", "biz", "redis_lcp_biz_comment");
+
+	redis_lcp_biz_comment("redis", "/redis", "biz", "redis_lcp_biz_comment"),
+
+	// (5).lcp_lbs_resources
+	mysql_lcp_lbs_master("mysql", "/mysql/master", "lbs", "mysql_lcp_lbs"),
+
+	redis_lcp_lbs("redis", "/redis", "lbs", "redis_lcp_lbs");
 
 	private String resourceType;
 

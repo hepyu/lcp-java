@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.open.lcp.biz.lbs.model.LngLat;
-import com.open.lcp.biz.lbs.util.LocationUtil;
+import com.open.lcp.biz.lbs.util.LBSLocationUtil;
 import com.open.lcp.common.util.CpdetectorEncodingUtil;
 
 public class BaiduLocalConvertor {
@@ -47,12 +47,12 @@ public class BaiduLocalConvertor {
 					for (String e : lngLatArray) {
 						String[] temp = e.split(",");
 						LngLat ll = new LngLat();
-						ll.setLongitude(Double.parseDouble(temp[0]));
-						ll.setLantitude(Double.parseDouble(temp[1]));
+						ll.setLng(Double.parseDouble(temp[0]));
+						ll.setLat(Double.parseDouble(temp[1]));
 						rtLngLatList.add(ll);
 					}
 
-					LngLat center = LocationUtil.getCenterPoint(rtLngLatList);
+					LngLat center = LBSLocationUtil.getCenterPoint(rtLngLatList);
 					TempLocationInfo locationInfo = new TempLocationInfo();
 					locationInfo.setPolygon(sb.toString());
 					locationInfo.setCenter(center);
@@ -87,7 +87,7 @@ public class BaiduLocalConvertor {
 				LngLat ll = BaiduCoordinateConvertor
 						.bd_encrypt(new LngLat(Double.parseDouble(array[0]), Double.parseDouble(array[1])));
 
-				sb.append(ll.getLongitude()).append(",").append(ll.getLantitude()).append(";");
+				sb.append(ll.getLng()).append(",").append(ll.getLat()).append(";");
 			}
 		}
 		br.close();
@@ -107,7 +107,7 @@ public class BaiduLocalConvertor {
 
 		String originDirAbsolutePath = "F:\\coordinate\\origin";
 		// String originDirAbsolutePath =
-		// "E:\\workspace\\Test\\src\\com\\³É¶¼-´óÁ¬-À¼ÖÝ";
+		// "E:\\workspace\\Test\\src\\com\\ï¿½É¶ï¿½-ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½";
 		File originDir = new File(originDirAbsolutePath);
 		String[] filePathList = originDir.list();
 		String cityFileDirAbsolutePath = null;
@@ -160,8 +160,8 @@ public class BaiduLocalConvertor {
 
 				TempLocationInfo info = locationList.get(index);
 
-				// if (info.getName().equals("ÉÏº£µçÁ¦Ñ§ÔºÆ½Á¹Ð£Çø") ||
-				// info.getName().equals("ËÕÖÝ´óÑ§(¶ÀÊûºþÐ£Çø)")) {
+				// if (info.getName().equals("ï¿½Ïºï¿½ï¿½ï¿½ï¿½ï¿½Ñ§ÔºÆ½ï¿½ï¿½Ð£ï¿½ï¿½") ||
+				// info.getName().equals("ï¿½ï¿½ï¿½Ý´ï¿½Ñ§(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½)")) {
 				// String str = info.getBcode() + "," + info.getName() + "," +
 				// info.getPolygon() + ","
 				// + info.getCenter().getLongitude() + "," +
@@ -176,11 +176,10 @@ public class BaiduLocalConvertor {
 					// info.getCenter().getLantitude() + "\n";
 
 					String str = "INSERT INTO location_coordinate_v2(location_name, bcode, lat, lng, polygon, merge_location_code, merge_location_name, city_code, city_name, description, ctime, utime) VALUES(\""
-							+ info.getName() + "\",\"" + info.getBcode() + "\"," + +info.getCenter().getLantitude()
-							+ "," + info.getCenter().getLongitude() + ",\"" + info.getPolygon()
-							+ "\",0,\"\",0,\"\",\"\"," + System.currentTimeMillis() + "," + System.currentTimeMillis()
-							+ ");\n";
-					// System.out.println(str);
+							+ info.getName() + "\",\"" + info.getBcode() + "\"," + +info.getCenter().getLat() + ","
+							+ info.getCenter().getLng() + ",\"" + info.getPolygon() + "\",0,\"\",0,\"\",\"\","
+							+ System.currentTimeMillis() + "," + System.currentTimeMillis() + ");\n";
+					System.out.println(str);
 					// System.exit(0);
 					UnivercityMap.getUnivercityNameMap().put(info.getName(), str);
 				}
@@ -193,7 +192,7 @@ public class BaiduLocalConvertor {
 		BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
 		for (String name : UnivercityMap.getUnivercityNameMap().keySet()) {
 			if (UnivercityMap.getUnivercityNameMap().get(name) == null) {
-				// ÉÏº£µçÁ¦Ñ§ÔºÆ½Á¹Ð£Çø,ËÕÖÝ´óÑ§(¶ÀÊûºþÐ£Çø) ÓÐÎÊÌâ
+				// ï¿½Ïºï¿½ï¿½ï¿½ï¿½ï¿½Ñ§ÔºÆ½ï¿½ï¿½Ð£ï¿½ï¿½,ï¿½ï¿½ï¿½Ý´ï¿½Ñ§(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				System.out.println(name);
 			} else {
 				bufferWritter.write(UnivercityMap.getUnivercityNameMap().get(name));

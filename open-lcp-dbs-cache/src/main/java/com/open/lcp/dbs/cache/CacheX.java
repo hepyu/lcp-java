@@ -36,7 +36,7 @@ public interface CacheX {
 
 	public <K> long incr(K key, long value);
 
-	public <K> long expired(K key, int seconds);
+	public <K> long expire(K key, int seconds);
 
 	public <K> int seconds(K key);
 
@@ -107,6 +107,8 @@ public interface CacheX {
 	public <K, V> Map<V, Long> multi_zget(K key, V[] values, Class<V> clazzV);
 
 	public <K> long zremrangebyrank(K key, int start, int end);
+
+	public <K, V> long zrem(K key, V member);
 
 	public <K, V> Map<V, Long> zscan(K key, V value_start, String score_start, String score_end, long limit,
 			Class<V> clazz);

@@ -196,7 +196,7 @@ public class SSDBXImpl implements SSDBX {
 	}
 
 	@Override
-	public <K> long expired(K key, int seconds) {
+	public <K> long expire(K key, int seconds) {
 		return toLong(ssdb().req(Cmd.expire, mixkey(key), Long.toString(seconds).getBytes()));
 	}
 
@@ -494,6 +494,12 @@ public class SSDBXImpl implements SSDBX {
 			GeoRadiusParam param) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public <K, V> long zrem(K key, V member) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

@@ -1,39 +1,35 @@
 package com.open.lcp.biz.lbs.model;
 
 public class LngLat {
-	private double longitude;//经度  
-    private double lantitude;//维度  
-  
-    public LngLat() {  
-    }  
-  
-    public LngLat(double longitude, double lantitude) {  
-        this.longitude = longitude;  
-        this.lantitude = lantitude;  
-    }  
-  
-    public double getLongitude() {  
-        return longitude;  
-    }  
-  
-    public void setLongitude(double longitude) {  
-        this.longitude = longitude;  
-    }  
-  
-    public double getLantitude() {  
-        return lantitude;  
-    }  
-  
-    public void setLantitude(double lantitude) {  
-        this.lantitude = lantitude;  
-    }  
-  
-    @Override  
-    public String toString() {  
-//        return "LngLat{" +  
-//                "longitude=" + longitude +  
-//                ", lantitude=" + lantitude +  
-//                '}';  
-    	return longitude+","+lantitude;
-    } 
+	private double lng;// 经度
+	private double lat;// 维度
+
+	public LngLat() {
+	}
+
+	public LngLat(double lng, double lat) {
+		this.lng = lng;
+		this.lat = lat;
+	}
+
+	public double getLng() {
+		return lng;
+	}
+
+	public void setLng(double lng) {
+		this.lng = lng;
+	}
+
+	public double getLat() {
+		return lat;
+	}
+
+	public void setLat(double lat) {
+		this.lat = lat;
+	}
+
+	@Override
+	public String toString() {
+		return lng + "," + lat;
+	}
 }

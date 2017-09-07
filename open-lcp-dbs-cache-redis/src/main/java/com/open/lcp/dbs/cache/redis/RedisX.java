@@ -5,30 +5,34 @@ import com.open.lcp.dbs.cache.CacheX;
 public interface RedisX extends CacheX {
 
 	public void close();
-	
+
 	// public void resetRedis(ZKRedisConfig redisConfig);
 
-	public <K, V> long set(K key, V v, int seconds);
-
-	public <K> long del(K key);
-
-	public <K, V> V get(K key, Class<V> clazz);
-
-	public <K, V> long set(K key, V value);
-
-	public <K, V> long setRenewal(K key, V v, long step, int seconds);
-
-	public <K, V> V getRenewal(K key, Class<V> clazz, long step, int seconds);
+	// public <K, V> long set(K key, V v, int seconds);
+	//
+	// public <K> long del(K key);
+	//
+	// public <K, V> V get(K key, Class<V> clazz);
+	//
+	// public <K, V> long set(K key, V value);
+	//
+	// public <K, V> long setRenewal(K key, V v, long step, int seconds);
+	//
+	// public <K, V> V getRenewal(K key, Class<V> clazz, long step, int
+	// seconds);
+	//
+	// public <K> long expire(K key, int seconds);
+	//
+	// public <K, V> long zrem(K key, V member);
 
 	// public boolean exists(String... keys);
-	//
+
 	// public int zadd(String key, Map<String, Double> scoreMembers);
 	//
 	// public int zadd(String key, String member, Double scoreMember);
 	//
 	// public Double zscore(String key, String zkey);
 	//
-	// public Long zrem(String key, String member);
 	//
 	// public <T> String set(String key, T t);
 
@@ -78,7 +82,6 @@ public interface RedisX extends CacheX {
 	//
 	// public Long del(String key);
 	//
-	// public void expire(String key, int seconds);
 	//
 	// public long incr(String key);
 	//

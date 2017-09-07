@@ -19,16 +19,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
-			<artifactId>open-lcp-dbs-cache</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.open.lcp</groupId>
 			<artifactId>open-lcp-dbs-cache-redis</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
 			<artifactId>open-lcp-dbs-cache-ssdb</artifactId>
-			<version>2.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.open.lcp</groupId>

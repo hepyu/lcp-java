@@ -8,15 +8,25 @@
 		<artifactId>open-lcp-parent</artifactId>
 		<version>2.0-SNAPSHOT</version>
 	</parent>
-	<groupId>com.open.lcp</groupId>
 	<artifactId>open-lcp-biz-lbs</artifactId>
-	<version>2.0-SNAPSHOT</version>
 	<name>open-lcp-biz-lbs</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>com.open.lcp</groupId>
+			<artifactId>open-lcp-dbs-cache-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.open.lcp</groupId>
+			<artifactId>open-lcp-env</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.open.lcp</groupId>
+			<artifactId>open-lcp-orm-jade</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -176,6 +186,11 @@
 		<dependency>
 			<groupId>com.open.lcp</groupId>
 			<artifactId>open-lcp-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0.1</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -33,7 +33,7 @@ public class BaiduCoordinateConvertor {
 	 */
 
 	public static LngLat bd_encrypt(LngLat lngLat_gd) {
-		double x = lngLat_gd.getLongitude(), y = lngLat_gd.getLantitude();
+		double x = lngLat_gd.getLng(), y = lngLat_gd.getLat();
 		double z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
 		double theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
 		return new LngLat(dataDigit(6, z * Math.cos(theta) + 0.0065), dataDigit(6, z * Math.sin(theta) + 0.006));
@@ -47,8 +47,8 @@ public class BaiduCoordinateConvertor {
 	 *            百度坐标（百度地图坐标）
 	 * @return 火星坐标(高德、腾讯地图等)
 	 */
-	static LngLat bd_decrypt(LngLat lngLat_bd) {
-		double x = lngLat_bd.getLongitude() - 0.0065, y = lngLat_bd.getLantitude() - 0.006;
+	public static LngLat bd_decrypt(LngLat lngLat_bd) {
+		double x = lngLat_bd.getLng() - 0.0065, y = lngLat_bd.getLat() - 0.006;
 		double z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * x_pi);
 		double theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * x_pi);
 		return new LngLat(dataDigit(6, z * Math.cos(theta)), dataDigit(6, z * Math.sin(theta)));
@@ -57,7 +57,10 @@ public class BaiduCoordinateConvertor {
 
 	// 测试代码
 	public static void main(String[] args) {
-		LngLat lngLat_bd = new LngLat(120.153192, 30.25897);
-		System.out.println(bd_decrypt(lngLat_bd));
+		// LngLat lngLat_bd = new LngLat(120.153192, 30.25897);
+		// System.out.println(bd_decrypt(lngLat_bd));
+
+		LngLat lngLat_bd = new LngLat(116.346967302818, 39.9872830264316);
+		System.out.println(bd_encrypt(lngLat_bd));
 	}
 }

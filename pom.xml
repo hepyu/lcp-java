@@ -106,6 +106,7 @@
 		<open-lcp-biz-passport.version>2.0-SNAPSHOT</open-lcp-biz-passport.version>
 		<open-lcp-biz-passport.version>2.0-SNAPSHOT</open-lcp-biz-passport.version>
 		<open-lcp-common.version>2.0-SNAPSHOT</open-lcp-common.version>
+		<open-lcp-dbs-cache-ssdb.version>2.0-SNAPSHOT</open-lcp-dbs-cache-ssdb.version>
 
 		<cpdetector.version>1.0.7</cpdetector.version>
 		<chardet.version>1.0</chardet.version>
@@ -117,6 +118,11 @@
 	<!-- 依赖包及其版本约定(子模块中不能擅自加入不在management管理的dependency) -->
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>com.open.lcp</groupId>
+				<artifactId>open-lcp-dbs-cache-ssdb</artifactId>
+				<version>${open-lcp-dbs-cache-ssdb.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.open.lcp</groupId>
 				<artifactId>open-lcp-core-framework</artifactId>

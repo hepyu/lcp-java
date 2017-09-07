@@ -1,22 +1,12 @@
 package com.open.lcp.biz.lbs.util;
 
 import java.awt.geom.Point2D;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import com.open.lcp.biz.lbs.model.LngLat;
 
-//http://blog.csdn.net/lijie18/article/details/54892715
-public class LocationUtil {
-
-	// public static void main(String[] args) {
-	// // 被检测的经纬度点
-	// PageData orderLocation = new PageData();
-	// orderLocation.put("X", "117.228117");
-	// orderLocation.put("Y", "31.830429");
-	// // 商业区域（百度多边形区域经纬度集合）
-	// String partitionLocation =
-	// "31.839064_117.219116,31.83253_117.219403,31.828511_117.218146,31.826763_117.219259,31.826118_117.220517,31.822713_117.23586,31.822958_117.238375,31.838512_117.23798,31.839617_117.226194,31.839586_117.222925";
-	// System.out.println(isInPolygon(orderLocation, partitionLocation));
-	// }
+public class LBSLocationUtil {
 
 	/**
 	 * 判断当前位置是否在多边形区域内
@@ -27,26 +17,12 @@ public class LocationUtil {
 	 *            区域顶点
 	 * @return
 	 */
-	// public static boolean isInPolygon(PageData orderLocation, String
-	// partitionLocation) {
-	//
-	// double p_x = Double.parseDouble(orderLocation.getString("X"));
-	// double p_y = Double.parseDouble(orderLocation.getString("Y"));
-	// Point2D.Double point = new Point2D.Double(p_x, p_y);
-	//
-	// List<Point2D.Double> pointList = new ArrayList<Point2D.Double>();
-	// String[] strList = partitionLocation.split(",");
-	//
-	// for (String str : strList) {
-	// String[] points = str.split("_");
-	// double polygonPoint_x = Double.parseDouble(points[1]);
-	// double polygonPoint_y = Double.parseDouble(points[0]);
-	// Point2D.Double polygonPoint = new Point2D.Double(polygonPoint_x,
-	// polygonPoint_y);
-	// pointList.add(polygonPoint);
-	// }
-	// return IsPtInPoly(point, pointList);
-	// }
+	public static boolean isInPolygon(double lng, double lat, List<Point2D.Double> pointList) {
+
+		Point2D.Double point = new Point2D.Double(lat, lng);
+
+		return IsPtInPoly(point, pointList);
+	}
 
 	/**
 	 * 返回一个点是否在一个多边形区域内， 如果点位于多边形的顶点或边上，不算做点在多边形内，返回false
@@ -167,13 +143,50 @@ public class LocationUtil {
 		}
 	}
 
+	static double dataDigit(int digit, double in) {
+		return new BigDecimal(in).setScale(6, BigDecimal.ROUND_HALF_UP).doubleValue();
+
+	}
+
+	private static double x_pi = 3.14159265358979324 * 3000.0 / 180.0;
+
+	/**
+	 * 将火星坐标转变成百度坐标
+	 * 
+	 * @param lngLat_gd
+	 *            火星坐标（高德、腾讯地图坐标等）
+	 * @return 百度坐标
+	 */
+
+	public static LngLat bd_encrypt(double lng, double lat) {
+		double x = lng, y = lat;
+		double z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
+		double theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
+		return new LngLat(dataDigit(6, z * Math.cos(theta) + 0.0065), dataDigit(6, z * Math.sin(theta) + 0.006));
+	}
+
+	/**
+	 * 将百度坐标转变成火星坐标
+	 *
+	 * @param lngLat_bd
+	 *            百度坐标（百度地图坐标）
+	 * @return 火星坐标(高德、腾讯地图等)
+	 */
+	public static LngLat bd_decrypt(double lng, double lat) {
+		double x = lng - 0.0065, y = lat - 0.006;
+		double z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * x_pi);
+		double theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * x_pi);
+		return new LngLat(dataDigit(6, z * Math.cos(theta)), dataDigit(6, z * Math.sin(theta)));
+
+	}
+
 	public static LngLat getCenterPoint(List<LngLat> lngLatList) {
 		int total = lngLatList.size();
 		double X = 0, Y = 0, Z = 0;
 		for (LngLat g : lngLatList) {
 			double lat, lon, x, y, z;
-			lat = g.getLantitude() * Math.PI / 180;
-			lon = g.getLongitude() * Math.PI / 180;
+			lat = g.getLat() * Math.PI / 180;
+			lon = g.getLng() * Math.PI / 180;
 			x = Math.cos(lat) * Math.cos(lon);
 			y = Math.cos(lat) * Math.sin(lon);
 			z = Math.sin(lat);
@@ -189,4 +202,50 @@ public class LocationUtil {
 		double Lat = Math.atan2(Z, Hyp);
 		return new LngLat(Lon * 180 / Math.PI, Lat * 180 / Math.PI);
 	}
+
+	public static void main(String[] args) throws Exception {
+
+		String polygonstr = "116.34082,39.981771;116.341797,39.981764;116.341808,39.981313;116.33933,39.981238;116.339325,39.982251;116.340801,39.982284;116.34082,39.981771";
+
+		List<Point2D.Double> list = new ArrayList<Point2D.Double>();
+		// lat,lng用，号分隔，多个经纬度之间用；号分隔: lat1,lng1;lat2,lng2
+		Point2D.Double d = null;
+		String[] array = polygonstr.split(";");
+		String[] temp = null;
+		for (String e : array) {
+			try {
+				temp = e.split(",");
+				d = new Point2D.Double(Double.parseDouble(temp[1]), Double.parseDouble(temp[0]));
+				list.add(d);
+			} catch (Exception e1) {
+			}
+		}
+		// Boolean isIn = LocationUtil.isInPolygon(121.516665, 31.179941, list);
+		// Boolean isIn = LocationUtil.isInPolygon(121.516665, 31.17994, list);
+		// Boolean isIn = LocationUtil.isInPolygon(121.515594,31.17887, list);
+		Boolean isIn = LBSLocationUtil.isInPolygon(116.346967302818, 39.9872830264316, list);
+
+		System.out.println(isIn);
+	}
+
+	// public static void main(String[] args) {
+	// // 被检测的经纬度点
+	// // PageData orderLocation = new PageData();
+	// // orderLocation.put("X", "117.228117");
+	// // orderLocation.put("Y", "31.830429");
+	// // 商业区域（百度多边形区域经纬度集合）
+	// String[] partitionLocation =
+	// "31.839064_117.219116,31.83253_117.219403,31.828511_117.218146,31.826763_117.219259,31.826118_117.220517,31.822713_117.23586,31.822958_117.238375,31.838512_117.23798,31.839617_117.226194,31.839586_117.222925"
+	// .split(",");
+	// List<Point2D.Double> pointList = new ArrayList<Point2D.Double>();
+	// for (String str : partitionLocation) {
+	// String[] points = str.split("_");
+	// double polygonPoint_x = Double.parseDouble(points[1]);
+	// double polygonPoint_y = Double.parseDouble(points[0]);
+	// Point2D.Double polygonPoint = new Point2D.Double(polygonPoint_x,
+	// polygonPoint_y);
+	// pointList.add(polygonPoint);
+	// }
+	// System.out.println(isInPolygon(31.830429, 117.228117, pointList));
+	// }
 }

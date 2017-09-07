@@ -140,6 +140,15 @@ public class JedisPoolImpl implements RedisX {
 	}
 
 	@Override
+	public <K, V> long zrem(K key, V member) {
+		if (key == null) {
+			return 0;
+		} else {
+			return getJedis().zrem(jsonConv.bytes(key), jsonConv.bytes(member));
+		}
+	}
+
+	@Override
 	public <K, V> Map<K, V> mget(K[] keys, Class<K> clazzK, Class<V> clazzV) {
 		// TODO Auto-generated method stub
 		return null;
@@ -152,9 +161,20 @@ public class JedisPoolImpl implements RedisX {
 	}
 
 	@Override
-	public <K> long expired(K key, int seconds) {
-		// TODO Auto-generated method stub
-		return 0;
+	public <K> long expire(K key, int seconds) {
+		if (key == null) {
+			return 0;
+		} else {
+			return getJedis().expire(jsonConv.bytes(key), seconds);
+		}
+	}
+	
+	@Override
+	public <K> long zremrangebyrank(K key, int start, int end) {
+		if(key ==null){
+			return 0;
+		}
+		return getJedis().zremrangeByRank(jsonConv.bytes(key), start, end);
 	}
 
 	@Override
@@ -329,12 +349,6 @@ public class JedisPoolImpl implements RedisX {
 	public <K, V> Map<V, Long> multi_zget(K key, V[] values, Class<V> clazzV) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public <K> long zremrangebyrank(K key, int start, int end) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
