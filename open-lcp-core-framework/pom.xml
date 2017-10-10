@@ -8,15 +8,17 @@
 		<artifactId>open-lcp-parent</artifactId>
 		<version>2.0-SNAPSHOT</version>
 	</parent>
-	<groupId>com.open.lcp</groupId>
 	<artifactId>open-lcp-core-framework</artifactId>
-	<version>2.0-SNAPSHOT</version>
 	<name>open-lcp-core-framework</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>com.open.lcp</groupId>
+			<artifactId>open-lcp-core-base</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
 			<artifactId>open-lcp-dbs-cache</artifactId>
@@ -28,7 +30,6 @@
 		<dependency>
 			<groupId>com.open.lcp</groupId>
 			<artifactId>open-lcp-dbs-cache-ssdb</artifactId>
-			<version>2.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.open.lcp</groupId>

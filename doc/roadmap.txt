@@ -9,6 +9,7 @@ step1.基础支持
 8.redis单点和集群都支持，并且统一接口.   完成.
 9.log分级，同时打印一次请求中的各种统计数据。        进行中.
 10.mysql支持多数据源&主从，基于jade。      进行中.f
+11.local memory geo support.
 
 
 step2.线上统计支持(开关控制是否启用)

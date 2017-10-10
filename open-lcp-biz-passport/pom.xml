@@ -19,6 +19,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
+			<artifactId>open-lcp-dbs-cache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.open.lcp</groupId>
 			<artifactId>open-lcp-dbs-cache-redis</artifactId>
 		</dependency>
 		<dependency>

@@ -3,6 +3,13 @@
 worker_processes  8;
 
 # 日志
+# nginx的error_log类型如下（从左到右：debug最详细 crit最少）： 
+# [ debug | info | notice | warn | error | crit ] 
+# 例如：error_log logs/nginx_error.log  crit; 
+# 解释：日志文件存储在nginx安装目录下的 logs/nginx_error.log ，错误类型为 crit ，也就是记录最少错误信息； 
+# 注意error_log off并不能关闭日志记录功能，它将日志文件写入一个文件名为off的文件中，如果你想关闭错误日志记录功能，应使用以下配置： 
+# error_log /dev/null crit; 
+# 把存储位置设置到Linux的黑洞中去 
 error_log   /data/logs/nginx/error.log  info;
   
 pid        /usr/local/nginx/nginx.pid;
@@ -13,17 +20,23 @@ worker_rlimit_nofile 655350;
 
 events {
     use epoll;
+	#工作进程的最大连接数量 理论上每台nginx服务器的最大连接数为worker_processes*worker_connections worker_processes为我们再main中开启的进程数
     worker_connections  655350;
 }
  
 http {
+	#必须打开,否则浏览器可能无法正常解析数据,允许mime各种数据类型,mime:描述消息内容类型的因特网标准。 MIME 消息能包含文本、图像、音频、视频以及其他应用程序专用的数据。
     include       mime.types;
+    #只能提交二进制，而且只能提交一个二进制，如果提交文件的话，只能提交一个文件,后台接收参数只能有一个，而且只能是流（或者字节数组）2、属于HTTP规范中Content-Type的一种3、很少使用
     default_type  application/octet-stream;
  
     # 去掉nginx版本号
-    server_tokens off;   
+    server_tokens off;
  
+ 	#sendfile 指令指定 nginx 是否调用 sendfile 函数（zero copy 方式）来输出文件(不经过kernel和user的数据copy，disk上的data直接通过socket输出)，对于普通应用，
+    #必须设为 on,如果用来进行下载等应用磁盘IO重负载应用，可设置为 off，以平衡磁盘与网络I/O处理速度，降低系统的uptime.
     sendfile       on;
+    #在 nginx 中，tcp_nopush 配置和 tcp_nodelay "互斥"。它可以配置一次发送数据的包大小。也就是说，它不是按时间累计  0.2 秒后发送包，而是当包累计到一定大小后就发送。在 nginx 中，tcp_nopush 必须和 sendfile 搭配使用。
     tcp_nopush     on;
  
     # keepalive打开，每个连接最大请求数
@@ -41,11 +54,16 @@ http {
     #     Mozilla keeps the connection alive for N plus about 1-10 seconds.
     #     Konqueror保持长连接N秒
     keepalive_timeout  65;
+    #keepalive_requests --每个连接最大请求数
     keepalive_requests 10000;
  
  
     # uWSGI 相关配置
+    #uwsgi_buffer_size:设置用于读取从uwsgi服务器接收的响应的第一部分的缓冲区大小。 这部分通常包含一个小的响应头。 默认情况下，缓冲区大小等于一个内存页。 这是4K或8K，取决于平台。 然而，它可以做得更小。
+    #可以降低服务器的负载
     uwsgi_buffer_size 256k;
+    #当禁用缓冲时，响应在接收到时立即同步传递给客户端。 nginx不会尝试从uwsgi服务器读取整个响应。 nginx一次可以从服务器接收的数据的最大大小由uwsgi_buffer_size指令设置。
+    uwsgi_buffering on;
     uwsgi_buffers     128 256k;
 
     proxy_max_temp_file_size 0;
@@ -57,6 +75,21 @@ http {
     #gzip_types text/plain text/html text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
  
     # 日志
+    # $remote_addr	客户端地址	211.28.65.253
+    # $remote_user	客户端用户名称
+    # $time_local	访问时间和时区	18/Jul/2012:17:00:01 +0800
+    # $request	请求的URI和HTTP协议	"GET /article-10000.html HTTP/1.1"
+    # $http_host	请求地址，即浏览器中你输入的地址（IP或域名）	www.it300.com or 192.168.100.100
+    # $status	HTTP请求状态	200
+    # $upstream_status	upstream状态	200
+    # $body_bytes_sent	发送给客户端文件内容大小	1547
+    # $http_referer	url跳转来源	https://www.baidu.com/
+    # $http_user_agent	用户终端浏览器等信息	"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; SV1; GTB7.0; .NET4.0C;
+    # $ssl_protocol	SSL协议版本	TLSv1
+    # $ssl_cipher	交换数据中的算法	RC4-SHA
+    # $upstream_addr	后台upstream的地址，即真正提供服务的主机地址	10.10.10.100:80
+    # $request_time	整个请求的总时间	0.205
+    # $upstream_response_time	请求过程中，upstream响应时间	0.002
     log_format  brackets  '[$remote_addr][$remote_user][$time_local]["$request"][$server_port]'
                           '[$status][$body_bytes_sent][$http_referer]'
                           '[$http_user_agent][$http_x_forwarded_for]'
@@ -67,7 +100,14 @@ http {
     proxy_cache_path /usr/local/nginx/proxy_cache/list levels=1:2 keys_zone=list:100m  inactive=50m max_size=500m;
 
 
+	#负载均衡配置
+	#nginx 的 upstream默认是以轮询的方式实现负载均衡，这种方式中，每个请求按时间顺序逐一分配到不同的后端服务器，如果后端服务器down掉，能自动剔除。
+	#另外一种方式是ip_hash：每个请求按访问ip的hash结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题。 
     upstream api{
+    
+      #根据ip计算hash然后发送，禁用。
+	  #ip_hash;
+    
       server 10.33.3.85:9001;
       server 10.33.3.86:9001;
       server 10.33.3.87:9001;
