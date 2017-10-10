@@ -29,6 +29,10 @@
 		</dependency>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
+			<artifactId>open-lcp-core-base</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.open.lcp</groupId>
 			<artifactId>open-lcp-orm-jade</artifactId>
 		</dependency>
 		<dependency>
