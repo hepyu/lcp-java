@@ -8,7 +8,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 import com.open.lcp.biz.comment.CommentConstant;
-import com.open.lcp.biz.comment.service.dao.CommentConfigDAO;
+import com.open.lcp.biz.comment.CommentErrorCode;
+import com.open.lcp.biz.comment.service.dao.MysqlCommentConfigDAO;
 import com.open.lcp.biz.comment.service.dao.entity.CommentConfigEntity;
 import com.open.lcp.core.framework.api.ApiException;
 import com.open.lcp.core.framework.loader.TimerLoader;
@@ -24,7 +25,7 @@ public class AppCommentConfigService implements TimerLoader {
 	private Map<Integer, CommentConfigEntity> appCommentConf;
 
 	@Resource
-	private CommentConfigDAO commentMySqlDao;
+	private MysqlCommentConfigDAO commentMySqlDao;
 
 	@Override
 	public boolean initLoad() {
@@ -55,7 +56,8 @@ public class AppCommentConfigService implements TimerLoader {
 	CommentConfigEntity getCommentConf(int appId) {
 		final Map<Integer, CommentConfigEntity> appCommentConfFinal = this.appCommentConf;
 		if (appCommentConfFinal == null || appCommentConfFinal.size() == 0 || appCommentConfFinal.get(appId) == null) {
-			throw new ApiException(4003, "cant find commentConf，appId:" + appId);
+			throw new ApiException(CommentErrorCode.COMMENT_CODE_COMMENT_NOT_CONFIGED.code(),
+					"cant find commentConf，appId:" + appId);
 		}
 		return appCommentConfFinal.get(appId);
 	}

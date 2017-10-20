@@ -56,23 +56,14 @@ public class CommentFacade implements ApiFacade {
 			throw new ApiException(CommentRespCode.CODE_4000);
 		}
 		String ip = ctx.getClientIp();
-		// if (appId == 17 || appId == 18) {
-		// ip = ctx.getHttpHead("xl-ip");
-		// if (StringUtils.isBlank(ip)) {
-		// ip = ctx.getClientIp();
-		// }
-		// } else {
-		// ip = ctx.getClientIp();
-		// }
 		String triggerId = req.getTriggerId();
 		String clientPort = req.getClientPort();
 		String recommendPlatform = ctx.getAppInfo().getRecommendPlatform();
 		String extParams = req.getExtParams();
 		String extParamsJson = CommentUtil.transformExtParams(extParams, ctx.getStringParams());
-//		return commentService.addComment(appId, typeId, tid, cid, ip, device, comment, user, sourceId, triggerId,
-//				clientPort, recommendPlatform, req.getDownLoadSpeed(), req.isAnonymous(), req.getBandwidth(),
-//				extParamsJson);
-		return new CommentAddResp();
+		return commentService.addComment(appId, typeId, tid, cid, ip, device, comment, user, sourceId, triggerId,
+				clientPort, recommendPlatform, req.getDownLoadSpeed(), req.isAnonymous(), req.getBandwidth(),
+				extParamsJson);
 	}
 
 	// @McpMethod(name = "comment.del", ver = DEFAULT_VERSION, desc = "撤销评论",

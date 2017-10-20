@@ -2,7 +2,7 @@ package com.open.lcp.biz.comment.facade.resp;
 
 import com.open.lcp.core.base.annotation.LcpParamRequired;
 
-public class CommentAddResp {
+public class CommentAddResp extends PointResultResp {
 
 	@LcpParamRequired(value = false, desc = "评论id")
 	private Long cid;

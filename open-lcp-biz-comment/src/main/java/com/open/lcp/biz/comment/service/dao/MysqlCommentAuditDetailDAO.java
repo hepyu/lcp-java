@@ -7,7 +7,7 @@ import com.open.lcp.orm.jade.annotation.DAO;
 import com.open.lcp.orm.jade.annotation.SQL;
 
 @DAO(catalog = "lcp_biz_comment")
-public interface CommentAuditDetailDAO {
+public interface MysqlCommentAuditDetailDAO {
 
 	@SQL("insert into comment_audit_detail(comment_id,comment_checker,comment_check_time,comment_ckeck_type) value (:1.commentId,:1.commentChecker,:1.checkTime,:1.checkType)")
 	public int batchInsertCommentAuditDetail(List<CommentAuditDetailEntity> entityList);

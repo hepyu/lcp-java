@@ -24,6 +24,8 @@ public class PassportUserAccountEntity {
 
 	private String description;
 
+	private String userCategory;
+
 	public Long getUserId() {
 		return userId;
 	}
@@ -110,6 +112,14 @@ public class PassportUserAccountEntity {
 
 	public void setLastLoginTime(Long lastLoginTime) {
 		this.lastLoginTime = lastLoginTime;
+	}
+
+	public String getUserCategory() {
+		return userCategory;
+	}
+
+	public void setUserCategory(String userCategory) {
+		this.userCategory = userCategory;
 	}
 
 }

@@ -5,9 +5,9 @@ import com.open.lcp.core.base.info.BaseUserAccountInfo;
 
 public interface CommentService {
 
-//	CommentAddResp addComment(int appId, int typeId, String tid, Long cid, String ip, String device, String comment,
-//			BaseUserAccountInfo user, String sourceId, String triggerId, String clientPort, String recommendPlatform,
-//			String downLoadSpeed, boolean isAnonymous, String bandwidth, String extParamsJson);
+	CommentAddResp addComment(int appId, int typeId, String tid, Long cid, String ip, String device, String comment,
+			BaseUserAccountInfo user, String sourceId, String triggerId, String clientPort, String recommendPlatform,
+			String downLoadSpeed, boolean isAnonymous, String bandwidth, String extParamsJson);
 
 	// int getRcount(int appId, int typeId, String tid);
 	//

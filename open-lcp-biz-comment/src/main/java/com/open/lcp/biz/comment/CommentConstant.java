@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.open.lcp.core.base.LcpResource;
+
 public class CommentConstant {
 
 	public static final String OK = "ok";

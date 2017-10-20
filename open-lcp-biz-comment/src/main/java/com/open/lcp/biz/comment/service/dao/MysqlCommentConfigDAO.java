@@ -7,7 +7,7 @@ import com.open.lcp.orm.jade.annotation.DAO;
 import com.open.lcp.orm.jade.annotation.SQL;
 
 @DAO(catalog = "lcp_biz_comment")
-public interface CommentConfigDAO {
+public interface MysqlCommentConfigDAO {
 
 	@SQL("select app_id,app_comment_id,type,level,floor_level from comment_config")
 	List<CommentConfigEntity> listCommentConfig();

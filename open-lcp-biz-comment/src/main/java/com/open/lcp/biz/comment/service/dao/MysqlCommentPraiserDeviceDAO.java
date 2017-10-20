@@ -5,7 +5,7 @@ import com.open.lcp.orm.jade.annotation.DAO;
 import com.open.lcp.orm.jade.annotation.SQL;
 
 @DAO(catalog = "lcp_biz_comment")
-public interface CommentPraiserDeviceDAO {
+public interface MysqlCommentPraiserDeviceDAO {
 
 	@SQL("insert into comment_praiser_device (device_id, tid, cid, type_id, app_id, ctime) values (:1.deviceId, :1.tid, :1.cid, :1.typeId, :1.appId, :1.time) ON DUPLICATE KEY UPDATE ctime=:1.time")
 	int save(CommentPraiserDeviceEntity praiserDeviceDetail);

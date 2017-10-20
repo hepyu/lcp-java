@@ -10,6 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
+
+import com.open.lcp.biz.comment.service.dao.HBaseCommentDAO;
+import com.open.lcp.biz.comment.util.BytesUtil;
+
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,83 +22,23 @@ import java.util.List;
 import java.util.Map;
 
 @Repository("commentDao")
-public class CommentDaoImpl{
-//public class CommentDaoImpl implements CommentDao {
-//
-//	private static final Logger logger = LoggerFactory.getLogger(CommentDaoImpl.class);
-//	/**
-//	 * 评论表
-//	 */
-//	private static final byte[] TABLE_COMMENT = Bytes.toBytes("comment");
-//	/**
-//	 * 评论表,family title
-//	 */
-//	private static final byte[] TABLE_COMMENT_TITLE = Bytes.toBytes("title");
-//	/**
-//	 * 评论表,family comment
-//	 */
-//	private static final byte[] TABLE_COMMENT_COMMENT = Bytes.toBytes("comment");
-//
-//	/**
-//	 * 评论点赞表
-//	 */
-//	private static final byte[] TABLE_COMMENT_PRAISER = Bytes.toBytes("commentPraiser");
-//
-//	/**
-//	 * 用户评论记录表
-//	 */
-//	private static final byte[] TABLE_COMMENT_USERCOMMENTS = Bytes.toBytes("userComment");
-//
-//	/**
-//	 * 待审核评论表（短视频的评论）
-//	 */
-//	private static final byte[] TABLE_COMMENT_REVIEW = Bytes.toBytes("commentReview");
-//
-//	/**
-//	 * 待审核评论表（PC下载资源的评论）
-//	 */
-//	private static final byte[] TABLE_COMMENT_REVIEW_RESOURCE = Bytes.toBytes("commentReviewResource");
-//
-//	/**
-//	 * 审核通过评论表（短视频的评论）
-//	 */
-//	private static final byte[] TABLE_COMMENT_PASS = Bytes.toBytes("commentPass");
-//
-//	/**
-//	 * 审核通过评论表（PC下载资源的评论）
-//	 */
-//	private static final byte[] TABLE_COMMENT_PASS_RESOURCE = Bytes.toBytes("commentPassResource");
-//
-//	/**
-//	 * AI审核通过评论表 给评论复审用（短视频的评论）
-//	 */
-//	private static final byte[] TABLE_COMMENT_AI_PASS = Bytes.toBytes("commentAIPass");
-//
-//	/**
-//	 * AI审核通过评论表 给评论复审用（PC下载资源的评论）
-//	 */
-//	private static final byte[] TABLE_COMMENT_AI_PASS_RESOURCE = Bytes.toBytes("commentAIPassResource");
-//
-//	/**
-//	 * 审核不通过评论表（短视频的评论）
-//	 */
-//	private static final byte[] TABLE_COMMENT_NOPASS = Bytes.toBytes("commentNoPass");
-//
-//	/**
-//	 * 审核不通过评论表（PC下载资源的评论）
-//	 */
-//	private static final byte[] TABLE_COMMENT_NOPASS_RESOURCE = Bytes.toBytes("commentNoPassResource");
-//
-//	@Resource
-//	Connection connection;
-//
-//	/**
-//	 * 解析成 hbase comment表里的rowId
-//	 */
-//	private byte[] parseCommentRowId(int appId, int typeId, String tid) {
-//
-//		return BytesUtil.spliceBytes(Bytes.toBytes(appId), Bytes.toBytes(typeId), Bytes.toBytes(tid));
-//	}
+public class HBaseCommentDaoImpl extends HBaseAbstractDAO implements HBaseCommentDAO {
+
+	private static final Logger logger = LoggerFactory.getLogger(HBaseCommentDaoImpl.class);
+	/**
+	 * 评论表
+	 */
+	private static final byte[] TABLE_COMMENT = Bytes.toBytes("comment");
+	
+	/**
+	 * 评论表,family comment
+	 */
+	private static final byte[] TABLE_COMMENT_COMMENT = Bytes.toBytes("comment");
+
+
+	@Resource
+	private Connection connection;
+
 //
 //	/**
 //	 * 解析成 hbase commentReply表里的rowId

@@ -8,7 +8,7 @@ import com.open.lcp.orm.jade.annotation.SQL;
 /**
  */
 @DAO(catalog = "lcp_biz_comment")
-public interface CommentUserSilencedLogDAO {
+public interface MysqlCommentUserSilencedLogDAO {
 
 	@SQL("insert into comment_user_silenced_log (user_id, silenced_days, reason, start, end, operator, ctime) values (:1.userId, :1.silencedDays, :1.reason, :1.start, :1.end, :1.operator, :1.ctime)")
 	long save(CommentUserSilencedLogEntity req);

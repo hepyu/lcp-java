@@ -115,4 +115,9 @@ public class SimpleAccountInfoApi extends AbstractAccountApi implements AccountI
 		return accountInfoService.commitUploadAvatar(userId);
 	}
 
+	@Override
+	public String getUserType(Long userId) {
+		return accountInfoService.getUserType(userId);
+	}
+
 }

@@ -33,4 +33,6 @@ public interface AccountInfoApi {
 
 	public String commitUploadAvatar(Long userId);
 
+	public String getUserType(Long userId);
+
 }

@@ -169,7 +169,7 @@ public class AbstractAccountApi {
 	}
 
 	protected Long getUserId(String openId, UserAccountType accountType) throws PassportException {
-		return passportOAuthAccountDAO.getUserId(openId, accountType.value());
+		return passportOAuthAccountDAO.getUserId(openId, accountType.type());
 	}
 
 	/**
@@ -262,7 +262,7 @@ public class AbstractAccountApi {
 		ssoAccount.setNickName(userPortrait.getNickname());
 		ssoAccount.setOpenId(openId);
 		ssoAccount.setGender(userPortrait.getGender().gender());
-		ssoAccount.setType(accountType.value());
+		ssoAccount.setType(accountType.type());
 		ssoAccount.setUpdateIp(IPUtil.Ip2Int(ip));
 		ssoAccount.setUpdateTime(time);
 		ssoAccount.setUserName(userPortrait.getUsername());

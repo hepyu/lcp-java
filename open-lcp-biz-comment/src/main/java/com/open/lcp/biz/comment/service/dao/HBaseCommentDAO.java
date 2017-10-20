@@ -2,11 +2,13 @@ package com.open.lcp.biz.comment.service.dao;
 
 import org.apache.hadoop.hbase.util.Bytes;
 
+import com.open.lcp.biz.comment.service.dao.other.CommentColumn;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public interface CommentHbaseDAO {
+public interface HBaseCommentDAO {
 
     byte[] family = Bytes.toBytes("comment");
     byte[] comment = Bytes.toBytes("comment");
@@ -24,14 +26,14 @@ public interface CommentHbaseDAO {
                        String commentIdValue, String commentValue, String userValue,
                        String countValue, String extValue) throws IOException;
 
-    void addUserComment(long uid, long cid, String userCommentValue)
-			throws IllegalArgumentException, IOException;
-
-	boolean delUserComment(long uid, long cid)
-			throws IllegalArgumentException, IOException;
-
-	List<String> listUserComment(long uid, long lastId, int len)
-			throws IllegalArgumentException, IOException;
+//    void addUserComment(long uid, long cid, String userCommentValue)
+//			throws IllegalArgumentException, IOException;
+//
+//	boolean delUserComment(long uid, long cid)
+//			throws IllegalArgumentException, IOException;
+//
+//	List<String> listUserComment(long uid, long lastId, int len)
+//			throws IllegalArgumentException, IOException;
 	
 //	List<CommentColumn> listComment(int appId, int typeId, String tid,
 //                                    long lastId, int len) throws IOException;
@@ -103,7 +105,7 @@ public interface CommentHbaseDAO {
 //	boolean delCheckNoPassComments(int typeId, long... ids)
 //			throws IllegalArgumentException, IOException;
 //
-//	CommentColumn getComment(int appId, int typeId, String tid, long cid);
+	//CommentColumn getComment(int appId, int typeId, String tid, long cid);
 //	
 //	boolean countComment(int appId, int typeId, String tid, long cid,
 //                         String countColumnValue) throws IOException;

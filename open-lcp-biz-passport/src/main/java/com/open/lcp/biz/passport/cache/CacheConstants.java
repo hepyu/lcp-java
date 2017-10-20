@@ -13,11 +13,6 @@ package com.open.lcp.biz.passport.cache;
  * 
  */
 public class CacheConstants {
-	
-	
-	public static final String YOULIAO_PASSPORT_REDIS_SERVICE_NAME="passport";
-	
-	public static final String YOULIAO_PASSPORT_USER_KIND_REDIS_SERVICE_NAME="commentListRedis";
 
 	public static final String PRE = "4passport";
 
@@ -34,8 +29,7 @@ public class CacheConstants {
 	 * 
 	 * value: com.xunlei.xlmc.passport.component.ticket.Ticket实例
 	 */
-	public static final String KEY_PRE_SECRETKEYCOUPLE = PRE
-			+ ":secretkeycouple:";
+	public static final String KEY_PRE_SECRETKEYCOUPLE = PRE + ":secretkeycouple:";
 
 	/**
 	 * 存放同一个用户的多个t票
@@ -43,8 +37,7 @@ public class CacheConstants {
 	 * 暂时不用
 	 * 
 	 */
-	public static final String KEY_PRE_PASSPORTUSERID_DEVICES = PRE
-			+ ":appsPerUser:";
+	public static final String KEY_PRE_PASSPORTUSERID_DEVICES = PRE + ":appsPerUser:";
 
 	/**
 	 * 存放手机手机验证码
@@ -62,8 +55,7 @@ public class CacheConstants {
 	 * 
 	 * value: userIdentify
 	 */
-	public static final String KEY_PRE_PASSPORT_USER_ID_CHECK = PRE
-			+ ":puserid:";
+	public static final String KEY_PRE_PASSPORT_USER_ID_CHECK = PRE + ":puserid:";
 
 	/**
 	 * 存放xluserid.
@@ -72,31 +64,28 @@ public class CacheConstants {
 	 * 
 	 * value:xluserid
 	 */
-	public static final String KEY_PRE_XLUSERID_BY_OPENID_TYPE = PRE
-			+ ":xluserid:byOpenidType:";
+	public static final String KEY_PRE_XLUSERID_BY_OPENID_TYPE = PRE + ":xluserid:byOpenidType:";
 
 	// 6.set or get passportUserAccount by passportUserId
 
 	/**
 	 * 根据passportUserId存放PassportUserAccount对象.
 	 * 
-	 * key:pre +　passportUserId
+	 * key:pre + passportUserId
 	 * 
 	 * value:PassportUserAccount对象
 	 * 
 	 */
-	public static final String KEY_PRE_PASSPORT_USERACCOUNT_BY_PASSPORT_USERID = PRE
-			+ ":useraccount:bypid:";
+	public static final String KEY_PRE_PASSPORT_USERACCOUNT_BY_PASSPORT_USERID = PRE + ":useraccount:bypid:";
 
 	/**
 	 * 根据xluserId, type存放PassportOAuthAccount对象
 	 * 
-	 * key: pre + xluserid +　type
+	 * key: pre + xluserid + type
 	 * 
 	 * value: PassportOAuthAccountEntity
 	 */
-	public static final String KEY_PRE_PASSPORT_OAUTHACCOUNT_BY_XLUSERID_TYPE = PRE
-			+ ":oauthaccount:byXluseridType:";
+	public static final String KEY_PRE_PASSPORT_OAUTHACCOUNT_BY_XLUSERID_TYPE = PRE + ":oauthaccount:byXluseridType:";
 
 	/**
 	 * 根据xlUserId获取PassportUserAccount对象
@@ -105,15 +94,13 @@ public class CacheConstants {
 	 * 
 	 * value: PassportUserAccountEntity
 	 */
-	public static final String KEY_PRE_PASSPORT_USERACCOUNT_BY_XLUSERID = PRE
-			+ ":useraccount:byxluserid:";
+	public static final String KEY_PRE_PASSPORT_USERACCOUNT_BY_XLUSERID = PRE + ":useraccount:byxluserid:";
 
 	/**
 	 * 存放所有特殊账号的list
 	 */
-	public static final String KEY_PRE_PASSPORT_SPECIALACCOUNT_ALL = PRE
-			+ ":specialaccount:list";
-	
+	public static final String KEY_PRE_PASSPORT_SPECIALACCOUNT_ALL = PRE + ":specialaccount:list";
+
 	/**
 	 * 存放sha1
 	 * 
@@ -121,8 +108,8 @@ public class CacheConstants {
 	 */
 	public static final String KEY_PRE_AVATAR_SHA1 = PRE + ":avatar:sha1:";
 
-	public static final String KEY_PRE_PASSPORT_SESSIONID_PREFIX=PRE + ":sessionid:xlt:%s";
-	
+	public static final String KEY_PRE_PASSPORT_SESSIONID_PREFIX = PRE + ":sessionid:xlt:%s";
+
 	/**
 	 * 
 	 * ************************(2).失效期定义*********************************
@@ -146,10 +133,13 @@ public class CacheConstants {
 	public static final int EXPIRE_PASSPORT_USERACCOUNT_BY_XLUSERID = 86400;
 
 	public static final int EXPIRE_PASSPORT_SPECIALACCOUNT_ALL = 86400;
-	
+
 	public static final int EXPIRE_PRE_AVATAR_SHA1 = 86400;
-	
-	public static final int EXPIRE_PASSPORT_SESSENID=7*3600;// 7天 有效期sessionId的过期时间那边 web最长7天 客户端最长13天
+
+	public static final int EXPIRE_PASSPORT_SESSENID = 7 * 3600;// 7天
+																// 有效期sessionId的过期时间那边
+																// web最长7天
+																// 客户端最长13天
 
 	/**
 	 * 

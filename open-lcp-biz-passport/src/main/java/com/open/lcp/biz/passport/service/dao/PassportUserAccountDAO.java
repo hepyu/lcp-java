@@ -8,13 +8,13 @@ import com.open.lcp.orm.jade.annotation.SQL;
 @DAO(catalog = "mysql_lcp_passport")
 public interface PassportUserAccountDAO {
 
-	String SQL_SELECT_PART = "user_id, user_name, nick_name, avatar, gender, update_ip, regist_ip, update_time, regist_time, last_login_time, description";
+	String SQL_SELECT_PART = "user_id, user_name, nick_name, avatar, gender, update_ip, regist_ip, update_time, regist_time, last_login_time, description, user_category";
 
-	String SQL_INSERT_PART = "user_name, nick_name, avatar, gender, update_ip, regist_ip, update_time, regist_time, last_login_time, description";
+	String SQL_INSERT_PART = "user_name, nick_name, avatar, gender, update_ip, regist_ip, update_time, regist_time, last_login_time, description, user_category";
 
 	@ReturnGeneratedKeys
 	@SQL("INSERT INTO passport_user_account(" + SQL_INSERT_PART
-			+ ") values(:1.userName, :1.nickName, :1.avatar, :1.gender, :1.updateIp, :1.registIp, :1.updateTime, :1.registTime, :1.lastLoginTime, :1.description)")
+			+ ") values(:1.userName, :1.nickName, :1.avatar, :1.gender, :1.updateIp, :1.registIp, :1.updateTime, :1.registTime, :1.lastLoginTime, :1.description, :1.userCategory)")
 	// on duplicate key update user_name=:1.userName, nick_name=:1.nickName,
 	// avatar=:1.avatar, gender=:1.gender, update_time=:1.updateTime,
 	// update_ip=:1.updateIp, description=:1.description

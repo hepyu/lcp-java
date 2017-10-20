@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.open.lcp.biz.passport.PassportException;
+import com.open.lcp.biz.passport.UserAccountCategoryConstant;
 import com.open.lcp.biz.passport.UserAccountType;
 import com.open.lcp.biz.passport.dto.PassportOAuthAccountDTO;
 import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
@@ -48,6 +49,9 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 		long ts = System.currentTimeMillis();
 		passportUserAccountEntity.setLastLoginTime(ts);
 		passportOAuthAccountEntity.setLastLoginTime(ts);
+
+		passportUserAccountEntity
+				.setUserCategory(UserAccountType.valueOf(passportOAuthAccountEntity.getType()).category());
 
 		Long createResult = passportUserAccountDAO.create(passportUserAccountEntity);
 		if (createResult != null && createResult > 0) {
@@ -101,7 +105,7 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 	@Override
 	public int unbindAccount(Long userId, UserAccountType userAccountType) {
 		List<PassportOAuthAccountEntity> list = passportOAuthAccountDAO.getOAuthAccountInfo(userId,
-				userAccountType.value());
+				userAccountType.type());
 		if (list == null || list.isEmpty()) {
 			return 0;
 		}
@@ -109,7 +113,7 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 		if (entity == null || StringUtils.isEmpty(entity.getOpenId())) {
 			return 0;
 		}
-		int result = passportOAuthAccountDAO.unbindOAuthAccount(userId, userAccountType.value());
+		int result = passportOAuthAccountDAO.unbindOAuthAccount(userId, userAccountType.type());
 		if (result > 0) {
 			passportCache.delOAuthAccountInfoByUserIdAndType(userId, userAccountType);
 			passportCache.delUserId(entity.getOpenId(), userAccountType);
@@ -174,6 +178,16 @@ public class AccountInfoServiceImpl extends AbstractAccount implements AccountIn
 			return avatarUrl;
 		} else {
 			return null;
+		}
+	}
+
+	@Override
+	public String getUserType(Long userId) {
+		PassportUserAccountEntity entity = passportUserAccountDAO.getUserInfoByUserId(userId);
+		if (entity != null) {
+			return entity.getUserCategory();
+		} else {
+			return UserAccountCategoryConstant.ACCOUNT_CATEGORY_NO_EXIST;
 		}
 	}
 

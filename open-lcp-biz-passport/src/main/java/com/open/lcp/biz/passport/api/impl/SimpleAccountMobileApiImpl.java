@@ -34,7 +34,7 @@ public class SimpleAccountMobileApiImpl extends AbstractAccountApi implements Ac
 
 			// check mobileCode
 			if ("test".equals(mobile) && "test".equals(mobileCode)) {
-				Long userId = passportOAuthAccountDAO.getUserId("test", UserAccountType.mobile.value());
+				Long userId = passportOAuthAccountDAO.getUserId("test", UserAccountType.mobile.type());
 
 				if (userId == null) {
 					ThirdAccountSDKPortrait userPortrait = new ThirdAccountSDKPortrait();

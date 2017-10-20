@@ -7,7 +7,7 @@ import com.open.lcp.orm.jade.annotation.SQL;
 import java.util.List;
 
 @DAO(catalog = "lcp_biz_comment")
-public interface CommentUserSilencedDAO {
+public interface MysqlCommentUserSilencedDAO {
 
 	@SQL("insert into comment_user_silenced (user_id, nick_name, reason, start, end, operator, ctime) values (:1.userId, :1.nickName, :1.reason, :1.start, :1.end, :1.operator, :1.ctime) on duplicate key update nick_name=:1.nickName, reason=:1.reason, start=:1.start, end=:1.end, operator=:1.operator, ctime=:1.ctime")
 	long save(CommentUserSilencedEntity entity);

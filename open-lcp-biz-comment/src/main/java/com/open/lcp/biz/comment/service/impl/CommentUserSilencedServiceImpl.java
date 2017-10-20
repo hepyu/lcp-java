@@ -9,8 +9,8 @@ import org.springframework.util.CollectionUtils;
 import com.open.lcp.biz.comment.CommentConstant;
 import com.open.lcp.biz.comment.facade.req.ForbidCommentUserReq;
 import com.open.lcp.biz.comment.service.CommentUserSilencedService;
-import com.open.lcp.biz.comment.service.dao.CommentUserSilencedDAO;
-import com.open.lcp.biz.comment.service.dao.CommentUserSilencedLogDAO;
+import com.open.lcp.biz.comment.service.dao.MysqlCommentUserSilencedDAO;
+import com.open.lcp.biz.comment.service.dao.MysqlCommentUserSilencedLogDAO;
 import com.open.lcp.biz.comment.service.dao.entity.CommentUserSilencedEntity;
 import com.open.lcp.biz.comment.service.dao.entity.CommentUserSilencedLogEntity;
 import com.open.lcp.biz.passport.service.AccountInfoService;
@@ -25,9 +25,9 @@ public class CommentUserSilencedServiceImpl implements CommentUserSilencedServic
 	private static final Logger logger = LoggerFactory.getLogger(CommentUserSilencedServiceImpl.class);
 
 	@Resource
-	private CommentUserSilencedDAO commentUserSilencedDAO;
+	private MysqlCommentUserSilencedDAO commentUserSilencedDAO;
 	@Resource
-	private CommentUserSilencedLogDAO commentUserSilencedLogDAO;
+	private MysqlCommentUserSilencedLogDAO commentUserSilencedLogDAO;
 	@Resource
 	private AccountInfoService userAccountService;
 

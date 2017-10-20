@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.open.lcp.biz.passport.UserAccountType;
 import com.open.lcp.biz.passport.dto.PassportOAuthAccountDTO;
-import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
 import com.open.lcp.biz.passport.dto.RequestUploadAvatarResultDTO;
 import com.open.lcp.biz.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
@@ -38,5 +37,7 @@ public interface AccountInfoService extends BaseUserAccountInfoService {
 	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId, UserAccountType accountType);
 
 	public String commitUploadAvatar(Long userId, UserAccountType accountType);
+
+	public String getUserType(Long userId);
 
 }
