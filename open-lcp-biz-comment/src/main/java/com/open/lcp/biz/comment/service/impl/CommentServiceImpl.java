@@ -55,70 +55,70 @@ public class CommentServiceImpl implements CommentService {
 	private final Logger logger = LoggerFactory.getLogger(CommentServiceImpl.class);
 
 	private final static Gson gson = LcpConstants.gson;
-//	// 推送消息给手雷用的线程池
-//	private static final ExecutorService messageExecutor = Executors.newCachedThreadPool();
+	// // 推送消息给手雷用的线程池
+	// private static final ExecutorService messageExecutor =
+	// Executors.newCachedThreadPool();
 	@Resource
 	private HBaseCommentDAO commentDao;
-//	@Resource
-//	private CommentConfigDAO commentMySqlDao;
+	// @Resource
+	// private CommentConfigDAO commentMySqlDao;
 	@Resource
 	private IdWorker idWorker;
 	@Resource
 	private AppCommentConfigService appCommentConfigService;
-//	@Resource(name = SSDB_COMMENT_OLD)
-//	private SSDBX ssdbx;
+	// @Resource(name = SSDB_COMMENT_OLD)
+	// private SSDBX ssdbx;
 	@Resource(name = CommentConfiguration.BEAN_NAME_COMMENT_DISTRIBUTED_CACHE)
 	private CacheX cacheX;
-//	@Resource(name = SSDB_COMMENT_FAST)
-//	private SSDBX ssdbFast;
-//	@Resource(name = COMMENT_LIST_REDIS)
-//	private RedisServiceImpl redisService;
+	// @Resource(name = SSDB_COMMENT_FAST)
+	// private SSDBX ssdbFast;
+	// @Resource(name = COMMENT_LIST_REDIS)
+	// private RedisServiceImpl redisService;
 	@Resource
 	private CloseableHttpClient client;
-	
+
 	@Resource
 	private AccountInfoApi accountInfoApi;
-//	@Resource
-//	private UserMessageService userMessageService;
-//	@Resource
-//	private RaUserInfoDao raUserInfoDao;
-//	@Resource
-//	private FileService fileService;
-//	@Resource
-//	private RaUserService raUserService;
-//	@Resource
-//	private CommentPraiserDeviceDAO commentPraiserDeviceDao;
-//	@Resource
-//	private CommentPraiserUserDAO commentPraiserUserDao;
-//	@Resource
-//	private FeedService feedService;
-//	@Resource(name = "adminSecureManager")
-//	private SecureManager secureManager;
-//	@Resource
-//	private UserAccountService userAccountService;
-//	// 发评论的时候存储kafka的线程池
-//	private static final ExecutorService kafkaExecutor = Executors.newCachedThreadPool();
-//	@Resource(name = COMMENT_KAFKA_PRODUCER)
-//	private Producer<String, String> commentKafkaProducer;
-//	@Value("${fileservice.notify.userId}")
-//	private long systemUserId;
-//	@Value("${mobile.xunlei.send.message.url}")
-//	private String messageUrl;
-//	@Value("${act.appId}")
-//	private int actAppId;
-//	@Value("${act.appSecretKey}")
-//	private String actAppSecretKey;
+	// @Resource
+	// private UserMessageService userMessageService;
+	// @Resource
+	// private RaUserInfoDao raUserInfoDao;
+	// @Resource
+	// private FileService fileService;
+	// @Resource
+	// private RaUserService raUserService;
+	// @Resource
+	// private CommentPraiserDeviceDAO commentPraiserDeviceDao;
+	// @Resource
+	// private CommentPraiserUserDAO commentPraiserUserDao;
+	// @Resource
+	// private FeedService feedService;
+	// @Resource(name = "adminSecureManager")
+	// private SecureManager secureManager;
+	// @Resource
+	// private UserAccountService userAccountService;
+	// // 发评论的时候存储kafka的线程池
+	// private static final ExecutorService kafkaExecutor =
+	// Executors.newCachedThreadPool();
+	// @Resource(name = COMMENT_KAFKA_PRODUCER)
+	// private Producer<String, String> commentKafkaProducer;
+	// @Value("${fileservice.notify.userId}")
+	// private long systemUserId;
+	// @Value("${mobile.xunlei.send.message.url}")
+	// private String messageUrl;
+	// @Value("${act.appId}")
+	// private int actAppId;
+	// @Value("${act.appSecretKey}")
+	// private String actAppSecretKey;
 
-	/**
-	 * 这个方法有毒，请勿随意修改
-	 */
 	@Override
 	public CommentAddResp addComment(int appId, final int typeId, String tid, final Long cid, String ip, String device,
 			String comment, BaseUserAccountInfo user, String sourceId, String triggerId, String clientPort,
 			String recommendPlatform, String downLoadSpeed, boolean isAnonymous, String bandwidth,
 			String extParamsJson) {
 		long userId = user.getUserId();
-		CommentAddResp commentAddResp = this.validateAddComment(userId, triggerId, comment);
+		//验证是否被禁言，是否是评论重入
+		CommentAddResp commentAddResp = this.validateBeforeAddComment(userId, triggerId, comment);
 		if (commentAddResp != null) {
 			return commentAddResp;
 		}
@@ -308,12 +308,13 @@ public class CommentServiceImpl implements CommentService {
 	// return adminCommentDTO;
 	// }
 	//
-	private CommentAddResp validateAddComment(long userId, String triggerId, String comment) {
+	private CommentAddResp validateBeforeAddComment(long userId, String triggerId, String comment) {
 		// 禁言验证
 		Long end = cacheX.get(String.format(CommentConstant.COMMENT_SILENCED_KEY, userId), Long.class);
 		if (end != null && end != 0) {
 			if (end == CommentConstant.FOR_EVER) {
-				return commentAddResp(CommentErrorCode.COMMENT_CODE_COMMENT_USER_IS_SLIENCED_FOREVER.code(), null, false);
+				return commentAddResp(CommentErrorCode.COMMENT_CODE_COMMENT_USER_IS_SLIENCED_FOREVER.code(), null,
+						false);
 			} else {
 				return commentAddResp(CommentErrorCode.COMMENT_CODE_COMMENT_USER_IS_SLIENCED.code(), null, false);
 			}
@@ -331,43 +332,40 @@ public class CommentServiceImpl implements CommentService {
 		}
 		return null;
 	}
-	
-	 /**
+
+	/**
 	 * 构建评论类型
 	 */
-	 private String buildCommentTyle(long newCommentId, int appId, long
-	 userId, boolean isReply,
-	 String recommendPlatform, long replyCommentUid, String sourceId) {
-	 String commentType;
-	 String userType = accountInfoApi.getUserType(userId);
-	 String replyType = "other";
-	 String isAuthor = "other";
-	 if (isReply && userId == replyCommentUid) {
-	 replyType = "self";
-	 }
-	 if (NumberUtils.isDigits(sourceId)) {
-	 HotVideoDTO hotVideoDTO =
-	 fileService.queryAllState(Long.parseLong(sourceId));
-	 if (hotVideoDTO != null && userId == hotVideoDTO.getUserId()) {
-	 isAuthor = "author";
-	 }
-	 }
-	 logger.debug(
-	 "commentType:newCommentId" + newCommentId + "userId:" + userId + " replyCommentUid:" + replyCommentUid);
-	 commentType = userType + "-" + (appId == 12 ? "pq" : isReply ? "hf" :
-	 "pl") + "-" + recommendPlatform + "-"
-	 + replyType + "-" + isAuthor;
-	 return commentType;
-	 }
-	
-	 private CommentAddResp commentAddResp(int result, Long cid, boolean
-	 isSucess) {
-	 CommentAddResp resp = new CommentAddResp();
-	 resp.setResult(result);
-	 resp.setCid(cid);
-	 resp.setIsPdRiew(isSucess);
-	 return resp;
-	 }
+	private String buildCommentTyle(long newCommentId, int appId, long userId, boolean isReply,
+			String recommendPlatform, long replyCommentUid, String sourceId) {
+		String commentType;
+		String userType = accountInfoApi.getUserType(userId);
+		String replyType = "other";
+		String isAuthor = "other";
+		if (isReply && userId == replyCommentUid) {
+			replyType = "self";
+		}
+		if (NumberUtils.isDigits(sourceId)) {
+			HotVideoDTO hotVideoDTO = fileService.queryAllState(Long.parseLong(sourceId));
+			if (hotVideoDTO != null && userId == hotVideoDTO.getUserId()) {
+				isAuthor = "author";
+			}
+		}
+		logger.debug(
+				"commentType:newCommentId" + newCommentId + "userId:" + userId + " replyCommentUid:" + replyCommentUid);
+		commentType = userType + "-" + (appId == 12 ? "pq" : isReply ? "hf" : "pl") + "-" + recommendPlatform + "-"
+				+ replyType + "-" + isAuthor;
+		return commentType;
+	}
+
+	private CommentAddResp commentAddResp(int result, Long cid, boolean isSucess) {
+		CommentAddResp resp = new CommentAddResp();
+		resp.setResult(result);
+		resp.setCid(cid);
+		resp.setIsPdRiew(isSucess);
+		return resp;
+	}
+
 	//
 	// /**
 	// * 资源的总评论回复数
@@ -593,7 +591,7 @@ public class CommentServiceImpl implements CommentService {
 		cacheX.del(key);
 		cacheX.hset(hKey, idColumn.getCid(), resp);
 	}
-	
+
 	/**
 	 * 删除用户待审核的评论
 	 */
@@ -609,20 +607,19 @@ public class CommentServiceImpl implements CommentService {
 		logger.debug("delReviewCommentCache end {} {}", uid, cid);
 		cacheX.del(key);
 	}
-	
-	 /**
+
+	/**
 	 * 安全系统过滤评论
 	 */
-	 private CheckStatus verifyComment(String comment) {
-		 return CheckStatus.YES;
-//		 CommentDTO commentDTO = new CommentDTO();
-//		 commentDTO.setContentColumn(comment);
-//		 commentDTO.setBizNum("00003");
-//		 RespDTO resp = secureManager.verfiyForbiddenKeyword(commentDTO);
-//		 return resp.getCheckStatus();
-	 }
-	
-	 
+	private CheckStatus verifyComment(String comment) {
+		return CheckStatus.YES;
+		// CommentDTO commentDTO = new CommentDTO();
+		// commentDTO.setContentColumn(comment);
+		// commentDTO.setBizNum("00003");
+		// RespDTO resp = secureManager.verfiyForbiddenKeyword(commentDTO);
+		// return resp.getCheckStatus();
+	}
+
 	/**
 	 * id 列 存储 ip 时间戳 设备信息
 	 */
@@ -655,7 +652,7 @@ public class CommentServiceImpl implements CommentService {
 		idColumn.setCommentType(commentType);
 		return idColumn;
 	}
-	
+
 	private CommentLocation transferIp(String ip) {
 		String url = CommentConstant.IP_SEARCH_SINA_PRE + ip;
 		try {
@@ -669,20 +666,19 @@ public class CommentServiceImpl implements CommentService {
 		}
 		return null;
 	}
-	
-	 /**
+
+	/**
 	 * 内容列
 	 */
-	 private ContentColumn createContentColumn(String content,
-	 List<CommentReplyResp> replyResps) {
-	 ContentColumn contentColumnValue = new ContentColumn();
-	 contentColumnValue.setContent(content);
-	 if (replyResps != null && replyResps.size() > 0) {
-	 contentColumnValue.setReply(replyResps);
-	 }
-	 return contentColumnValue;
-	 }
-	
+	private ContentColumn createContentColumn(String content, List<CommentReplyResp> replyResps) {
+		ContentColumn contentColumnValue = new ContentColumn();
+		contentColumnValue.setContent(content);
+		if (replyResps != null && replyResps.size() > 0) {
+			contentColumnValue.setReply(replyResps);
+		}
+		return contentColumnValue;
+	}
+
 	/**
 	 * 评论用户列
 	 */
@@ -694,34 +690,32 @@ public class CommentServiceImpl implements CommentService {
 		return userColumn;
 
 	}
-	
-	 /**
+
+	/**
 	 * 评论计数列
 	 */
-	 private CountColumn createCountColumn(int gcount, int rcount, int scount)
-	 {
-	 CountColumn countCloumn = new CountColumn();
-	 countCloumn.setGcount(gcount);
-	 countCloumn.setRcount(rcount);
-	 countCloumn.setScount(scount);
-	 return countCloumn;
-	 }
-	
-	 /**
+	private CountColumn createCountColumn(int gcount, int rcount, int scount) {
+		CountColumn countCloumn = new CountColumn();
+		countCloumn.setGcount(gcount);
+		countCloumn.setRcount(rcount);
+		countCloumn.setScount(scount);
+		return countCloumn;
+	}
+
+	/**
 	 * 评论扩展列
 	 */
-	 private ExtColumn createExtColumn(int level, String downLoadSpeed,
-	 boolean isAnonymous, String bandwidth,
-	 String exeParamsJson) {
-	 ExtColumn extColumn = new ExtColumn();
-	 extColumn.setLevel(level);
-	 extColumn.setDownLoadSpeed(downLoadSpeed);
-	 extColumn.setAnonymous(isAnonymous);
-	 extColumn.setBandwidth(bandwidth);
-	 extColumn.setExeParamsJson(exeParamsJson);
-	 return extColumn;
-	 }
-	
+	private ExtColumn createExtColumn(int level, String downLoadSpeed, boolean isAnonymous, String bandwidth,
+			String exeParamsJson) {
+		ExtColumn extColumn = new ExtColumn();
+		extColumn.setLevel(level);
+		extColumn.setDownLoadSpeed(downLoadSpeed);
+		extColumn.setAnonymous(isAnonymous);
+		extColumn.setBandwidth(bandwidth);
+		extColumn.setExeParamsJson(exeParamsJson);
+		return extColumn;
+	}
+
 	/**
 	 * 根据回复的评论id,拉取被回复的评论相关信息
 	 */
@@ -752,7 +746,7 @@ public class CommentServiceImpl implements CommentService {
 		}
 		return replyResps;
 	}
-	
+
 	// /**
 	// * 被回复人ext列里记录回复的评论id
 	// */
@@ -1048,74 +1042,74 @@ public class CommentServiceImpl implements CommentService {
 	// return resp;
 	// }
 	//
-//	 private Long[] calculateHot(int appId, long zsize, int appCommentId, int
-//	 typeId, String tid) {
-//	 int hotLimit = 6; // 限制热门视频返回量
-//	 if (appId == 14) {
-//	 hotLimit = 2; // 迅雷9前端要求只返回2个
-//	 }
-//	 double hotMath = zsize * 0.07; // 热门数量约定总数7%
-//	 if (hotMath > 0.5) {
-//	 String idNotKey = getCommentIdZKey(appCommentId, typeId, tid, "hot");
-//	 Map<Long, Long> idMap = cacheX.zrrange(idNotKey, 0, hotLimit, Long.class);
-//	 if (idMap != null && idMap.size() > 0) {
-//	 scoureFilter(idMap);
-//	 if (idMap.size() > 0) {
-//	 List<Entry<Long, Long>> entries = new ArrayList<Entry<Long, Long>>();
-//	 entries.addAll(idMap.entrySet());
-//	 Collections.sort(entries, comparator);
-//	 int hotNum = (int) Math.ceil(hotMath);
-//	 if (hotNum > hotLimit) {
-//	 hotNum = hotLimit;
-//	 }
-//	 hotNum = Math.min(hotNum, entries.size());
-//	 Long[] idArray = new Long[hotNum];
-//	 for (int i = 0; i < hotNum; i++) {
-//	 idArray[i] = entries.get(i).getKey();
-//	 }
-//	 return idArray;
-//	 }
-//	 }
-//	 }
-//	 return null;
-//	 }
-	
-	 private void scoureFilter(Map<Long, Long> idMap) {
-	 Set<Entry<Long, Long>> entrySet = idMap.entrySet();
-	 if (CollectionUtils.isNotEmpty(entrySet)) {
-	 Iterator<Entry<Long, Long>> it = entrySet.iterator();
-	 while (it.hasNext()) {
-	 if (it.next().getValue() < 3) {
-	 it.remove();
-	 }
-	 }
-	 }
-	 }
-	
-	 private String getCommentIdZKey(int appId, int typeId, String tid, String
-	 category) {
-	 return "comment-z-" + appId + typeId + tid + "-" + category;
-	 }
-	
-	 /**
+	// private Long[] calculateHot(int appId, long zsize, int appCommentId, int
+	// typeId, String tid) {
+	// int hotLimit = 6; // 限制热门视频返回量
+	// if (appId == 14) {
+	// hotLimit = 2; // 迅雷9前端要求只返回2个
+	// }
+	// double hotMath = zsize * 0.07; // 热门数量约定总数7%
+	// if (hotMath > 0.5) {
+	// String idNotKey = getCommentIdZKey(appCommentId, typeId, tid, "hot");
+	// Map<Long, Long> idMap = cacheX.zrrange(idNotKey, 0, hotLimit,
+	// Long.class);
+	// if (idMap != null && idMap.size() > 0) {
+	// scoureFilter(idMap);
+	// if (idMap.size() > 0) {
+	// List<Entry<Long, Long>> entries = new ArrayList<Entry<Long, Long>>();
+	// entries.addAll(idMap.entrySet());
+	// Collections.sort(entries, comparator);
+	// int hotNum = (int) Math.ceil(hotMath);
+	// if (hotNum > hotLimit) {
+	// hotNum = hotLimit;
+	// }
+	// hotNum = Math.min(hotNum, entries.size());
+	// Long[] idArray = new Long[hotNum];
+	// for (int i = 0; i < hotNum; i++) {
+	// idArray[i] = entries.get(i).getKey();
+	// }
+	// return idArray;
+	// }
+	// }
+	// }
+	// return null;
+	// }
+
+	private void scoureFilter(Map<Long, Long> idMap) {
+		Set<Entry<Long, Long>> entrySet = idMap.entrySet();
+		if (CollectionUtils.isNotEmpty(entrySet)) {
+			Iterator<Entry<Long, Long>> it = entrySet.iterator();
+			while (it.hasNext()) {
+				if (it.next().getValue() < 3) {
+					it.remove();
+				}
+			}
+		}
+	}
+
+	private String getCommentIdZKey(int appId, int typeId, String tid, String category) {
+		return "comment-z-" + appId + typeId + tid + "-" + category;
+	}
+
+	/**
 	 * 缓存用户未审核的评论
 	 */
-	 private String getCommentUserReviewKey(long uid) {
-	 return "comment-r-" + uid;
-	 }
-	
-	 private String getCommentHKey(int appId, int typeId, String tid) {
-	 return "comment-h-" + appId + typeId + tid;
-	 }
-	
-	 private String getCommentPrasierKey(long uid) {
-	 return "comment-p-" + uid;
-	 }
-	
-	 private String getCommentPrasierKey(String deviceId) {
-	 return "comment-p-" + deviceId;
-	 }
-	
+	private String getCommentUserReviewKey(long uid) {
+		return "comment-r-" + uid;
+	}
+
+	private String getCommentHKey(int appId, int typeId, String tid) {
+		return "comment-h-" + appId + typeId + tid;
+	}
+
+	private String getCommentPrasierKey(long uid) {
+		return "comment-p-" + uid;
+	}
+
+	private String getCommentPrasierKey(String deviceId) {
+		return "comment-p-" + deviceId;
+	}
+
 	// private CommentListResp getEmpty(int appId, int typeId, String tid, Long
 	// uid, int rcount, boolean isReviewAdd) {
 	// CommentListResp resp = new CommentListResp();
