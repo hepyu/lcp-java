@@ -9,10 +9,10 @@ import org.springframework.util.CollectionUtils;
 import com.open.lcp.biz.comment.CommentConstant;
 import com.open.lcp.biz.comment.facade.req.ForbidCommentUserReq;
 import com.open.lcp.biz.comment.service.CommentUserSilencedService;
-import com.open.lcp.biz.comment.service.dao.MysqlCommentUserSilencedDAO;
-import com.open.lcp.biz.comment.service.dao.MysqlCommentUserSilencedLogDAO;
-import com.open.lcp.biz.comment.service.dao.entity.CommentUserSilencedEntity;
-import com.open.lcp.biz.comment.service.dao.entity.CommentUserSilencedLogEntity;
+import com.open.lcp.biz.comment.service.dao.db.MysqlCommentUserSilencedDAO;
+import com.open.lcp.biz.comment.service.dao.db.MysqlCommentUserSilencedLogDAO;
+import com.open.lcp.biz.comment.service.dao.db.entity.CommentUserSilencedEntity;
+import com.open.lcp.biz.comment.service.dao.db.entity.CommentUserSilencedLogEntity;
 import com.open.lcp.biz.passport.service.AccountInfoService;
 import com.open.lcp.core.base.info.BaseUserAccountInfo;
 

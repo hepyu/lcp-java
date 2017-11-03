@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.open.lcp.biz.comment.CommentRespCode;
+import com.open.lcp.biz.comment.facade.req.CommentDelReq;
 import com.open.lcp.biz.comment.facade.req.CommentReq;
 import com.open.lcp.biz.comment.facade.resp.CommentAddResp;
 import com.open.lcp.biz.comment.service.CommentService;
@@ -17,6 +18,7 @@ import com.open.lcp.core.base.info.BaseAppInitInfo;
 import com.open.lcp.core.base.info.BaseUserAccountInfo;
 import com.open.lcp.core.framework.api.ApiException;
 import com.open.lcp.core.framework.api.command.ApiCommandContext;
+import com.open.lcp.core.framework.facade.CommonResultResp;
 
 public class CommentFacade implements ApiFacade {
 
@@ -66,20 +68,17 @@ public class CommentFacade implements ApiFacade {
 				extParamsJson);
 	}
 
-	// @McpMethod(name = "comment.del", ver = DEFAULT_VERSION, desc = "撤销评论",
-	// logon = true, auths = { DEFAULT_AUTHOR })
-	// public CommonResultResp del(CommentDelReq req, CommandContext ctx) throws
-	// IOException {
-	// if (ctx.getUserInfo() == null) {
-	// return CommonResultResp.FAILED;
-	// }
-	// if (commentService.del(ctx.getMcpAppInfo().getAppId(), req.getTypeId(),
-	// req.getTid(), req.getCid(),
-	// ctx.getUserInfo().getId())) {
-	// return CommonResultResp.SUCCESS;
-	// }
-	// return CommonResultResp.SUCCESS;
-	// }
+	@LcpHttpMethod(name = "comment.del", ver = DEFAULT_VERSION, desc = "撤销评论", logon = true, auths = { DEFAULT_AUTHOR })
+	public CommonResultResp del(CommentDelReq req, ApiCommandContext ctx) {
+		if (ctx.getUserAccountInfo() == null) {
+			return CommonResultResp.FAILED;
+		}
+		if (commentService.del(ctx.getAppInfo().getAppId(), req.getTypeId(), req.getTid(), req.getCid(),
+				ctx.getUserAccountInfo().getUserId())) {
+			return CommonResultResp.SUCCESS;
+		}
+		return CommonResultResp.SUCCESS;
+	}
 	//
 	// @McpMethod(name = "comment.list", ver = DEFAULT_VERSION, desc =
 	// "查询主题下评论", auths = { DEFAULT_AUTHOR })

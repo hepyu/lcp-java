@@ -10,7 +10,7 @@ import com.open.lcp.biz.comment.facade.req.ForbidCommentUserReq;
 import com.open.lcp.biz.comment.facade.resp.CommentUserSilencedLogResp;
 import com.open.lcp.biz.comment.facade.resp.CommentUserSilencedResp;
 import com.open.lcp.biz.comment.service.CommentUserSilencedService;
-import com.open.lcp.biz.comment.service.dao.entity.CommentUserSilencedLogEntity;
+import com.open.lcp.biz.comment.service.dao.db.entity.CommentUserSilencedLogEntity;
 import com.open.lcp.biz.passport.api.AccountInfoApi;
 import com.open.lcp.core.base.annotation.LcpHttpMethod;
 import com.open.lcp.core.base.command.CommandContext;

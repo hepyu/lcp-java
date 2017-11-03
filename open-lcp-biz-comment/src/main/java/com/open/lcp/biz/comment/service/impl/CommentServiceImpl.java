@@ -10,23 +10,26 @@ import com.open.lcp.biz.comment.facade.resp.CommentAddResp;
 import com.open.lcp.biz.comment.facade.resp.CommentReplyResp;
 import com.open.lcp.biz.comment.facade.resp.CommentReviewResp;
 import com.open.lcp.biz.comment.service.CommentService;
-import com.open.lcp.biz.comment.service.dao.HBaseCommentDAO;
-import com.open.lcp.biz.comment.service.dao.entity.CommentConfig;
-import com.open.lcp.biz.comment.service.dao.entity.CommentConfigEntity;
-import com.open.lcp.biz.comment.service.dao.entity.CommentLocation;
-import com.open.lcp.biz.comment.service.dao.other.CommentCheckColumn;
-import com.open.lcp.biz.comment.service.dao.other.CommentColumn;
-import com.open.lcp.biz.comment.service.dao.other.ContentColumn;
-import com.open.lcp.biz.comment.service.dao.other.CountColumn;
-import com.open.lcp.biz.comment.service.dao.other.ExtColumn;
-import com.open.lcp.biz.comment.service.dao.other.IdColumn;
-import com.open.lcp.biz.comment.service.dao.other.UserColumn;
+import com.open.lcp.biz.comment.service.dao.db.entity.CommentConfig;
+import com.open.lcp.biz.comment.service.dao.db.entity.CommentConfigEntity;
+import com.open.lcp.biz.comment.service.dao.db.entity.CommentLocation;
+import com.open.lcp.biz.comment.service.dao.hbase.HBaseCommentDAO;
+import com.open.lcp.biz.comment.service.dao.hbase.HBaseCommentNoPassCommentDao;
+import com.open.lcp.biz.comment.service.dao.hbase.HBaseCommentReviewDAO;
+import com.open.lcp.biz.comment.service.dao.hbase.impl.column.CommentCheckColumn;
+import com.open.lcp.biz.comment.service.dao.hbase.impl.column.CommentColumn;
+import com.open.lcp.biz.comment.service.dao.hbase.impl.column.ContentColumn;
+import com.open.lcp.biz.comment.service.dao.hbase.impl.column.CountColumn;
+import com.open.lcp.biz.comment.service.dao.hbase.impl.column.ExtColumn;
+import com.open.lcp.biz.comment.service.dao.hbase.impl.column.IdColumn;
+import com.open.lcp.biz.comment.service.dao.hbase.impl.column.UserColumn;
 import com.open.lcp.biz.passport.api.AccountInfoApi;
 import com.open.lcp.biz.passport.service.dao.PassportUserAccountDAO;
 import com.open.lcp.common.util.HttpUtil;
 import com.open.lcp.core.base.LcpResource;
 import com.open.lcp.core.base.info.BaseUserAccountInfo;
 import com.open.lcp.core.framework.IdWorker;
+import com.open.lcp.core.framework.api.ApiException;
 import com.open.lcp.core.framework.consts.LcpConstants;
 import com.open.lcp.dbs.cache.CacheX;
 import com.open.lcp.dbs.cache.redis.RedisX;
@@ -60,6 +63,13 @@ public class CommentServiceImpl implements CommentService {
 	// Executors.newCachedThreadPool();
 	@Resource
 	private HBaseCommentDAO commentDao;
+
+	@Resource
+	private HBaseCommentNoPassCommentDao hbaseCommentNoPassCommentDao;
+
+	@Resource
+	private HBaseCommentReviewDAO hbaseCommentReviewDao;
+
 	// @Resource
 	// private CommentConfigDAO commentMySqlDao;
 	@Resource
@@ -117,7 +127,7 @@ public class CommentServiceImpl implements CommentService {
 			String recommendPlatform, String downLoadSpeed, boolean isAnonymous, String bandwidth,
 			String extParamsJson) {
 		long userId = user.getUserId();
-		//验证是否被禁言，是否是评论重入
+		// 验证是否被禁言，是否是评论重入
 		CommentAddResp commentAddResp = this.validateBeforeAddComment(userId, triggerId, comment);
 		if (commentAddResp != null) {
 			return commentAddResp;
@@ -189,46 +199,128 @@ public class CommentServiceImpl implements CommentService {
 			commentColumn.setCheckTime(time);
 			commentColumns.add(commentColumn);
 			try {
-				if (commentDao.addCheckNoPassComments(typeId, commentColumns)) {
+				if (hbaseCommentNoPassCommentDao.addCheckNoPassComments(typeId, commentColumns)) {
 					return commentAddResp(0, newCommentId, true);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
-				throw new ApiException(4006, "addCheckNoPassComment error");
+				logger.error(e.getMessage(), e);
+				throw new ApiException(CommentErrorCode.COMMENT_CODE_ADD_CHECK_NO_PASS_COMMENT_ERROR.code());
 			}
 		} else {
 			commentColumn.setChecker("SW");
 			commentColumn.setCheckTime(time);
 			commentColumns.add(commentColumn);
 			try {
-				if (commentDao.addReviewComments(typeId, commentColumns)) {
-					// TODO 紧急上线临时取消kafka环节
-					// kafkaExecutor.execute(new Runnable() {
-					// @Override
-					// public void run() {
-					// try {
-					// logger.info("start send comment to kafka {}",
-					// idColumn.getCid());
-					// sendKafkaToAudit(CommentAuditStatusEnum.TOPASS, typeId,
-					// idColumn, userColumn, contentColumn.getContent());
-					// logger.info("success send comment to kafka {}",
-					// idColumn.getCid());
-					// } catch (Exception e) {
-					// logger.warn("error send comment to kafka {}",
-					// idColumn.getCid(), e);
-					// }
-					// }
-					// });
+				if (hbaseCommentReviewDao.addReviewComments(typeId, commentColumns)) {
 					addReviewCommentCache(idColumn, contentColumn, userColumn, extColumn);
 					return commentAddResp(0, newCommentId, true);
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new ApiException(4005, "addReviewComment error");
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				throw new ApiException(CommentErrorCode.COMMENT_CODE_ADD_REVIEW_COMMENT_ERROR.code());
 			}
 		}
 		return commentAddResp(4009, null, false);
 	}
+
+	@Override
+	public boolean del(int appId, int typeId, String tid, Long cid, long userId) {
+
+		CommentConfig commentConf = appCommentConfigService.getCommentConf(appId);
+		int appCommentId = commentConf.getAppCommentId();
+
+		// 待审核评论删除
+		if (delReviewComment(appCommentId, typeId, tid, cid, userId)) {
+			return true;
+		}
+		// 审核通过评论删除
+		CommentColumn commentColumn = commentDao.getComment(appCommentId, typeId, tid, cid);
+		if (commentColumn == null) {
+			return false;
+		}
+		IdColumn idColumn = gson.fromJson(commentColumn.getIdColumnValue(), IdColumn.class);
+		if (logger.isDebugEnabled()) {
+			if (idColumn != null) {
+				logger.debug("comment del idColumn {}", idColumn);
+			} else {
+				logger.debug("comment del commentColumn {}", commentColumn.getIdColumnValue());
+			}
+		}
+		UserColumn userColumn = gson.fromJson(commentColumn.getUserColumnValue(), UserColumn.class);
+		if (userColumn.getUid() == userId) {
+			ExtColumn extColumn = gson.fromJson(commentColumn.getExtColumnValue(), ExtColumn.class);
+			if (commentDao.del(appCommentId, typeId, tid, cid) && commentDao.delCheckPassComments(typeId, cid)
+					&& commentDao.delUserComment(userId, cid)) {
+				List<Long> replyerCids = extColumn.getReplyerCids();
+				if (replyerCids != null && replyerCids.size() > 0) {
+					for (Long replyerCid : replyerCids) {
+						CommentColumn replyCommentColumn = commentDao.getComment(appCommentId, typeId, tid, replyerCid);
+						if (replyCommentColumn != null) {
+							ContentColumn contentColumn = gson.fromJson(replyCommentColumn.getCommentColumnValue(),
+									ContentColumn.class);
+							List<CommentReplyResp> replys = contentColumn.getReply();
+							if (replys != null && replys.size() > 0) {
+								replys.get(0).setContent("该评论已删除!");
+								replys.get(0).setCid(-1L);
+								commentDao.delReplyComment(appCommentId, typeId, tid, replyerCid,
+										gson.toJson(contentColumn));
+							}
+						}
+					}
+				}
+				if (idColumn != null && idColumn.getTypeId() == 1) {
+					String sourceId = idColumn.getSourceId();
+					if (StringUtils.isNotBlank(sourceId) && NumberUtils.isDigits(sourceId)) {
+						cacheX.del(String.format(COMMENT_COUNT, tid));
+					}
+				}
+				if (delCache(appCommentId, typeId, tid, cid, extColumn.getReplyerCids())) {
+					if (typeId == 1 && idColumn != null && idColumn.getTypeId() == 1) {
+						String sourceId = idColumn.getSourceId();
+						if (NumberUtils.isDigits(sourceId)) {
+							long videoId = Long.parseLong(sourceId);
+							fileService.updateCommentNum(videoId, this.commentCount(tid, videoId));
+						}
+					} else if (typeId == 4) {
+						// 对下载资源的删除处理，更新排名，处理一个资源下同一用户的多个评论速度不同的情况
+						delCommentSpeedCache(userId, tid);
+					}
+				}
+			}
+		} else {
+			throw new ApiException(1, "cant del others comment");
+		}
+		return false;
+	}
+
+	// private boolean delCache(int resourceAppId, int typeId, String tid, long
+	// cid, List<Long> replyerCids) {
+	// String hKey = getCommentHKey(resourceAppId, typeId, tid);
+	// ssdbx.hdel(hKey, cid);
+	// ssdbx.zdel(getCommentIdZKey(resourceAppId, typeId, tid, "new"), cid);
+	// redisService.del(String.format(COMMENT_COUNT, tid));
+	// delPageCache(tid);
+	// ssdbx.zdel(getCommentIdZKey(resourceAppId, typeId, tid, "hot"), cid);
+	// // 多层盖楼评论删除待开发
+	// if (replyerCids != null && replyerCids.size() > 0) {
+	// Long[] ids = new Long[replyerCids.size()];
+	// replyerCids.toArray(ids);
+	// Map<Long, CommentResp> comments = ssdbx.hmget(hKey, ids, Long.class,
+	// CommentResp.class);
+	// if (comments == null || comments.size() < 1) {
+	// return true;
+	// }
+	// for (Entry<Long, CommentResp> e : comments.entrySet()) {
+	// List<CommentReplyResp> cmReplys = e.getValue().getReplys();
+	// if (cmReplys != null && cmReplys.size() > 0) {
+	// cmReplys.get(0).setContent("该评论已删除!");
+	// cmReplys.get(0).setCid(-1L);
+	// ssdbx.hset(hKey, e.getKey(), e.getValue());
+	// }
+	// }
+	// }
+	// return true;
+	// }
 
 	// private void sendKafkaToAudit(String auditUserNmae,
 	// CommentAuditStatusEnum commentAuditStatusEnum,
@@ -338,24 +430,27 @@ public class CommentServiceImpl implements CommentService {
 	 */
 	private String buildCommentTyle(long newCommentId, int appId, long userId, boolean isReply,
 			String recommendPlatform, long replyCommentUid, String sourceId) {
-		String commentType;
-		String userType = accountInfoApi.getUserType(userId);
-		String replyType = "other";
-		String isAuthor = "other";
-		if (isReply && userId == replyCommentUid) {
-			replyType = "self";
-		}
-		if (NumberUtils.isDigits(sourceId)) {
-			HotVideoDTO hotVideoDTO = fileService.queryAllState(Long.parseLong(sourceId));
-			if (hotVideoDTO != null && userId == hotVideoDTO.getUserId()) {
-				isAuthor = "author";
-			}
-		}
-		logger.debug(
-				"commentType:newCommentId" + newCommentId + "userId:" + userId + " replyCommentUid:" + replyCommentUid);
-		commentType = userType + "-" + (appId == 12 ? "pq" : isReply ? "hf" : "pl") + "-" + recommendPlatform + "-"
-				+ replyType + "-" + isAuthor;
-		return commentType;
+		// String commentType;
+		// String userType = accountInfoApi.getUserType(userId);
+		// String replyType = "other";
+		// String isAuthor = "other";
+		// if (isReply && userId == replyCommentUid) {
+		// replyType = "self";
+		// }
+		// if (NumberUtils.isDigits(sourceId)) {
+		// HotVideoDTO hotVideoDTO =
+		// fileService.queryAllState(Long.parseLong(sourceId));
+		// if (hotVideoDTO != null && userId == hotVideoDTO.getUserId()) {
+		// isAuthor = "author";
+		// }
+		// }
+		// logger.debug(
+		// "commentType:newCommentId" + newCommentId + "userId:" + userId + "
+		// replyCommentUid:" + replyCommentUid);
+		// commentType = userType + "-" + (appId == 12 ? "pq" : isReply ? "hf" :
+		// "pl") + "-" + recommendPlatform + "-"
+		// + replyType + "-" + isAuthor;
+		return "default";
 	}
 
 	private CommentAddResp commentAddResp(int result, Long cid, boolean isSucess) {
@@ -428,131 +523,22 @@ public class CommentServiceImpl implements CommentService {
 	// redisService.del(String.format(COMMENT_TID_USER_Z, tid, userId));
 	// }
 	//
-	// @Override
-	// public boolean del(int appId, int typeId, String tid, Long cid, long
-	// userId) throws IOException {
-	//
-	// CommentConfig commentConf =
-	// appCommentConfigService.getCommentConf(appId);
-	// int appCommentId = commentConf.getAppCommentId();
-	//
-	// // 待审核评论删除
-	// if (delReviewComment(appCommentId, typeId, tid, cid, userId)) {
-	// return true;
-	// }
-	// // 审核通过评论删除
-	// CommentColumn commentColumn = commentDao.getComment(appCommentId, typeId,
-	// tid, cid);
-	// if (commentColumn == null) {
-	// return false;
-	// }
-	// IdColumn idColumn = gson.fromJson(commentColumn.getIdColumnValue(),
-	// IdColumn.class);
-	// if (logger.isDebugEnabled()) {
-	// if (idColumn != null) {
-	// logger.debug("comment del idColumn {}", idColumn);
-	// } else {
-	// logger.debug("comment del commentColumn {}",
-	// commentColumn.getIdColumnValue());
-	// }
-	// }
-	// UserColumn userColumn = gson.fromJson(commentColumn.getUserColumnValue(),
-	// UserColumn.class);
-	// if (userColumn.getUid() == userId) {
-	// ExtColumn extColumn = gson.fromJson(commentColumn.getExtColumnValue(),
-	// ExtColumn.class);
-	// if (commentDao.del(appCommentId, typeId, tid, cid) &&
-	// commentDao.delCheckPassComments(typeId, cid)
-	// && commentDao.delUserComment(userId, cid)) {
-	// List<Long> replyerCids = extColumn.getReplyerCids();
-	// if (replyerCids != null && replyerCids.size() > 0) {
-	// for (Long replyerCid : replyerCids) {
-	// CommentColumn replyCommentColumn = commentDao.getComment(appCommentId,
-	// typeId, tid, replyerCid);
-	// if (replyCommentColumn != null) {
-	// ContentColumn contentColumn =
-	// gson.fromJson(replyCommentColumn.getCommentColumnValue(),
-	// ContentColumn.class);
-	// List<CommentReplyResp> replys = contentColumn.getReply();
-	// if (replys != null && replys.size() > 0) {
-	// replys.get(0).setContent("该评论已删除!");
-	// replys.get(0).setCid(-1L);
-	// commentDao.delReplyComment(appCommentId, typeId, tid, replyerCid,
-	// gson.toJson(contentColumn));
-	// }
-	// }
-	// }
-	// }
-	// if (idColumn != null && idColumn.getTypeId() == 1) {
-	// String sourceId = idColumn.getSourceId();
-	// if (StringUtils.isNotBlank(sourceId) && NumberUtils.isDigits(sourceId)) {
-	// redisService.del(String.format(COMMENT_COUNT, tid));
-	// }
-	// }
-	// if (delCache(appCommentId, typeId, tid, cid, extColumn.getReplyerCids()))
-	// {
-	// if (typeId == 1 && idColumn != null && idColumn.getTypeId() == 1) {
-	// String sourceId = idColumn.getSourceId();
-	// if (NumberUtils.isDigits(sourceId)) {
-	// long videoId = Long.parseLong(sourceId);
-	// fileService.updateCommentNum(videoId, this.commentCount(tid, videoId));
-	// }
-	// } else if (typeId == 4) {
-	// // 对下载资源的删除处理，更新排名，处理一个资源下同一用户的多个评论速度不同的情况
-	// delCommentSpeedCache(userId, tid);
-	// }
-	// }
-	// }
-	// } else {
-	// throw new ApiException(1, "cant del others comment");
-	// }
-	// return false;
-	// }
-	//
-	// private boolean delCache(int resourceAppId, int typeId, String tid, long
-	// cid, List<Long> replyerCids) {
-	// String hKey = getCommentHKey(resourceAppId, typeId, tid);
-	// ssdbx.hdel(hKey, cid);
-	// ssdbx.zdel(getCommentIdZKey(resourceAppId, typeId, tid, "new"), cid);
-	// redisService.del(String.format(COMMENT_COUNT, tid));
-	// delPageCache(tid);
-	// ssdbx.zdel(getCommentIdZKey(resourceAppId, typeId, tid, "hot"), cid);
-	// // 多层盖楼评论删除待开发
-	// if (replyerCids != null && replyerCids.size() > 0) {
-	// Long[] ids = new Long[replyerCids.size()];
-	// replyerCids.toArray(ids);
-	// Map<Long, CommentResp> comments = ssdbx.hmget(hKey, ids, Long.class,
-	// CommentResp.class);
-	// if (comments == null || comments.size() < 1) {
-	// return true;
-	// }
-	// for (Entry<Long, CommentResp> e : comments.entrySet()) {
-	// List<CommentReplyResp> cmReplys = e.getValue().getReplys();
-	// if (cmReplys != null && cmReplys.size() > 0) {
-	// cmReplys.get(0).setContent("该评论已删除!");
-	// cmReplys.get(0).setCid(-1L);
-	// ssdbx.hset(hKey, e.getKey(), e.getValue());
-	// }
-	// }
-	// }
-	// return true;
-	// }
-	//
-	// private boolean delReviewComment(int resourceAppId, int typeId, String
-	// tid, Long cid, Long uid)
-	// throws IllegalArgumentException, IOException {
-	// String rKey = getCommentUserReviewKey(uid);
-	// long rCid = ssdbx.zget(rKey, cid);
-	// if (rCid > 0) {
-	// ssdbx.zdel(rKey, cid);
-	// redisService.del(rKey);
-	// String hKey = getCommentHKey(resourceAppId, typeId, tid);
-	// ssdbx.hdel(hKey, cid);
-	// commentDao.delReviewComments(typeId, cid);
-	// return true;
-	// }
-	// return false;
-	// }
+
+	private boolean delReviewComment(int resourceAppId, int typeId, String tid, Long cid, Long uid)
+			throws IllegalArgumentException, IOException {
+		String rKey = getCommentUserReviewKey(uid);
+		long rCid = cacheX.zget(rKey, cid);
+		if (rCid > 0) {
+			cacheX.zdel(rKey, cid);
+			cacheX.del(rKey);
+			String hKey = getCommentHKey(resourceAppId, typeId, tid);
+			cacheX.hdel(hKey, cid);
+			hbaseCommentReviewDao.delReviewComments(typeId, cid);
+			return true;
+		}
+		return false;
+	}
+
 	//
 	/**
 	 * 用户发的评论未经审核通过先存储在待审核列表，只显示在该用户资源的评论页里

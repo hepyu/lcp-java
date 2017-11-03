@@ -1,0 +1,9 @@
+1.comment
+                                                                                                                                                                                                      
+COLUMN FAMILIES DESCRIPTION                                                                                                                                                                                  
+{NAME => 'comment', DATA_BLOCK_ENCODING => 'NONE', BLOOMFILTER => 'ROW', REPLICATION_SCOPE => '0', VERSIONS => '1', COMPRESSION => 'NONE', MIN_VERSIONS => '0', TTL => 'FOREVER', KEEP_DELETED_CELLS => 'FALS
+E', BLOCKSIZE => '65536', IN_MEMORY => 'false', BLOCKCACHE => 'true'}                                                                                                                                        
+{NAME => 'title', DATA_BLOCK_ENCODING => 'NONE', BLOOMFILTER => 'ROW', REPLICATION_SCOPE => '0', VERSIONS => '1', COMPRESSION => 'NONE', MIN_VERSIONS => '0', TTL => 'FOREVER', KEEP_DELETED_CELLS => 'FALSE'
+, BLOCKSIZE => '65536', IN_MEMORY => 'false', BLOCKCACHE => 'true'}
+
+comment famliy fields:

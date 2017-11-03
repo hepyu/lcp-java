@@ -20,6 +20,12 @@ public class CommentErrorCode {
 	public static final CommentErrorCode COMMENT_CODE_COMMENT_NOT_CONFIGED = new CommentErrorCode(40003,
 			NZCodeHolder.get(40003).getMessage(), NZCodeHolder.get(40003).getCause());
 
+	public static final CommentErrorCode COMMENT_CODE_ADD_REVIEW_COMMENT_ERROR = new CommentErrorCode(40003,
+			NZCodeHolder.get(40005).getMessage(), NZCodeHolder.get(40005).getCause());
+
+	public static final CommentErrorCode COMMENT_CODE_ADD_CHECK_NO_PASS_COMMENT_ERROR = new CommentErrorCode(40003,
+			NZCodeHolder.get(40006).getMessage(), NZCodeHolder.get(40006).getCause());
+
 	public static final CommentErrorCode COMMENT_CODE_AUDIT_NOT_PASS = new CommentErrorCode(40010,
 			NZCodeHolder.get(40010).getMessage(), NZCodeHolder.get(40010).getCause());
 

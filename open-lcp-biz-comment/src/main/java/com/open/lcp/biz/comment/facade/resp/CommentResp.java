@@ -8,96 +8,96 @@ import com.open.lcp.core.base.annotation.LcpParamRequired;
 @LcpClassDesc("评论列表")
 public class CommentResp {
 
-    @LcpParamRequired(desc = "来源app")
-    private int appId;
-	
+	@LcpParamRequired(desc = "来源app")
+	private int appId;
+
 	@LcpParamRequired(desc = "评论id")
 	private long cid;
-	
+
 	@LcpParamRequired(desc = "评论内容")
 	private String comment;
-	
+
 	@LcpParamRequired(desc = "评论时间")
 	private long time;
-	
+
 	@LcpParamRequired(value = false, desc = "评论设备")
 	private String device;
-	
+
 	@LcpParamRequired(value = false, desc = "资源源id")
 	private String sourceId;
-	
+
 	@LcpParamRequired(value = false, desc = "所在省份")
 	private String po;
-	
+
 	@LcpParamRequired(value = false, desc = "所在城市")
 	private String ci;
-	
+
 	@LcpParamRequired(desc = "评论用户id")
 	private long uid;
-	
+
 	@LcpParamRequired(value = false, desc = "评论用户昵称")
 	private String userName;
-	
+
 	@LcpParamRequired(value = false, desc = "评论用户头像")
 	private String userImg;
-	
+
 	@LcpParamRequired(value = false, desc = "红2用户级别")
 	private int userType;
-	
+
 	@LcpParamRequired(value = false, desc = "红2用户级别")
 	private List<Integer> userTypes;
-	
+
 	@LcpParamRequired(value = false, desc = "用户类型文案")
-	private List<String> userTypeNames; 
-	
+	private List<String> userTypeNames;
+
 	@LcpParamRequired(value = false, desc = "是否待审核状态")
 	private Boolean isPdRiew;
-	
+
 	@LcpParamRequired(value = false, desc = "当前用户是否点过赞")
 	private Boolean isPraise;
-	
+
 	@LcpParamRequired(value = true, desc = "点赞数")
 	private long gcount;
-	
+
 	@LcpParamRequired(value = true, desc = "分享数")
 	private long scount;
-	
+
 	@LcpParamRequired(value = true, desc = "回复数")
 	private long rcount;
-	
+
 	@LcpParamRequired(value = false, desc = "回复评论列表")
 	private List<CommentReplyResp> replys;
 
-    @LcpParamRequired(value = false, desc = "评论类型")
-    private String commentType;
+	@LcpParamRequired(value = false, desc = "评论类型")
+	private String commentType;
 
-    @LcpParamRequired(value = false, desc = "下载速度")
-    private String downLoadSpeed;
+	@LcpParamRequired(value = false, desc = "下载速度")
+	private String downLoadSpeed;
 
-    @LcpParamRequired(value = false, desc = "是否匿名")
-    private Boolean isAnonymous;
+	@LcpParamRequired(value = false, desc = "是否匿名")
+	private Boolean isAnonymous;
 
-    @LcpParamRequired(value = false, desc = "带宽")
-    private String bandwidth;
+	@LcpParamRequired(value = false, desc = "带宽")
+	private String bandwidth;
 
-//    @LcpParamRequired(value = false, desc = "附加参数的json对象", struct = Required.Struct.JSON)
-//    private String extParamsJson;
-//
-//    @LcpParamRequired(value = false, desc = "被at的用户列表")
-//    private List<AtList> atList;
+	@LcpParamRequired(value = false, desc = "附加参数的json对象", struct = LcpParamRequired.Struct.JSON)
+	private String extParamsJson;
+	//
+	// @LcpParamRequired(value = false, desc = "被at的用户列表")
+	// private List<AtList> atList;
 
-    @LcpParamRequired(value = false, desc = "标识直播的礼物评论")
-    private int liveGift;
+	@LcpParamRequired(value = false, desc = "标识直播的礼物评论")
+	private int liveGift;
 
-    public int getAppId() {
-        return appId;
-    }
+	public int getAppId() {
+		return appId;
+	}
 
-    public void setAppId(int appId) {
-        this.appId = appId;
-    }
+	public void setAppId(int appId) {
+		this.appId = appId;
+	}
 
-    public long getCid() {
+	public long getCid() {
 		return cid;
 	}
 
@@ -241,45 +241,45 @@ public class CommentResp {
 		this.userTypes = userTypes;
 	}
 
-    public String getCommentType() {
-        return commentType;
-    }
+	public String getCommentType() {
+		return commentType;
+	}
 
-    public void setCommentType(String commentType) {
-        this.commentType = commentType;
-    }
+	public void setCommentType(String commentType) {
+		this.commentType = commentType;
+	}
 
-    public String getDownLoadSpeed() {
-        return downLoadSpeed;
-    }
+	public String getDownLoadSpeed() {
+		return downLoadSpeed;
+	}
 
-    public void setDownLoadSpeed(String downLoadSpeed) {
-        this.downLoadSpeed = downLoadSpeed;
-    }
+	public void setDownLoadSpeed(String downLoadSpeed) {
+		this.downLoadSpeed = downLoadSpeed;
+	}
 
-    public Boolean getAnonymous() {
-        return isAnonymous;
-    }
+	public Boolean getAnonymous() {
+		return isAnonymous;
+	}
 
-    public void setAnonymous(Boolean anonymous) {
-        isAnonymous = anonymous;
-    }
+	public void setAnonymous(Boolean anonymous) {
+		isAnonymous = anonymous;
+	}
 
-    public String getBandwidth() {
-        return bandwidth;
-    }
+	public String getBandwidth() {
+		return bandwidth;
+	}
 
-    public void setBandwidth(String bandwidth) {
-        this.bandwidth = bandwidth;
-    }
+	public void setBandwidth(String bandwidth) {
+		this.bandwidth = bandwidth;
+	}
 
-    public String getExtParamsJson() {
-        return extParamsJson;
-    }
+	public String getExtParamsJson() {
+		return extParamsJson;
+	}
 
-    public void setExtParamsJson(String extParamsJson) {
-        this.extParamsJson = extParamsJson;
-    }
+	public void setExtParamsJson(String extParamsJson) {
+		this.extParamsJson = extParamsJson;
+	}
 
 	public List<String> getUserTypeNames() {
 		return userTypeNames;
@@ -289,19 +289,19 @@ public class CommentResp {
 		this.userTypeNames = userTypeNames;
 	}
 
-//    public List<AtList> getAtList() {
-//        return atList;
-//    }
-//
-//    public void setAtList(List<AtList> atList) {
-//        this.atList = atList;
-//    }
+	// public List<AtList> getAtList() {
+	// return atList;
+	// }
+	//
+	// public void setAtList(List<AtList> atList) {
+	// this.atList = atList;
+	// }
 
-    public int getLiveGift() {
-        return liveGift;
-    }
+	public int getLiveGift() {
+		return liveGift;
+	}
 
-    public void setLiveGift(int liveGift) {
-        this.liveGift = liveGift;
-    }
+	public void setLiveGift(int liveGift) {
+		this.liveGift = liveGift;
+	}
 }

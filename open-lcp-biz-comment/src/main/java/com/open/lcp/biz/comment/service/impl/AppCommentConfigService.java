@@ -9,8 +9,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 import com.open.lcp.biz.comment.CommentConstant;
 import com.open.lcp.biz.comment.CommentErrorCode;
-import com.open.lcp.biz.comment.service.dao.MysqlCommentConfigDAO;
-import com.open.lcp.biz.comment.service.dao.entity.CommentConfigEntity;
+import com.open.lcp.biz.comment.service.dao.db.MysqlCommentConfigDAO;
+import com.open.lcp.biz.comment.service.dao.db.entity.CommentConfigEntity;
 import com.open.lcp.core.framework.api.ApiException;
 import com.open.lcp.core.framework.loader.TimerLoader;
 

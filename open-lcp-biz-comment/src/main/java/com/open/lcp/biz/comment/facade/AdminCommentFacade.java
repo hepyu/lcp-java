@@ -22,14 +22,14 @@ public class AdminCommentFacade implements ApiFacade {
 	// return CommonResultResp.FAILED;
 	// }
 	//
-	@LcpHttpMethod(name = "admin.comment.set", ver = 1.0, desc = "配置应用评论参数", auths = { "hpy" })
-	public CommonResultResp setConf(CommentConfigReq req, CommandContext ctx) throws IOException {
-
-		if (commentService.setConf(ctx.getMcpAppInfo().getAppId(), req)) {
-			return CommonResultResp.SUCCESS;
-		}
-		return CommonResultResp.FAILED;
-	}
+//	@LcpHttpMethod(name = "admin.comment.set", ver = 1.0, desc = "配置应用评论参数", auths = { "hpy" })
+//	public CommonResultResp setConf(CommentConfigReq req, CommandContext ctx) throws IOException {
+//
+//		if (commentService.setConf(ctx.getMcpAppInfo().getAppId(), req)) {
+//			return CommonResultResp.SUCCESS;
+//		}
+//		return CommonResultResp.FAILED;
+//	}
 	//
 	// @McpMethod(name = "admin.comment.get", ver = DEFAULT_VERSION, desc =
 	// "查询评论详情", auths = { DEFAULT_AUTHOR })

@@ -5,9 +5,12 @@ import com.open.lcp.core.base.info.BaseUserAccountInfo;
 
 public interface CommentService {
 
-	CommentAddResp addComment(int appId, int typeId, String tid, Long cid, String ip, String device, String comment,
-			BaseUserAccountInfo user, String sourceId, String triggerId, String clientPort, String recommendPlatform,
-			String downLoadSpeed, boolean isAnonymous, String bandwidth, String extParamsJson);
+	public CommentAddResp addComment(int appId, int typeId, String tid, Long cid, String ip, String device,
+			String comment, BaseUserAccountInfo user, String sourceId, String triggerId, String clientPort,
+			String recommendPlatform, String downLoadSpeed, boolean isAnonymous, String bandwidth,
+			String extParamsJson);
+
+	public boolean del(int appId, int typeId, String tid, Long commentId, long userId);
 
 	// int getRcount(int appId, int typeId, String tid);
 	//
@@ -36,9 +39,7 @@ public interface CommentService {
 	// void addPraiserLog(UserInfo userInfo, String deviceId, String tid, long
 	// cid, int appId);
 	//
-	// boolean del(int appId, int typeId, String tid, Long commentId, long
-	// userId)
-	// throws IOException;
+
 	//
 	// CommentUserListResp listUserComments(long uid, boolean islogin, long
 	// lastId, int len)
