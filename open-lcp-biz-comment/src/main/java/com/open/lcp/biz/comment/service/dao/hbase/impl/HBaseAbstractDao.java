@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -57,6 +58,16 @@ public abstract class HBaseAbstractDao {
 			puts.add(put);
 		}
 		table.put(puts);
+		return true;
+	}
+
+	protected boolean delCheckComments(Table table, long... ids) throws IOException {
+		List<Delete> dels = new ArrayList<>(ids.length);
+		for (long id : ids) {
+			Delete del = new Delete(Bytes.toBytes(id));
+			dels.add(del);
+		}
+		table.delete(dels);
 		return true;
 	}
 }

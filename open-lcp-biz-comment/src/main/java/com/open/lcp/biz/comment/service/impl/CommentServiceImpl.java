@@ -5,6 +5,7 @@ import com.open.lcp.biz.comment.CheckStatus;
 import com.open.lcp.biz.comment.CommentConfiguration;
 import com.open.lcp.biz.comment.CommentConstant;
 import com.open.lcp.biz.comment.CommentErrorCode;
+import com.open.lcp.biz.comment.config.AppCommentConfig;
 import com.open.lcp.biz.comment.dto.CommentDTO;
 import com.open.lcp.biz.comment.facade.resp.CommentAddResp;
 import com.open.lcp.biz.comment.facade.resp.CommentReplyResp;
@@ -15,6 +16,7 @@ import com.open.lcp.biz.comment.service.dao.db.entity.CommentConfigEntity;
 import com.open.lcp.biz.comment.service.dao.db.entity.CommentLocation;
 import com.open.lcp.biz.comment.service.dao.hbase.HBaseCommentDAO;
 import com.open.lcp.biz.comment.service.dao.hbase.HBaseCommentNoPassCommentDao;
+import com.open.lcp.biz.comment.service.dao.hbase.HBaseCommentPassCommentDAO;
 import com.open.lcp.biz.comment.service.dao.hbase.HBaseCommentReviewDAO;
 import com.open.lcp.biz.comment.service.dao.hbase.impl.column.CommentCheckColumn;
 import com.open.lcp.biz.comment.service.dao.hbase.impl.column.CommentColumn;
@@ -68,6 +70,9 @@ public class CommentServiceImpl implements CommentService {
 	private HBaseCommentNoPassCommentDao hbaseCommentNoPassCommentDao;
 
 	@Resource
+	private HBaseCommentPassCommentDAO hbaseCommentPassCommentDAO;
+
+	@Resource
 	private HBaseCommentReviewDAO hbaseCommentReviewDao;
 
 	// @Resource
@@ -75,7 +80,7 @@ public class CommentServiceImpl implements CommentService {
 	@Resource
 	private IdWorker idWorker;
 	@Resource
-	private AppCommentConfigService appCommentConfigService;
+	private AppCommentConfig appCommentConfig;
 	// @Resource(name = SSDB_COMMENT_OLD)
 	// private SSDBX ssdbx;
 	@Resource(name = CommentConfiguration.BEAN_NAME_COMMENT_DISTRIBUTED_CACHE)
@@ -132,7 +137,7 @@ public class CommentServiceImpl implements CommentService {
 		if (commentAddResp != null) {
 			return commentAddResp;
 		}
-		CommentConfigEntity commentConf = appCommentConfigService.getCommentConf(appId);
+		CommentConfigEntity commentConf = appCommentConfig.getCommentConf(appId);
 		int appCommentId = commentConf.getAppCommentId();
 
 		// 评论id生成规则为从高到低递减,即最新的id最小
@@ -226,7 +231,7 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public boolean del(int appId, int typeId, String tid, Long cid, long userId) {
 
-		CommentConfig commentConf = appCommentConfigService.getCommentConf(appId);
+		CommentConfigEntity commentConf = appCommentConfig.getCommentConf(appId);
 		int appCommentId = commentConf.getAppCommentId();
 
 		// 待审核评论删除
@@ -249,7 +254,8 @@ public class CommentServiceImpl implements CommentService {
 		UserColumn userColumn = gson.fromJson(commentColumn.getUserColumnValue(), UserColumn.class);
 		if (userColumn.getUid() == userId) {
 			ExtColumn extColumn = gson.fromJson(commentColumn.getExtColumnValue(), ExtColumn.class);
-			if (commentDao.del(appCommentId, typeId, tid, cid) && commentDao.delCheckPassComments(typeId, cid)
+			if (commentDao.del(appCommentId, typeId, tid, cid)
+					&& hbaseCommentPassCommentDAO.delCheckPassComments(typeId, cid)
 					&& commentDao.delUserComment(userId, cid)) {
 				List<Long> replyerCids = extColumn.getReplyerCids();
 				if (replyerCids != null && replyerCids.size() > 0) {

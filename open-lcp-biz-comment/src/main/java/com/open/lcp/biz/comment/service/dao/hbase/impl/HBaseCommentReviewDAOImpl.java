@@ -47,14 +47,4 @@ public class HBaseCommentReviewDAOImpl extends HBaseAbstractDao implements HBase
 		}
 	}
 
-	private boolean delCheckComments(Table table, long... ids) throws IOException {
-		List<Delete> dels = new ArrayList<Delete>(ids.length);
-		for (long id : ids) {
-			Delete del = new Delete(Bytes.toBytes(id));
-			dels.add(del);
-		}
-		table.delete(dels);
-		return true;
-	}
-
 }

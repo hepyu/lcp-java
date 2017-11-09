@@ -1,4 +1,4 @@
-package com.open.lcp.biz.comment.service.impl;
+package com.open.lcp.biz.comment.config;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +18,9 @@ import com.open.lcp.core.framework.loader.TimerLoader;
  * 5min更新评论共享配置
  */
 @Component
-public class AppCommentConfigService implements TimerLoader {
+public class AppCommentConfig implements TimerLoader {
 
-	private static final Log logger = LogFactory.getLog(AppCommentConfigService.class);
+	private static final Log logger = LogFactory.getLog(AppCommentConfig.class);
 
 	private Map<Integer, CommentConfigEntity> appCommentConf;
 
@@ -53,7 +53,7 @@ public class AppCommentConfigService implements TimerLoader {
 		return CommentConstant.ERROR;
 	}
 
-	CommentConfigEntity getCommentConf(int appId) {
+	public CommentConfigEntity getCommentConf(int appId) {
 		final Map<Integer, CommentConfigEntity> appCommentConfFinal = this.appCommentConf;
 		if (appCommentConfFinal == null || appCommentConfFinal.size() == 0 || appCommentConfFinal.get(appId) == null) {
 			throw new ApiException(CommentErrorCode.COMMENT_CODE_COMMENT_NOT_CONFIGED.code(),

@@ -9,4 +9,6 @@ public interface HBaseCommentNoPassCommentDao {
 
 	public boolean addCheckNoPassComments(int typeId, List<CommentCheckColumn> CommentColumns) throws IOException;
 
+	public boolean delCheckNoPassComments(int typeId, long... ids) throws IllegalArgumentException, IOException;
+
 }

@@ -300,39 +300,31 @@ public class HBaseCommentDaoImpl extends HBaseAbstractDao implements HBaseCommen
 
 	//
 
-	//
-	// @Override
-	// public boolean del(int appId, int typeId, String tid, long cid) throws
-	// IOException {
-	//
-	// byte[] rowId = parseCommentRowId(appId, typeId, tid);
-	// try (Table table = connection.getTable(TableName.valueOf(TABLE_COMMENT)))
-	// {
-	// byte[] family = TABLE_COMMENT_COMMENT;
-	// byte[] cidBytes = Bytes.toBytes(cid);
-	// byte[] commentColumnBytes = BytesUtil.spliceBytes(cidBytes,
-	// (Bytes.toBytes("comment")));
-	// byte[] userColumnBytes = BytesUtil.spliceBytes(cidBytes,
-	// (Bytes.toBytes("user")));
-	// byte[] extColumnBytes = BytesUtil.spliceBytes(cidBytes,
-	// (Bytes.toBytes("ext")));
-	// byte[] countColumnBytes = BytesUtil.spliceBytes(cidBytes,
-	// (Bytes.toBytes("count")));
-	// Delete del = new Delete(rowId);
-	// del.addColumns(family, cidBytes);
-	// del.addColumns(family, commentColumnBytes);
-	// del.addColumns(family, userColumnBytes);
-	// del.addColumns(family, extColumnBytes);
-	// del.addColumns(family, countColumnBytes);
-	// table.delete(del);
-	// table.incrementColumnValue(rowId, TABLE_COMMENT_TITLE,
-	// Bytes.toBytes("rcount"), -1);
-	// return true;
-	// } catch (Exception e) {
-	// logger.error("setConf", e);
-	// throw new RuntimeException(e.getMessage());
-	// }
-	// }
+	@Override
+	public boolean del(int appId, int typeId, String tid, long cid) throws IOException {
+
+		byte[] rowId = parseCommentRowId(appId, typeId, tid);
+		try (Table table = connection.getTable(TableName.valueOf(TABLE_COMMENT))) {
+			byte[] family = FAMILY_COMMENT;
+			byte[] cidBytes = Bytes.toBytes(cid);
+			byte[] commentColumnBytes = BytesUtil.spliceBytes(cidBytes, (Bytes.toBytes("comment")));
+			byte[] userColumnBytes = BytesUtil.spliceBytes(cidBytes, (Bytes.toBytes("user")));
+			byte[] extColumnBytes = BytesUtil.spliceBytes(cidBytes, (Bytes.toBytes("ext")));
+			byte[] countColumnBytes = BytesUtil.spliceBytes(cidBytes, (Bytes.toBytes("count")));
+			Delete del = new Delete(rowId);
+			del.addColumns(family, cidBytes);
+			del.addColumns(family, commentColumnBytes);
+			del.addColumns(family, userColumnBytes);
+			del.addColumns(family, extColumnBytes);
+			del.addColumns(family, countColumnBytes);
+			table.delete(del);
+			table.incrementColumnValue(rowId, FAMILY_TITLE, Bytes.toBytes("rcount"), -1);
+			return true;
+		} catch (Exception e) {
+			logger.error("setConf", e);
+			throw new RuntimeException(e.getMessage());
+		}
+	}
 	//
 	// @Override
 	// public boolean addPraiser(long cid, Long rid, long uid, String userValue)
@@ -514,19 +506,7 @@ public class HBaseCommentDaoImpl extends HBaseAbstractDao implements HBaseCommen
 	// }
 	// }
 	//
-	// @Override
-	// public boolean delCheckPassComments(int typeId, long... ids) throws
-	// IllegalArgumentException, IOException {
-	// try (Table table = connection
-	// .getTable(TableName.valueOf(typeId == 1 ? TABLE_COMMENT_PASS :
-	// TABLE_COMMENT_PASS_RESOURCE))) {
-	// return delCheckComments(table, ids);
-	// } catch (Exception e) {
-	// logger.error("delCheckPassComments", e);
-	// throw new RuntimeException(e.getMessage());
-	// }
-	//
-	// }
+
 	//
 	// @Override
 	// public boolean delCheckNoPassComments(int typeId, long... ids) throws

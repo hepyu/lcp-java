@@ -1,11 +1,9 @@
 package com.open.lcp.biz.comment.service.dao.hbase;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.hadoop.hbase.util.Bytes;
 
-import com.open.lcp.biz.comment.service.dao.hbase.impl.column.CommentCheckColumn;
 import com.open.lcp.biz.comment.service.dao.hbase.impl.column.CommentColumn;
 
 public interface HBaseCommentDAO {
@@ -26,6 +24,8 @@ public interface HBaseCommentDAO {
 			String userValue, String countValue, String extValue) throws IOException;
 
 	public CommentColumn getComment(int appId, int typeId, String tid, long cid);
+
+	boolean del(int appId, int typeId, String tid, long cid) throws IOException;
 
 	// void addUserComment(long uid, long cid, String userCommentValue)
 	// throws IllegalArgumentException, IOException;
@@ -100,8 +100,7 @@ public interface HBaseCommentDAO {
 	// boolean delAIPassComments(int typeId, long... ids)
 	// throws IllegalArgumentException, IOException;
 	//
-	// boolean delCheckPassComments(int typeId, long... ids)
-	// throws IllegalArgumentException, IOException;
+
 	//
 	// boolean delCheckNoPassComments(int typeId, long... ids)
 	// throws IllegalArgumentException, IOException;
@@ -111,8 +110,6 @@ public interface HBaseCommentDAO {
 	// boolean countComment(int appId, int typeId, String tid, long cid,
 	// String countColumnValue) throws IOException;
 	//
-	// boolean del(int appId, int typeId, String tid, long cid)
-	// throws IOException;
 	//
 	// boolean addPraiser(long cid, Long rid, long uid, String userValue)
 	// throws IllegalArgumentException, IOException;
