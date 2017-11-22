@@ -1,0 +1,14 @@
+
+http.log
+2017-11-22 12:33:32,928 - 1511325212928|/api/syncAppDir/black/get?v=1.0&appId=3&appVersion=1.9.6&gz=1&opVer=35448627285197824&callId=1511325213574&deviceId=ad9894126b7d2efad59dce193aa0940310&sig=abfae689242b0933b0b4ba8ef2804a0a|0|POST||123.59.127.95|syncAppDir.black.get|0|0
+
+http_slow.log
+2017-11-22 00:00:01,737 - 1511280001737|/api/ranking/list?lo=CN&model=MI+5X&appId=6&mac=5161c037f499fb4fa539789532c3fb76&miuiBigVersionName=V9&tagId=1.36.c.1&version=1.0&height=0&appInfoLevel=1&page=0&currentPackageName=&sdk=25&cpuArchitecture=arm64-v8a%2Carmeabi-v7a%2Carmeabi&deviceId=4010e62d7d56729c4baeebcf60851bfe10&buildVersion=stable&os=V9.0.3.0.NDBCNEI&marketVersion=1914312&width=0&imei=aeb0fc3a743e48c8e02f03ec95c8f771&connectionType=4G&callId=1511280000795&clientId=5161c037f499fb4fa539789532c3fb76&v=1.1&co=CN&la=zh&sig=48a547aa2fb721d3904eff97617acb8c|0|POST||36.60.36.5|ranking.list|1051|0
+
+http_nz.log
+2017-11-22 00:00:00,012 - 1511280000012|/api/file/followList?pageName=follow&appId=23&orderBy=desc&gz=1&recType=shortVideo&behavior=refresh&mainName=XLWXguangwang&pageSize=1&pid=19&callId=1511280000&ext_loadType=refresh&xluid=678133942&v=1.2&category=followFeed&xlt=40%3A&timeTick=1511280000&deviceId=a47b1932be165d16ac7e3b9147024925&sig=cb7a0f0d4307882a0144546e88557942|0|POST|python-requests/2.12.4|10.33.7.51|file.followList|3|7
+
+stat.log
+2017-11-22 13:00:00,000 - {"api":"user.getUserVipInfo","time":1511326800000,"req":{"xluid":"193352240","v":"1.0","appId":"14","loginUserId":"193352240","userIds":"223296551","xlt":"197C1BC8237C603E4555E98482BA31EC","callId":"1511326743","deviceId":"C0143DD9EDA01T5Q","sig":"37a21c4aa5c54ee54e07081e9b0693a1"},"resp":{"vipInfos":{"223296551":[{"xlUserId":223296551,"vasId":2,"isVIP":"0","vIPLevel":"0","vasType":"0","isYear":"0"},{"xlUserId":223296551,"vasId":14,"isVIP":"0","vIPLevel":"0","vasType":"0","isYear":"-1"}]}},"ext":{"userId":193352240,"userType":"Xunlei","clientIp":"222.211.208.170","clientPort":30517,"timeXLT":0,"blCode":"14","os":100,"timeReqNum":0,"timeBLK":1,"timeBefore":0,"timeFacade":0,"timeAfter":0,"timeExec":0,"timeAll":1,"timeSSDB":0,"ssdb":0,"timeRedis":0,"redis":2,"ua":"","rtncode":0}}
+
+单机日访问量79608225, 921/second, 6台机器，6000.
