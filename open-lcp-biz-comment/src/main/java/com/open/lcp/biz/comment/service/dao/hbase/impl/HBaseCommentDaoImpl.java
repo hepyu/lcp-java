@@ -869,21 +869,19 @@ public class HBaseCommentDaoImpl extends HBaseAbstractDao implements HBaseCommen
 	//
 	// }
 	//
-	// @Override
-	// public boolean delUserComment(long uid, long cid) throws
-	// IllegalArgumentException, IOException {
-	//
-	// try (Table table =
-	// connection.getTable(TableName.valueOf(TABLE_COMMENT_USERCOMMENTS))) {
-	// Delete del = new Delete(Bytes.toBytes(uid));
-	// del.addColumns(Bytes.toBytes("comment"), Bytes.toBytes(cid));
-	// table.delete(del);
-	// return true;
-	// } catch (Exception e) {
-	// logger.error("delUserComment", e);
-	// throw new RuntimeException(e.getMessage());
-	// }
-	// }
+//	@Override
+//	public boolean delUserComment(long uid, long cid) throws IllegalArgumentException, IOException {
+//
+//		try (Table table = connection.getTable(TableName.valueOf(TABLE_COMMENT_USERCOMMENTS))) {
+//			Delete del = new Delete(Bytes.toBytes(uid));
+//			del.addColumns(Bytes.toBytes("comment"), Bytes.toBytes(cid));
+//			table.delete(del);
+//			return true;
+//		} catch (Exception e) {
+//			logger.error("delUserComment", e);
+//			throw new RuntimeException(e.getMessage());
+//		}
+//	}
 	//
 	// @Override
 	// public List<String> listUserComment(long uid, long lastId, int len)

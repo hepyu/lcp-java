@@ -30,8 +30,8 @@ public interface HBaseCommentDAO {
 	// void addUserComment(long uid, long cid, String userCommentValue)
 	// throws IllegalArgumentException, IOException;
 	//
-	// boolean delUserComment(long uid, long cid)
-	// throws IllegalArgumentException, IOException;
+	// boolean delUserComment(long uid, long cid) throws
+	// IllegalArgumentException, IOException;
 	//
 	// List<String> listUserComment(long uid, long lastId, int len)
 	// throws IllegalArgumentException, IOException;

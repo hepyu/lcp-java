@@ -231,71 +231,71 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public boolean del(int appId, int typeId, String tid, Long cid, long userId) {
 
-		CommentConfigEntity commentConf = appCommentConfig.getCommentConf(appId);
-		int appCommentId = commentConf.getAppCommentId();
-
-		// 待审核评论删除
-		if (delReviewComment(appCommentId, typeId, tid, cid, userId)) {
-			return true;
-		}
-		// 审核通过评论删除
-		CommentColumn commentColumn = commentDao.getComment(appCommentId, typeId, tid, cid);
-		if (commentColumn == null) {
-			return false;
-		}
-		IdColumn idColumn = gson.fromJson(commentColumn.getIdColumnValue(), IdColumn.class);
-		if (logger.isDebugEnabled()) {
-			if (idColumn != null) {
-				logger.debug("comment del idColumn {}", idColumn);
-			} else {
-				logger.debug("comment del commentColumn {}", commentColumn.getIdColumnValue());
-			}
-		}
-		UserColumn userColumn = gson.fromJson(commentColumn.getUserColumnValue(), UserColumn.class);
-		if (userColumn.getUid() == userId) {
-			ExtColumn extColumn = gson.fromJson(commentColumn.getExtColumnValue(), ExtColumn.class);
-			if (commentDao.del(appCommentId, typeId, tid, cid)
-					&& hbaseCommentPassCommentDAO.delCheckPassComments(typeId, cid)
-					&& commentDao.delUserComment(userId, cid)) {
-				List<Long> replyerCids = extColumn.getReplyerCids();
-				if (replyerCids != null && replyerCids.size() > 0) {
-					for (Long replyerCid : replyerCids) {
-						CommentColumn replyCommentColumn = commentDao.getComment(appCommentId, typeId, tid, replyerCid);
-						if (replyCommentColumn != null) {
-							ContentColumn contentColumn = gson.fromJson(replyCommentColumn.getCommentColumnValue(),
-									ContentColumn.class);
-							List<CommentReplyResp> replys = contentColumn.getReply();
-							if (replys != null && replys.size() > 0) {
-								replys.get(0).setContent("该评论已删除!");
-								replys.get(0).setCid(-1L);
-								commentDao.delReplyComment(appCommentId, typeId, tid, replyerCid,
-										gson.toJson(contentColumn));
-							}
-						}
-					}
-				}
-				if (idColumn != null && idColumn.getTypeId() == 1) {
-					String sourceId = idColumn.getSourceId();
-					if (StringUtils.isNotBlank(sourceId) && NumberUtils.isDigits(sourceId)) {
-						cacheX.del(String.format(COMMENT_COUNT, tid));
-					}
-				}
-				if (delCache(appCommentId, typeId, tid, cid, extColumn.getReplyerCids())) {
-					if (typeId == 1 && idColumn != null && idColumn.getTypeId() == 1) {
-						String sourceId = idColumn.getSourceId();
-						if (NumberUtils.isDigits(sourceId)) {
-							long videoId = Long.parseLong(sourceId);
-							fileService.updateCommentNum(videoId, this.commentCount(tid, videoId));
-						}
-					} else if (typeId == 4) {
-						// 对下载资源的删除处理，更新排名，处理一个资源下同一用户的多个评论速度不同的情况
-						delCommentSpeedCache(userId, tid);
-					}
-				}
-			}
-		} else {
-			throw new ApiException(1, "cant del others comment");
-		}
+//		CommentConfigEntity commentConf = appCommentConfig.getCommentConf(appId);
+//		int appCommentId = commentConf.getAppCommentId();
+//
+//		// 待审核评论删除
+//		if (delReviewComment(appCommentId, typeId, tid, cid, userId)) {
+//			return true;
+//		}
+//		// 审核通过评论删除
+//		CommentColumn commentColumn = commentDao.getComment(appCommentId, typeId, tid, cid);
+//		if (commentColumn == null) {
+//			return false;
+//		}
+//		IdColumn idColumn = gson.fromJson(commentColumn.getIdColumnValue(), IdColumn.class);
+//		if (logger.isDebugEnabled()) {
+//			if (idColumn != null) {
+//				logger.debug("comment del idColumn {}", idColumn);
+//			} else {
+//				logger.debug("comment del commentColumn {}", commentColumn.getIdColumnValue());
+//			}
+//		}
+//		UserColumn userColumn = gson.fromJson(commentColumn.getUserColumnValue(), UserColumn.class);
+//		if (userColumn.getUid() == userId) {
+//			ExtColumn extColumn = gson.fromJson(commentColumn.getExtColumnValue(), ExtColumn.class);
+//			if (commentDao.del(appCommentId, typeId, tid, cid)
+//					&& hbaseCommentPassCommentDAO.delCheckPassComments(typeId, cid)
+//					&& commentDao.delUserComment(userId, cid)) {
+//				List<Long> replyerCids = extColumn.getReplyerCids();
+//				if (replyerCids != null && replyerCids.size() > 0) {
+//					for (Long replyerCid : replyerCids) {
+//						CommentColumn replyCommentColumn = commentDao.getComment(appCommentId, typeId, tid, replyerCid);
+//						if (replyCommentColumn != null) {
+//							ContentColumn contentColumn = gson.fromJson(replyCommentColumn.getCommentColumnValue(),
+//									ContentColumn.class);
+//							List<CommentReplyResp> replys = contentColumn.getReply();
+//							if (replys != null && replys.size() > 0) {
+//								replys.get(0).setContent("该评论已删除!");
+//								replys.get(0).setCid(-1L);
+//								commentDao.delReplyComment(appCommentId, typeId, tid, replyerCid,
+//										gson.toJson(contentColumn));
+//							}
+//						}
+//					}
+//				}
+//				if (idColumn != null && idColumn.getTypeId() == 1) {
+//					String sourceId = idColumn.getSourceId();
+//					if (StringUtils.isNotBlank(sourceId) && NumberUtils.isDigits(sourceId)) {
+//						cacheX.del(String.format(COMMENT_COUNT, tid));
+//					}
+//				}
+//				if (delCache(appCommentId, typeId, tid, cid, extColumn.getReplyerCids())) {
+//					if (typeId == 1 && idColumn != null && idColumn.getTypeId() == 1) {
+//						String sourceId = idColumn.getSourceId();
+//						if (NumberUtils.isDigits(sourceId)) {
+//							long videoId = Long.parseLong(sourceId);
+//							fileService.updateCommentNum(videoId, this.commentCount(tid, videoId));
+//						}
+//					} else if (typeId == 4) {
+//						// 对下载资源的删除处理，更新排名，处理一个资源下同一用户的多个评论速度不同的情况
+//						delCommentSpeedCache(userId, tid);
+//					}
+//				}
+//			}
+//		} else {
+//			throw new ApiException(1, "cant del others comment");
+//		}
 		return false;
 	}
 
