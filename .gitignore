@@ -2,8 +2,8 @@
 
 /.git
 /.settings
-.classpath
-.project
+#.classpath
+#.project
 *.log
 .pydevproject
 /bin/
