@@ -1,4 +1,4 @@
-package com.open.lcp.message.kafka;
+package com.open.lcp.queue.kafka;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +42,7 @@ public abstract class KafkaConsumerXImpl<K, V> implements KafkaConsumerX<K, V> {
 						+ ", message: " + record.value());
 				doMessage(record);
 			}
-			// 按分区读取数据
+			// 按分区读取数�?
 			// for (TopicPartition partition : records.partitions()) {
 			// List<ConsumerRecord<String, String>> partitionRecords =
 			// records.records(partition);

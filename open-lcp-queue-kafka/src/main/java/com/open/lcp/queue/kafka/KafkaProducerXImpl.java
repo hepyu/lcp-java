@@ -1,4 +1,4 @@
-package com.open.lcp.message.kafka;
+package com.open.lcp.queue.kafka;
 
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;

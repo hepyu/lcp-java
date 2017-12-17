@@ -1,4 +1,4 @@
-package com.open.lcp.message.kafka;
+package com.open.lcp.queue.kafka;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,7 +8,6 @@ import org.I0Itec.zkclient.exception.ZkMarshallingError;
 import org.I0Itec.zkclient.serialize.ZkSerializer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import com.google.gson.Gson;
 import com.open.lcp.core.env.finder.ZKFinder;
@@ -16,19 +15,18 @@ import com.open.lcp.core.register.mangocity.zk.ConfigChangeListener;
 import com.open.lcp.core.register.mangocity.zk.ConfigChangeSubscriber;
 import com.open.lcp.core.register.mangocity.zk.ZkConfigChangeSubscriberImpl;
 
-public class KafkaConsumerXFactory {
+public class KafkaProducerXFactory {
 
-	private static final Log logger = LogFactory.getLog(KafkaConsumerXFactory.class);
+	private static final Log logger = LogFactory.getLog(KafkaProducerXFactory.class);
 
-	private static final Map<String, KafkaConsumerXImpl<String, String>> kafkaxMap = new ConcurrentHashMap<String, KafkaConsumerXImpl<String, String>>();
+	private static final Map<String, KafkaProducerXImpl<String, String>> kafkaxMap = new ConcurrentHashMap<String, KafkaProducerXImpl<String, String>>();
 
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
-	static KafkaConsumerX<String, String> getKafkaConsumerX(final String instanceName,
-			final KafkaMessageExecutor<String, String> executor) {
+	public static KafkaProducerX<String, String> getKafkaProducerX(final String source) {
 
 //		final String ssdbZkRoot = ZKFinder.findSSDBZKRoot();
-//		KafkaConsumerXImpl<String, String> producer = kafkaxMap.get(instanceName);
+//		KafkaProducerXImpl<String, String> producer = kafkaxMap.get(source);
 //		if (producer == null) {
 //			synchronized (LOCK_OF_NEWPATH) {
 //				ZkClient zkClient = null;
@@ -47,26 +45,21 @@ public class KafkaConsumerXFactory {
 //					});
 //
 //					ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient, ssdbZkRoot);
-//					sub.subscribe(instanceName, new ConfigChangeListener() {
+//					sub.subscribe(source, new ConfigChangeListener() {
 //
 //						@Override
 //						public void configChanged(String key, String value) {
 //
-//							ZKKafkaConsumerConfig consumerConfig = loadKafkaConsumerConfig(value);
-//							kafkaxMap.get(instanceName).getKafkaConsumerHolder().setConsumerConfig(consumerConfig);
+//							ZKKafkaProducerConfig producerConfig = loadKafkaProducerConfig(value);
+//							kafkaxMap.get(source).getKafkaProducerHolder().setProducerConfig(producerConfig);
 //
 //						}
 //					});
 //					// String initValue = sub.getInitValue(source);
 //
 //					// {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
-//					ZKKafkaConsumerConfig consumerConfig = loadKafkaConsumerConfig(zkClient, ssdbZkRoot, instanceName);
-//					kafkaxMap.put(instanceName, new KafkaConsumerXImpl<String, String>(consumerConfig) {
-//						@Override
-//						public void doMessage(ConsumerRecord<String, String> consumerRecord) {
-//							executor.doMessage(consumerRecord);
-//						}
-//					});
+//					ZKKafkaProducerConfig producerConfig = loadKafkaConfig(zkClient, ssdbZkRoot, source);
+//					kafkaxMap.put(source, new KafkaProducerXImpl<String, String>(producerConfig));
 //				} catch (Exception e) {
 //					logger.error(e.getMessage(), e);
 //					System.exit(-1);
@@ -78,17 +71,17 @@ public class KafkaConsumerXFactory {
 //			}
 //		}
 
-		return kafkaxMap.get(instanceName);
+		return kafkaxMap.get(source);
 	}
 
-	private static ZKKafkaConsumerConfig loadKafkaConsumerConfig(ZkClient zkClient, String ssdbZkRoot, String key) {
+	private static ZKKafkaProducerConfig loadKafkaConfig(ZkClient zkClient, String ssdbZkRoot, String key) {
 		String kafkaStr = zkClient.readData(ssdbZkRoot + "/" + key);
-		return loadKafkaConsumerConfig(kafkaStr);
+		return loadKafkaProducerConfig(kafkaStr);
 	}
 
-	private static ZKKafkaConsumerConfig loadKafkaConsumerConfig(String jsonStr) {
+	private static ZKKafkaProducerConfig loadKafkaProducerConfig(String jsonStr) {
 		Gson gson = new Gson();
-		ZKKafkaConsumerConfig zkKafkaConfig = gson.fromJson(jsonStr, ZKKafkaConsumerConfig.class);
+		ZKKafkaProducerConfig zkKafkaConfig = gson.fromJson(jsonStr, ZKKafkaProducerConfig.class);
 		return zkKafkaConfig;
 	}
 

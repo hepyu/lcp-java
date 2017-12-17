@@ -1,4 +1,4 @@
-package com.open.lcp.message.kafka;
+package com.open.lcp.queue.kafka;
 
 public interface KafkaProducerX<K, V> {
 

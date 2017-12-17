@@ -1,4 +1,4 @@
-package com.open.lcp.message.kafka;
+package com.open.lcp.queue.kafka;
 
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
