@@ -1,9 +1,9 @@
 package com.open.lcp.core.api.service;
 
-import com.open.lcp.core.api.info.BaseUserAccountTicketInfo;
+import com.open.lcp.core.api.info.BasicUserAccountTicketInfo;
 
 public interface BaseUserAccountTicketService {
 
-	public BaseUserAccountTicketInfo validateTicket(String ticket);
+	public BasicUserAccountTicketInfo validateTicket(String ticket);
 
 }

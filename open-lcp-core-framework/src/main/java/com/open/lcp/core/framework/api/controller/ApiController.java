@@ -25,8 +25,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.open.lcp.core.common.enums.UserType;
 import com.open.lcp.core.api.facade.ApiResult;
 import com.open.lcp.core.api.facade.ApiResultCode;
-import com.open.lcp.core.api.info.BaseAppInfo;
-import com.open.lcp.core.api.info.BaseUserAccountTicketInfo;
+import com.open.lcp.core.api.info.BasicAppInfo;
+import com.open.lcp.core.api.info.BasicUserAccountTicketInfo;
 import com.open.lcp.core.api.service.BaseUserAccountInfoService;
 import com.open.lcp.core.api.service.BaseUserAccountTicketService;
 import com.open.lcp.core.framework.api.LcpThreadLocal;
@@ -321,7 +321,7 @@ public class ApiController {
 			RequestBaseContext requestBaseContext, ApiResult apiResult, final String methodName) throws Exception {
 		Map<String, String> requestParamMap = requestBaseContext.getRequestParamMap();
 		final int appId = NumberUtils.toInt(requestParamMap.get(HttpConstants.PARAM_APP_ID));
-		final BaseAppInfo appInfo = appInfoService.getAppInfo(appId);
+		final BasicAppInfo appInfo = appInfoService.getAppInfo(appId);
 		// 鎺ュ叆淇℃伅鏃犳晥
 		if (appInfo == null) {
 			apiResult.setCode(ApiResultCode.E_SYS_INVALID_APP_ID);
@@ -342,7 +342,7 @@ public class ApiController {
 		final String version = requestParamMap.get(LcpConstants.PARAM_V);
 		requestBaseContext.setTicket(t);
 		if (StringUtils.isNotEmpty(t)) {
-			BaseUserAccountTicketInfo ticket = null;
+			BasicUserAccountTicketInfo ticket = null;
 			try {
 				ticket = accountTicketService.validateTicket(t);
 			} catch (Exception e) {

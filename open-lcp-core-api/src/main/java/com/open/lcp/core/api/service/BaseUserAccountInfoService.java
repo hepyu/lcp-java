@@ -1,8 +1,8 @@
 package com.open.lcp.core.api.service;
 
-import com.open.lcp.core.api.info.BaseUserAccountInfo;
+import com.open.lcp.core.api.info.BasicUserAccountInfo;
 
 public interface BaseUserAccountInfoService {
 
-	public BaseUserAccountInfo getUserAccountInfo(Long userId);
+	public BasicUserAccountInfo getUserAccountInfo(Long userId);
 }

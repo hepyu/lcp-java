@@ -1,38 +1,18 @@
 package com.open.lcp.biz.passport.api;
 
 import java.util.List;
-
-import com.open.lcp.biz.passport.UserAccountType;
-import com.open.lcp.biz.passport.dto.UserAccountTicket;
 import com.open.lcp.biz.passport.dto.PassportOAuthAccountDTO;
-import com.open.lcp.biz.passport.dto.RequestUploadAvatarResultDTO;
-import com.open.lcp.core.common.enums.Gender;
-import com.open.lcp.core.api.info.BaseUserAccountInfo;
+import com.open.lcp.core.api.info.BasicUserAccountInfo;
+import com.open.lcp.core.api.info.BasicUserAccountTicketInfo;
 
 public interface AccountInfoApi {
 
-	public UserAccountTicket validateTicket(String t);
+	public BasicUserAccountTicketInfo validateTicket(String t);
 
-	public boolean suicide(String t);
+	public BasicUserAccountInfo getUserInfo(String ticket);
 
-	public BaseUserAccountInfo getUserInfoByTicket(String t);
-
-	public BaseUserAccountInfo getUserInfoByUserId(Long userId);
+	public BasicUserAccountInfo getUserInfo(Long userId);
 
 	public List<PassportOAuthAccountDTO> getOAuthAccountList(Long userId);
-
-	public int unbindAccount(Long userId, UserAccountType userAccountType);
-
-	public boolean updateGender(Long userId, Gender gender);
-
-	public boolean updateNickName(Long userId, String nickName);
-
-	public boolean updateDescription(Long userId, String description);
-
-	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId);
-
-	public String commitUploadAvatar(Long userId);
-
-	public String getUserType(Long userId);
 
 }

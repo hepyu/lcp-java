@@ -2,9 +2,9 @@ package com.open.lcp.core.app.init.service.dao.entity;
 
 import java.io.Serializable;
 
-import com.open.lcp.core.api.info.BaseAppInitInfo;
+import com.open.lcp.core.api.info.BasicAppInitInfo;
 
-public class AppInitInfoEntity implements Serializable, BaseAppInitInfo {
+public class AppInitInfoEntity implements Serializable, BasicAppInitInfo {
 
 	private String deviceId;
 

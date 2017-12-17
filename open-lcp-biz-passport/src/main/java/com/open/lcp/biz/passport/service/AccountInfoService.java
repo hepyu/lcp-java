@@ -2,23 +2,26 @@ package com.open.lcp.biz.passport.service;
 
 import java.util.List;
 
+import com.open.lcp.biz.passport.MobileCodeType;
 import com.open.lcp.biz.passport.UserAccountType;
+import com.open.lcp.biz.passport.dto.BindAccountResultDTO;
+import com.open.lcp.biz.passport.dto.LoginByMobileResultDTO;
+import com.open.lcp.biz.passport.dto.LoginByOAuthResultDTO;
+import com.open.lcp.biz.passport.dto.ObtainMobileCodeDTO;
 import com.open.lcp.biz.passport.dto.PassportOAuthAccountDTO;
 import com.open.lcp.biz.passport.dto.RequestUploadAvatarResultDTO;
-import com.open.lcp.biz.passport.service.dao.entity.PassportOAuthAccountEntity;
-import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
-import com.open.lcp.core.common.enums.Gender;
 import com.open.lcp.core.api.service.BaseUserAccountInfoService;
+import com.open.lcp.core.common.enums.Gender;
 
 public interface AccountInfoService extends BaseUserAccountInfoService {
 
-	public void createAccount(PassportUserAccountEntity passportUserAccountEntity,
-			PassportOAuthAccountEntity passportOAuthAccountEntity);
+	public boolean suicide(String t);
 
-	public void bindAccount(PassportOAuthAccountEntity passportOAuthAccountEntity);
+	public LoginByMobileResultDTO loginByMobileAccount(int appId, String mobile, String mobileCode, String deviceId,
+			String ip, String ua);
 
-	public void login(PassportUserAccountEntity passportUserAccountEntity,
-			PassportOAuthAccountEntity passportOAuthAccountEntity);
+	public LoginByOAuthResultDTO loginByThirdAccount(int appId, String oauthAppId, String openId, String accessToken,
+			String deviceId, String ip, UserAccountType accountType, String ua);
 
 	public List<PassportOAuthAccountDTO> getOAuthAccountList(Long userId);
 
@@ -39,5 +42,13 @@ public interface AccountInfoService extends BaseUserAccountInfoService {
 	public String commitUploadAvatar(Long userId, UserAccountType accountType);
 
 	public String getUserType(Long userId);
+
+	public ObtainMobileCodeDTO obtainMobileCode(String ip, String deviceId, int appId, String mobile,
+			MobileCodeType type);
+
+	public boolean bindMobileAccount(int appId, String mobile, String mobileCode, String deviceId, String t, String ip);
+
+	public BindAccountResultDTO bindThirdAccount(int appId, String oauthAppId, String openId, String accessToken,
+			String deviceId, String t, UserAccountType accountType, String ip);
 
 }

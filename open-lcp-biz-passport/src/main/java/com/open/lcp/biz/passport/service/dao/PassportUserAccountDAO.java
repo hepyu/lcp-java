@@ -21,7 +21,7 @@ public interface PassportUserAccountDAO {
 	public Long create(PassportUserAccountEntity passportUserAccountEntity);
 
 	@SQL("UPDATE passport_user_account SET last_login_time=:1.lastLoginTime WHERE user_id=:1.userId")
-	public int login(PassportUserAccountEntity passportUserAccountEntity);
+	public int resetLastLoginTime(PassportUserAccountEntity passportUserAccountEntity);
 
 	@SQL("INSERT IGNORE INTO passport_user_account(" + SQL_SELECT_PART
 			+ ") values(:1.userId, :1.userName, :1.nickName, :1.avatar, :1.gender, :1.updateIp, :1.registIp, :1.updateTime, :1.registTime, :1.description)")

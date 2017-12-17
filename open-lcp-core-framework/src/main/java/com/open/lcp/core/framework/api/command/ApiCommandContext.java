@@ -6,9 +6,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import com.open.lcp.core.common.enums.UserType;
 import com.open.lcp.core.api.command.CommandContext;
-import com.open.lcp.core.api.info.BaseAppInfo;
-import com.open.lcp.core.api.info.BaseAppInitInfo;
-import com.open.lcp.core.api.info.BaseUserAccountInfo;
+import com.open.lcp.core.api.info.BasicAppInfo;
+import com.open.lcp.core.api.info.BasicAppInitInfo;
+import com.open.lcp.core.api.info.BasicUserAccountInfo;
 import com.open.lcp.core.api.service.BaseUserAccountInfoService;
 import com.open.lcp.core.framework.consts.LcpConstants;
 
@@ -30,7 +30,7 @@ public class ApiCommandContext implements CommandContext {
 	private long userId;
 	private UserType userType;
 	/** 客户端接入授权信息 */
-	private BaseAppInfo appInfo;
+	private BasicAppInfo appInfo;
 
 	/** 设备唯一标识 */
 	private String deviceId;
@@ -66,12 +66,12 @@ public class ApiCommandContext implements CommandContext {
 	private final String clientIp;
 	/** 用户的端口 */
 	private int clientPort;
-	private BaseAppInitInfo appInitInfo = null;
+	private BasicAppInitInfo appInitInfo = null;
 
 	private byte[] aesKey;
 	private byte[] octetBody;
 
-	public ApiCommandContext(long beginTime, BaseAppInfo appInfo, Map<String, String> stringParams,
+	public ApiCommandContext(long beginTime, BasicAppInfo appInfo, Map<String, String> stringParams,
 			Map<String, Object> binaryParams, String ticket, String secretKey, String methodName,
 			Map<String, String> reqHeads, String clientIp, int clientPort,
 			BaseUserAccountInfoService userAccountService) {
@@ -152,11 +152,11 @@ public class ApiCommandContext implements CommandContext {
 	}
 
 	@Override
-	public BaseAppInfo getAppInfo() {
+	public BasicAppInfo getAppInfo() {
 		return appInfo;
 	}
 
-	public void setAppInfo(BaseAppInfo appInfo) {
+	public void setAppInfo(BasicAppInfo appInfo) {
 		this.appInfo = appInfo;
 	}
 
@@ -294,11 +294,11 @@ public class ApiCommandContext implements CommandContext {
 	}
 
 	@Override
-	public BaseAppInitInfo getAppInitInfo() {
+	public BasicAppInitInfo getAppInitInfo() {
 		return appInitInfo;
 	}
 
-	public void setAppInitInfo(BaseAppInitInfo appInitInfo) {
+	public void setAppInitInfo(BasicAppInitInfo appInitInfo) {
 		this.appInitInfo = appInitInfo;
 	}
 
@@ -336,10 +336,10 @@ public class ApiCommandContext implements CommandContext {
 		return this.v;
 	}
 
-	private BaseUserAccountInfo userInfo = null;
+	private BasicUserAccountInfo userInfo = null;
 
 	@Override
-	public BaseUserAccountInfo getUserAccountInfo() {
+	public BasicUserAccountInfo getUserAccountInfo() {
 		if (this.userId <= 0) {
 			return null;
 		}

@@ -1,9 +1,9 @@
 package com.open.lcp.core.api.service;
 
-import com.open.lcp.core.api.info.BaseAppInitInfo;
+import com.open.lcp.core.api.info.BasicAppInitInfo;
 
 public interface BaseAppInitService {
 
-	BaseAppInitInfo getAppInitInfo(String deviceId);
+	BasicAppInitInfo getAppInitInfo(String deviceId);
 
 }

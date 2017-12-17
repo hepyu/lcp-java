@@ -21,7 +21,7 @@ public interface PassportOAuthAccountDAO {
 	public int create(PassportOAuthAccountEntity passportOAuthAccountEntity);
 
 	@SQL("UPDATE passport_oauth_account SET last_login_time=:1.lastLoginTime WHERE user_id=:1.userId AND type=:1.type")
-	public int login(PassportOAuthAccountEntity passportOAuthAccountEntity);
+	public int resetLastLoginTime(PassportOAuthAccountEntity passportOAuthAccountEntity);
 
 	@SQL("SELECT user_id FROM passport_oauth_account WHERE open_id=:1 AND type=:2")
 	public Long getUserId(String openId, int type);

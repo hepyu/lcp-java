@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.open.lcp.biz.passport.PassportException;
-import com.open.lcp.biz.passport.cache.PassportCache;
+import com.open.lcp.biz.passport.service.cache.PassportCache;
 import com.open.lcp.biz.passport.ticket.UserTicketMaker.UserTicket;
 
 @Component

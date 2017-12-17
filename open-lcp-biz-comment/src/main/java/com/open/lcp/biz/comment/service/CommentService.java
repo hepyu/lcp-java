@@ -1,12 +1,12 @@
 package com.open.lcp.biz.comment.service;
 
 import com.open.lcp.biz.comment.facade.resp.CommentAddResp;
-import com.open.lcp.core.api.info.BaseUserAccountInfo;
+import com.open.lcp.core.api.info.BasicUserAccountInfo;
 
 public interface CommentService {
 
 	public CommentAddResp addComment(int appId, int typeId, String tid, Long cid, String ip, String device,
-			String comment, BaseUserAccountInfo user, String sourceId, String triggerId, String clientPort,
+			String comment, BasicUserAccountInfo user, String sourceId, String triggerId, String clientPort,
 			String recommendPlatform, String downLoadSpeed, boolean isAnonymous, String bandwidth,
 			String extParamsJson);
 

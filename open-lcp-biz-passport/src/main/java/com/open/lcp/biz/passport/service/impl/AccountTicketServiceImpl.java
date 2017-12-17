@@ -7,27 +7,27 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import com.open.lcp.biz.passport.UserAccountType;
-import com.open.lcp.biz.passport.dto.UserAccountTicket;
+import com.open.lcp.biz.passport.dto.UserAccountTicketDTO;
 import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
-import com.open.lcp.biz.passport.service.AbstractAccount;
+import com.open.lcp.biz.passport.service.AbstractAccountService;
 import com.open.lcp.biz.passport.service.AccountTicketService;
 import com.open.lcp.biz.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.lcp.biz.passport.ticket.Ticket;
 import com.open.lcp.biz.passport.util.AccountUtil;
-import com.open.lcp.core.api.info.BaseUserAccountTicketInfo;
+import com.open.lcp.core.api.info.BasicUserAccountTicketInfo;
 
 @Service
-public class AccountTicketServiceImpl extends AbstractAccount implements AccountTicketService {
+public class AccountTicketServiceImpl extends AbstractAccountService implements AccountTicketService {
 
 	private final Log logger = LogFactory.getLog(AccountTicketServiceImpl.class);
 
 	@Override
-	public BaseUserAccountTicketInfo validateTicket(String t) {
+	public BasicUserAccountTicketInfo validateTicket(String t) {
 		try {
 			Ticket couple = super.checkTicket(t);
 
-			UserAccountTicket dto = new UserAccountTicket();
+			UserAccountTicketDTO dto = new UserAccountTicketDTO();
 			dto.setUserSecretKey(couple.getUserSecretKey());
 			dto.setUserId(couple.getUserId());
 			return dto;
@@ -77,7 +77,7 @@ public class AccountTicketServiceImpl extends AbstractAccount implements Account
 	}
 
 	@Override
-	public PassportUserAccountDTO getUserInfoByTicket(String t) {
+	public PassportUserAccountDTO getUserInfo(String t) {
 		try {
 			Ticket ticket = super.checkTicket(t);
 			Long xlUserId = ticket.getUserId();

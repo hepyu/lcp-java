@@ -14,8 +14,8 @@ import com.open.lcp.biz.comment.service.CommentService;
 import com.open.lcp.biz.comment.util.CommentUtil;
 import com.open.lcp.core.api.annotation.LcpHttpMethod;
 import com.open.lcp.core.api.facade.ApiFacade;
-import com.open.lcp.core.api.info.BaseAppInitInfo;
-import com.open.lcp.core.api.info.BaseUserAccountInfo;
+import com.open.lcp.core.api.info.BasicAppInitInfo;
+import com.open.lcp.core.api.info.BasicUserAccountInfo;
 import com.open.lcp.core.framework.api.ApiException;
 import com.open.lcp.core.framework.api.command.ApiCommandContext;
 import com.open.lcp.core.framework.facade.CommonResultResp;
@@ -45,7 +45,7 @@ public class CommentFacade implements ApiFacade {
 		String tid = req.getTid();
 		Long cid = req.getCid();
 		String comment = req.getComment();
-		BaseAppInitInfo data = ctx.getAppInitInfo();
+		BasicAppInitInfo data = ctx.getAppInitInfo();
 		String device = "";
 		String sourceId = req.getSourceId();
 		if (data != null) {
@@ -53,7 +53,7 @@ public class CommentFacade implements ApiFacade {
 		} else if (StringUtils.isNotBlank(req.getDevice())) {
 			device = req.getDevice();
 		}
-		BaseUserAccountInfo user = ctx.getUserAccountInfo();
+		BasicUserAccountInfo user = ctx.getUserAccountInfo();
 		if (user == null) {
 			throw new ApiException(CommentRespCode.CODE_4000);
 		}
