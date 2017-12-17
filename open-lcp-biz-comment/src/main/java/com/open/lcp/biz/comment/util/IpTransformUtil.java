@@ -3,8 +3,8 @@ package com.open.lcp.biz.comment.util;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-import com.open.lcp.common.util.GsonUtil;
-import com.open.lcp.common.util.HttpUtil;
+import com.open.lcp.core.common.util.GsonUtil;
+import com.open.lcp.core.common.util.HttpUtil;
 import com.open.lcp.core.framework.api.ApiException;
 
 import org.apache.http.impl.client.CloseableHttpClient;

@@ -10,7 +10,7 @@ import org.nutz.ssdb4j.spi.Cmd;
 import org.nutz.ssdb4j.spi.Response;
 import org.nutz.ssdb4j.spi.SSDB;
 
-import com.open.lcp.common.JsonObjectConv;
+import com.open.lcp.core.common.JsonObjectConv;
 import com.open.lcp.dbs.cache.Renewal;
 
 import redis.clients.jedis.GeoRadiusResponse;

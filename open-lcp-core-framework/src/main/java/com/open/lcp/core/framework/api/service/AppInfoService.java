@@ -2,7 +2,7 @@ package com.open.lcp.core.framework.api.service;
 
 import java.util.List;
 
-import com.open.lcp.core.base.info.BaseAppInfo;
+import com.open.lcp.core.api.info.BaseAppInfo;
 import com.open.lcp.core.framework.api.service.dao.info.AppAuthInfo;
 
 public interface AppInfoService {

@@ -1,7 +1,7 @@
 package com.open.lcp.biz.comment.facade;
 
-import com.open.lcp.core.base.annotation.LcpHttpMethod;
-import com.open.lcp.core.base.facade.ApiFacade;
+import com.open.lcp.core.api.annotation.LcpHttpMethod;
+import com.open.lcp.core.api.facade.ApiFacade;
 import com.open.lcp.core.framework.facade.CommonResultResp;
 
 public class AdminCommentFacade implements ApiFacade {

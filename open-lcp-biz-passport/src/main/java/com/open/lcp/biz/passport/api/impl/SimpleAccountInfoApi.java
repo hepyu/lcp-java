@@ -14,8 +14,8 @@ import com.open.lcp.biz.passport.dto.RequestUploadAvatarResultDTO;
 import com.open.lcp.biz.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.lcp.biz.passport.ticket.Ticket;
-import com.open.lcp.common.enums.Gender;
-import com.open.lcp.core.base.info.BaseUserAccountInfo;
+import com.open.lcp.core.common.enums.Gender;
+import com.open.lcp.core.api.info.BaseUserAccountInfo;
 
 @Component
 public class SimpleAccountInfoApi extends AbstractAccountApi implements AccountInfoApi {

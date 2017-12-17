@@ -1,6 +1,6 @@
 package com.open.lcp.core.framework.api.command;
 
-import com.open.lcp.core.base.facade.ApiResult;
+import com.open.lcp.core.api.facade.ApiResult;
 
 /**
  * 命令接口

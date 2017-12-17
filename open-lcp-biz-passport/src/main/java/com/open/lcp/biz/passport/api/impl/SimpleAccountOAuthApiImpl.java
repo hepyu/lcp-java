@@ -11,7 +11,7 @@ import com.open.lcp.biz.passport.dto.LoginByOAuthResultDTO;
 import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
 import com.open.lcp.biz.passport.sdk.ThirdAccountSDKPortrait;
 import com.open.lcp.biz.passport.ticket.Ticket;
-import com.open.lcp.core.base.info.BaseUserAccountInfo;
+import com.open.lcp.core.api.info.BaseUserAccountInfo;
 
 @Component
 public class SimpleAccountOAuthApiImpl extends AbstractAccountApi implements AccountOAuthApi {

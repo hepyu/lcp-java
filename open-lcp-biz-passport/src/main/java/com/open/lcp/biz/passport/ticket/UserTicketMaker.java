@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.open.lcp.common.enums.UserType;
+import com.open.lcp.core.common.enums.UserType;
 import com.open.lcp.dbs.cache.CacheDBSEncoder;
 
 public class UserTicketMaker {

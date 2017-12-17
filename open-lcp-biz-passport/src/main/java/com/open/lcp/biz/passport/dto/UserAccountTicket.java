@@ -1,6 +1,6 @@
 package com.open.lcp.biz.passport.dto;
 
-import com.open.lcp.core.base.info.BaseUserAccountTicketInfo;
+import com.open.lcp.core.api.info.BaseUserAccountTicketInfo;
 
 public class UserAccountTicket implements BaseUserAccountTicketInfo {
 

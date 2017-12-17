@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.open.lcp.core.base.annotation.LcpHttpMethod;
-import com.open.lcp.core.base.facade.ApiFacade;
+import com.open.lcp.core.api.annotation.LcpHttpMethod;
+import com.open.lcp.core.api.facade.ApiFacade;
 import com.open.lcp.core.framework.api.command.ApiCommand;
 import com.open.lcp.core.framework.api.command.ApiFacadeMethod;
 import com.open.lcp.core.framework.api.command.CommandModelHolder;

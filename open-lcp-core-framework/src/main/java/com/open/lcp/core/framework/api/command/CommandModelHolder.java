@@ -11,9 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.util.Assert;
 
-import com.open.lcp.core.base.annotation.LcpHttpMethod;
-import com.open.lcp.core.base.annotation.LcpHttpRequest;
-import com.open.lcp.core.base.command.CommandContext;
+import com.open.lcp.core.api.annotation.LcpHttpMethod;
+import com.open.lcp.core.api.annotation.LcpHttpRequest;
+import com.open.lcp.core.api.command.CommandContext;
 
 /**
  * CommandModel加载的工具类，已经改为支持无参接口和仅一个参数的接口。

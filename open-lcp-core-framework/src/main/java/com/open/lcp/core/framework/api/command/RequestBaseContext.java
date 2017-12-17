@@ -3,8 +3,8 @@ package com.open.lcp.core.framework.api.command;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.open.lcp.common.enums.UserType;
-import com.open.lcp.core.base.info.BaseAppInfo;
+import com.open.lcp.core.common.enums.UserType;
+import com.open.lcp.core.api.info.BaseAppInfo;
 
 public class RequestBaseContext {
 

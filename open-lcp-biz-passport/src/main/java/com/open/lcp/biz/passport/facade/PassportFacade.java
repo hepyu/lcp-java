@@ -11,9 +11,9 @@ import com.open.lcp.biz.passport.dto.LoginByOAuthResultDTO;
 import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
 import com.open.lcp.biz.passport.facade.req.LoginMobileReq;
 import com.open.lcp.biz.passport.facade.req.LoginThirdReq;
-import com.open.lcp.core.base.annotation.LcpHttpMethod;
-import com.open.lcp.core.base.command.CommandContext;
-import com.open.lcp.core.base.facade.ApiFacade;
+import com.open.lcp.core.api.annotation.LcpHttpMethod;
+import com.open.lcp.core.api.command.CommandContext;
+import com.open.lcp.core.api.facade.ApiFacade;
 
 @Component
 public class PassportFacade implements ApiFacade {

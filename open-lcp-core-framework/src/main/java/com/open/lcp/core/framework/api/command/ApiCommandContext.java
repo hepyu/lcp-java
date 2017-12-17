@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import com.open.lcp.common.enums.UserType;
-import com.open.lcp.core.base.command.CommandContext;
-import com.open.lcp.core.base.info.BaseAppInfo;
-import com.open.lcp.core.base.info.BaseAppInitInfo;
-import com.open.lcp.core.base.info.BaseUserAccountInfo;
-import com.open.lcp.core.base.service.BaseUserAccountInfoService;
+import com.open.lcp.core.common.enums.UserType;
+import com.open.lcp.core.api.command.CommandContext;
+import com.open.lcp.core.api.info.BaseAppInfo;
+import com.open.lcp.core.api.info.BaseAppInitInfo;
+import com.open.lcp.core.api.info.BaseUserAccountInfo;
+import com.open.lcp.core.api.service.BaseUserAccountInfoService;
 import com.open.lcp.core.framework.consts.LcpConstants;
 
 public class ApiCommandContext implements CommandContext {
@@ -73,7 +73,8 @@ public class ApiCommandContext implements CommandContext {
 
 	public ApiCommandContext(long beginTime, BaseAppInfo appInfo, Map<String, String> stringParams,
 			Map<String, Object> binaryParams, String ticket, String secretKey, String methodName,
-			Map<String, String> reqHeads, String clientIp, int clientPort, BaseUserAccountInfoService userAccountService) {
+			Map<String, String> reqHeads, String clientIp, int clientPort,
+			BaseUserAccountInfoService userAccountService) {
 		this.beginTime = beginTime;
 		this.appInfo = appInfo;
 		this.reqHeads = reqHeads;

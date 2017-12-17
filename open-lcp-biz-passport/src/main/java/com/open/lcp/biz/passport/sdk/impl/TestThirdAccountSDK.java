@@ -4,8 +4,8 @@ import org.springframework.stereotype.Component;
 
 import com.open.lcp.biz.passport.PassportException;
 import com.open.lcp.biz.passport.sdk.ThirdAccountSDKPortrait;
-import com.open.lcp.common.enums.Gender;
-import com.open.lcp.common.enums.UserType;
+import com.open.lcp.core.common.enums.Gender;
+import com.open.lcp.core.common.enums.UserType;
 
 @Component("testThirdAccountSDK")
 public class TestThirdAccountSDK extends AbstractThirdAccountSDK {

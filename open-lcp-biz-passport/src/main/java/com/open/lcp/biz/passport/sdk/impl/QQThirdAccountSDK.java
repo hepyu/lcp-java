@@ -11,9 +11,9 @@ import com.google.gson.Gson;
 import com.open.lcp.biz.passport.PassportException;
 import com.open.lcp.biz.passport.UserAccountType;
 import com.open.lcp.biz.passport.sdk.ThirdAccountSDKPortrait;
-import com.open.lcp.common.enums.Gender;
-import com.open.lcp.common.enums.UserType;
-import com.open.lcp.common.util.HttpUtil;
+import com.open.lcp.core.common.enums.Gender;
+import com.open.lcp.core.common.enums.UserType;
+import com.open.lcp.core.common.util.HttpUtil;
 
 @Component("qqThirdAccountSDK")
 public class QQThirdAccountSDK extends AbstractThirdAccountSDK {

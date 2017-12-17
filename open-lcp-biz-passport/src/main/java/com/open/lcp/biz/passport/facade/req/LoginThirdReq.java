@@ -1,7 +1,7 @@
 package com.open.lcp.biz.passport.facade.req;
 
 import com.open.lcp.biz.passport.UserAccountType;
-import com.open.lcp.core.base.annotation.LcpParamRequired;
+import com.open.lcp.core.api.annotation.LcpParamRequired;
 
 public class LoginThirdReq {
 

@@ -27,9 +27,9 @@ import com.open.lcp.biz.passport.storage.impl.QiniuConfig;
 import com.open.lcp.biz.passport.ticket.Ticket;
 import com.open.lcp.biz.passport.ticket.TicketManager;
 import com.open.lcp.biz.passport.util.PlaceholderAvatarUtil;
-import com.open.lcp.common.enums.Gender;
-import com.open.lcp.common.util.IPUtil;
-import com.open.lcp.core.base.info.BaseUserAccountInfo;
+import com.open.lcp.core.common.enums.Gender;
+import com.open.lcp.core.common.util.IPUtil;
+import com.open.lcp.core.api.info.BaseUserAccountInfo;
 
 public class AbstractAccountApi {
 

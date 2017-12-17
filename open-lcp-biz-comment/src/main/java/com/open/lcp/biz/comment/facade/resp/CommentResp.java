@@ -2,8 +2,8 @@ package com.open.lcp.biz.comment.facade.resp;
 
 import java.util.List;
 
-import com.open.lcp.core.base.annotation.LcpClassDesc;
-import com.open.lcp.core.base.annotation.LcpParamRequired;
+import com.open.lcp.core.api.annotation.LcpClassDesc;
+import com.open.lcp.core.api.annotation.LcpParamRequired;
 
 @LcpClassDesc("评论列表")
 public class CommentResp {

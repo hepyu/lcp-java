@@ -20,7 +20,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
-			<artifactId>open-lcp-core-base</artifactId>
+			<artifactId>open-lcp-core-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hbase</groupId>

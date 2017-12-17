@@ -4,7 +4,7 @@ import com.open.lcp.biz.passport.dto.PassportOAuthAccountDTO;
 import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
 import com.open.lcp.biz.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
-import com.open.lcp.common.enums.Gender;
+import com.open.lcp.core.common.enums.Gender;
 
 public class AccountUtil {
 

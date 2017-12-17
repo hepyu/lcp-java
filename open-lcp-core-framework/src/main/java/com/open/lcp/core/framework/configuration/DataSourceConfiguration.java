@@ -2,7 +2,8 @@ package com.open.lcp.core.framework.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.open.lcp.core.base.LcpResource;
+
+import com.open.lcp.core.api.LcpResource;
 import com.open.lcp.dbs.mysql.MysqlXFactory;
 import com.open.lcp.orm.jade.context.spring.JadeBeanFactoryPostProcessor;
 import com.open.lcp.orm.jade.dataaccess.DataSourceFactory;

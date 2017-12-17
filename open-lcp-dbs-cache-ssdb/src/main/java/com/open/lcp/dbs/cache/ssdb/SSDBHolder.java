@@ -6,7 +6,7 @@ import org.nutz.ssdb4j.SSDBs;
 import org.nutz.ssdb4j.impl.SimpleClient;
 import org.nutz.ssdb4j.spi.SSDB;
 
-import com.open.lcp.common.JsonObjectConv;
+import com.open.lcp.core.common.JsonObjectConv;
 
 class SSDBHolder {
 	private final JsonObjectConv jsonConv;

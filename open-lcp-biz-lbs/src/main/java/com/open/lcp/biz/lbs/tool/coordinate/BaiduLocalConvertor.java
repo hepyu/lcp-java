@@ -3,8 +3,8 @@ package com.open.lcp.biz.lbs.tool.coordinate;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+//import java.io.FileInputStream;
+//import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import com.open.lcp.biz.lbs.model.LngLat;
 import com.open.lcp.biz.lbs.util.LBSLocationUtil;
-import com.open.lcp.common.util.CpdetectorEncodingUtil;
+//import com.open.lcp.core.common.util.CpdetectorEncodingUtil;
 
 public class BaiduLocalConvertor {
 

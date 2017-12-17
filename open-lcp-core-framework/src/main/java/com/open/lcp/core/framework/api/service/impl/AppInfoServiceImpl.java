@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.open.lcp.core.base.info.BaseAppInfo;
+import com.open.lcp.core.api.info.BaseAppInfo;
 import com.open.lcp.core.framework.api.service.AppInfoService;
 import com.open.lcp.core.framework.api.service.dao.AppInfoDAO;
 import com.open.lcp.core.framework.api.service.dao.entity.AppInfoEntity;

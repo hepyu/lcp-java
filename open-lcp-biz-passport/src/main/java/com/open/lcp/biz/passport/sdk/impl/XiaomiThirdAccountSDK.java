@@ -17,8 +17,8 @@ import com.open.lcp.biz.passport.PassportException;
 import com.open.lcp.biz.passport.UserAccountType;
 import com.open.lcp.biz.passport.sdk.ThirdAccountSDKPortrait;
 import com.open.lcp.biz.passport.util.PlaceholderAvatarUtil;
-import com.open.lcp.common.enums.Gender;
-import com.open.lcp.common.enums.UserType;
+import com.open.lcp.core.common.enums.Gender;
+import com.open.lcp.core.common.enums.UserType;
 
 @Component("xiaomiThirdAccountSDK")
 public class XiaomiThirdAccountSDK extends AbstractThirdAccountSDK {

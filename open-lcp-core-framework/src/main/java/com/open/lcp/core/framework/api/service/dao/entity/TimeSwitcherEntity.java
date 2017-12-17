@@ -1,6 +1,6 @@
 package com.open.lcp.core.framework.api.service.dao.entity;
 
-import com.open.lcp.core.base.annotation.LcpParamRequired;
+import com.open.lcp.core.api.annotation.LcpParamRequired;
 
 public class TimeSwitcherEntity {
 

@@ -15,7 +15,7 @@ import com.open.lcp.biz.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.lcp.biz.passport.ticket.Ticket;
 import com.open.lcp.biz.passport.util.AccountUtil;
-import com.open.lcp.core.base.info.BaseUserAccountTicketInfo;
+import com.open.lcp.core.api.info.BaseUserAccountTicketInfo;
 
 @Service
 public class AccountTicketServiceImpl extends AbstractAccount implements AccountTicketService {

@@ -1,7 +1,7 @@
 package com.open.lcp.biz.passport.dto;
 
-import com.open.lcp.common.enums.Gender;
-import com.open.lcp.core.base.info.BaseUserAccountInfo;
+import com.open.lcp.core.common.enums.Gender;
+import com.open.lcp.core.api.info.BaseUserAccountInfo;
 
 public class PassportUserAccountDTO implements BaseUserAccountInfo {
 

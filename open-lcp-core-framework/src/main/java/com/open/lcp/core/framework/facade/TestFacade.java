@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.open.lcp.core.base.annotation.LcpHttpMethod;
-import com.open.lcp.core.base.command.CommandContext;
-import com.open.lcp.core.base.facade.ApiFacade;
+import com.open.lcp.core.api.annotation.LcpHttpMethod;
+import com.open.lcp.core.api.command.CommandContext;
+import com.open.lcp.core.api.facade.ApiFacade;
 
 @Component
 public class TestFacade implements ApiFacade {

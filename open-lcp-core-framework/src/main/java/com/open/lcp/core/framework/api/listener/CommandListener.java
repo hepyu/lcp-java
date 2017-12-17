@@ -1,6 +1,6 @@
 package com.open.lcp.core.framework.api.listener;
 
-import com.open.lcp.core.base.command.CommandContext;
+import com.open.lcp.core.api.command.CommandContext;
 
 /**
  * 命令侦听：不支持动态变更

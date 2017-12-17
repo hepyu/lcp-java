@@ -15,11 +15,11 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.open.lcp.common.util.StringToListUtils;
-import com.open.lcp.core.base.annotation.LcpHttpRequest;
-import com.open.lcp.core.base.annotation.LcpParamRequired;
-import com.open.lcp.core.base.annotation.LcpParamRequired.Struct;
-import com.open.lcp.core.base.command.CommandContext;
+import com.open.lcp.core.common.util.StringToListUtils;
+import com.open.lcp.core.api.annotation.LcpHttpRequest;
+import com.open.lcp.core.api.annotation.LcpParamRequired;
+import com.open.lcp.core.api.annotation.LcpParamRequired.Struct;
+import com.open.lcp.core.api.command.CommandContext;
 import com.open.lcp.core.framework.util.LcpMixEncUtil;
 
 public class ModelCastHolder {

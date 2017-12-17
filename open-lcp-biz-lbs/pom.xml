@@ -25,11 +25,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
-			<artifactId>open-lcp-env</artifactId>
+			<artifactId>open-lcp-core-env</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
-			<artifactId>open-lcp-core-base</artifactId>
+			<artifactId>open-lcp-core-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
@@ -193,7 +193,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
-			<artifactId>open-lcp-common</artifactId>
+			<artifactId>open-lcp-core-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>

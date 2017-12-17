@@ -1,7 +1,7 @@
 package com.open.lcp.biz.comment.facade.req;
 
-import com.open.lcp.core.base.annotation.LcpClassDesc;
-import com.open.lcp.core.base.annotation.LcpParamRequired;
+import com.open.lcp.core.api.annotation.LcpClassDesc;
+import com.open.lcp.core.api.annotation.LcpParamRequired;
 
 @LcpClassDesc("添加评论")
 public class CommentReq extends CommentBaseReq {

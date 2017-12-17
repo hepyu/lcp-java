@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.open.lcp.core.base.info.BaseAppInfo;
+import com.open.lcp.core.api.info.BaseAppInfo;
 import com.open.lcp.core.framework.api.service.dao.AppInfoDAO;
 import com.open.lcp.core.framework.api.service.dao.entity.AppAuthInfoEntity;
 import com.open.lcp.core.framework.api.service.dao.entity.AppInfoEntity;

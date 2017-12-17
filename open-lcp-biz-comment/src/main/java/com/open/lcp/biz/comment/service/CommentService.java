@@ -1,7 +1,7 @@
 package com.open.lcp.biz.comment.service;
 
 import com.open.lcp.biz.comment.facade.resp.CommentAddResp;
-import com.open.lcp.core.base.info.BaseUserAccountInfo;
+import com.open.lcp.core.api.info.BaseUserAccountInfo;
 
 public interface CommentService {
 

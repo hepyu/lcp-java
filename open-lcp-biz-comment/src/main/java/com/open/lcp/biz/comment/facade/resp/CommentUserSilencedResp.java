@@ -1,6 +1,6 @@
 package com.open.lcp.biz.comment.facade.resp;
 
-import com.open.lcp.core.base.annotation.LcpParamRequired;
+import com.open.lcp.core.api.annotation.LcpParamRequired;
 
 public class CommentUserSilencedResp {
 

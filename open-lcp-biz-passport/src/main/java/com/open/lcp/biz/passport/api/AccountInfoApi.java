@@ -6,8 +6,8 @@ import com.open.lcp.biz.passport.UserAccountType;
 import com.open.lcp.biz.passport.dto.UserAccountTicket;
 import com.open.lcp.biz.passport.dto.PassportOAuthAccountDTO;
 import com.open.lcp.biz.passport.dto.RequestUploadAvatarResultDTO;
-import com.open.lcp.common.enums.Gender;
-import com.open.lcp.core.base.info.BaseUserAccountInfo;
+import com.open.lcp.core.common.enums.Gender;
+import com.open.lcp.core.api.info.BaseUserAccountInfo;
 
 public interface AccountInfoApi {
 

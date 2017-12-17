@@ -2,7 +2,7 @@ package com.open.lcp.core.framework.api.service.dao.entity;
 
 import java.io.Serializable;
 
-import com.open.lcp.core.base.info.BaseAppInfo;
+import com.open.lcp.core.api.info.BaseAppInfo;
 
 public class AppInfoEntity implements Serializable, BaseAppInfo {
 

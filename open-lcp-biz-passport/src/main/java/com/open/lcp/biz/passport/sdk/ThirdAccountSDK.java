@@ -1,7 +1,7 @@
 package com.open.lcp.biz.passport.sdk;
 
 import com.open.lcp.biz.passport.PassportException;
-import com.open.lcp.common.enums.Gender;
+import com.open.lcp.core.common.enums.Gender;
 
 public interface ThirdAccountSDK {
 

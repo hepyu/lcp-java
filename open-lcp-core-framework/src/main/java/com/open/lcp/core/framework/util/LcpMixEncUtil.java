@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import com.open.lcp.common.util.AESUtils;
-import com.open.lcp.common.util.Base64Utils;
+import com.open.lcp.core.common.util.AESUtils;
+import com.open.lcp.core.common.util.Base64Utils;
 
 public class LcpMixEncUtil {
 	/**

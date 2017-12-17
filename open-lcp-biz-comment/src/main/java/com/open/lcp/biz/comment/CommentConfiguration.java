@@ -3,7 +3,8 @@ package com.open.lcp.biz.comment;
 import org.apache.hadoop.hbase.client.Connection;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.open.lcp.core.base.LcpResource;
+
+import com.open.lcp.core.api.LcpResource;
 import com.open.lcp.dbs.cache.redis.RedisX;
 import com.open.lcp.dbs.cache.redis.RedisXFactory;
 import com.open.lcp.dbs.hbase.HBaseXFactory;

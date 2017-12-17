@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.open.lcp.core.base.annotation.LcpParamDesc;
-import com.open.lcp.core.base.annotation.LcpHttpRequest;
-import com.open.lcp.core.base.annotation.LcpParamRequired;
+import com.open.lcp.core.api.annotation.LcpHttpRequest;
+import com.open.lcp.core.api.annotation.LcpParamDesc;
+import com.open.lcp.core.api.annotation.LcpParamRequired;
 
 /**
  * 对象生成ODML

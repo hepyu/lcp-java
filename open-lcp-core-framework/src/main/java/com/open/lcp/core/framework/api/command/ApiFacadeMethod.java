@@ -3,8 +3,8 @@ package com.open.lcp.core.framework.api.command;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import com.open.lcp.core.base.annotation.LcpHttpMethod;
-import com.open.lcp.core.base.annotation.LcpHttpRequest;
+import com.open.lcp.core.api.annotation.LcpHttpMethod;
+import com.open.lcp.core.api.annotation.LcpHttpRequest;
 
 /**
  * 方法接口定义

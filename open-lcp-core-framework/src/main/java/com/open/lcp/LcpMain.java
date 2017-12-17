@@ -7,7 +7,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.open.lcp.env.finder.EnvFinder;
+import com.open.lcp.core.env.finder.EnvFinder;
 
 /**
  * @ComponentScan : 开启扫描，会扫描当前类的包及其子包

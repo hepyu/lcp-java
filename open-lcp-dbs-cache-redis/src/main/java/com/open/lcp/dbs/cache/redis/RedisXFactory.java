@@ -11,13 +11,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.gson.Gson;
-import com.open.lcp.core.base.LcpResource;
+import com.open.lcp.core.api.LcpResource;
+import com.open.lcp.core.env.finder.ZKFinder;
+import com.open.lcp.core.register.mangocity.zk.ConfigChangeListener;
+import com.open.lcp.core.register.mangocity.zk.ConfigChangeSubscriber;
+import com.open.lcp.core.register.mangocity.zk.ZkConfigChangeSubscriberImpl;
 import com.open.lcp.dbs.cache.redis.cluster.JedisClusterImpl;
 import com.open.lcp.dbs.cache.redis.single.JedisPoolImpl;
-import com.open.lcp.env.finder.ZKFinder;
-import com.open.lcp.mangocity.zk.ConfigChangeListener;
-import com.open.lcp.mangocity.zk.ConfigChangeSubscriber;
-import com.open.lcp.mangocity.zk.ZkConfigChangeSubscriberImpl;
 
 public class RedisXFactory {
 	private static final Log logger = LogFactory.getLog(RedisXFactory.class);

@@ -16,7 +16,6 @@ import com.open.lcp.biz.lbs.service.dao.entity.LBSCityEntity;
 import com.open.lcp.biz.lbs.service.dao.entity.LBSDeviceEntity;
 import com.open.lcp.biz.lbs.util.LBSCacheKeyUtil;
 import com.open.lcp.dbs.cache.CacheX;
-import com.open.lcp.dbs.cache.redis.RedisX;
 
 @Component
 public class LBSCityJVMCache {

@@ -2,7 +2,7 @@ package com.open.lcp.core.framework.api.service.dao;
 
 import java.util.List;
 
-import com.open.lcp.core.base.info.BaseAppInfo;
+import com.open.lcp.core.api.info.BaseAppInfo;
 import com.open.lcp.core.framework.api.service.dao.entity.ApiMaxThreadsEntity;
 import com.open.lcp.core.framework.api.service.dao.entity.AppAuthInfoEntity;
 import com.open.lcp.core.framework.api.service.dao.entity.AppInfoEntity;

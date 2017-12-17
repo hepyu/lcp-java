@@ -13,11 +13,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.open.lcp.core.base.annotation.LcpHttpRequest;
-import com.open.lcp.core.base.annotation.LcpParamRequired;
-import com.open.lcp.core.base.command.CommandContext;
-import com.open.lcp.core.base.facade.ApiResult;
-import com.open.lcp.core.base.facade.ApiResultCode;
+import com.open.lcp.core.api.annotation.LcpHttpRequest;
+import com.open.lcp.core.api.annotation.LcpParamRequired;
+import com.open.lcp.core.api.command.CommandContext;
+import com.open.lcp.core.api.facade.ApiResult;
+import com.open.lcp.core.api.facade.ApiResultCode;
 import com.open.lcp.core.framework.api.ApiException;
 import com.open.lcp.core.framework.api.FieldLoadHolder;
 import com.open.lcp.core.framework.api.ModelCastHolder;

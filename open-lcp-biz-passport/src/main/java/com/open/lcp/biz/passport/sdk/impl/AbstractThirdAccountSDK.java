@@ -3,8 +3,8 @@ package com.open.lcp.biz.passport.sdk.impl;
 import com.open.lcp.biz.passport.PassportException;
 import com.open.lcp.biz.passport.sdk.ThirdAccountSDK;
 import com.open.lcp.biz.passport.sdk.ThirdAccountSDKPortrait;
-import com.open.lcp.common.enums.Gender;
-import com.open.lcp.common.util.ImageUtil;
+import com.open.lcp.core.common.enums.Gender;
+import com.open.lcp.core.common.util.ImageUtil;
 
 public abstract class AbstractThirdAccountSDK implements ThirdAccountSDK {
 

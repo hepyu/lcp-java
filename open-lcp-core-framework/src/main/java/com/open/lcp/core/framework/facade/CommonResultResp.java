@@ -1,7 +1,7 @@
 package com.open.lcp.core.framework.facade;
 
-import com.open.lcp.core.base.annotation.LcpParamDesc;
-import com.open.lcp.core.base.annotation.LcpParamRequired;
+import com.open.lcp.core.api.annotation.LcpParamDesc;
+import com.open.lcp.core.api.annotation.LcpParamRequired;
 
 /**
  * @author hepengyuan

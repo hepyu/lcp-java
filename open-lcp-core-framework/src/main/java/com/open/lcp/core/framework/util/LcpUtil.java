@@ -23,11 +23,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.open.lcp.common.util.AESUtils;
-import com.open.lcp.common.util.Base64Utils;
-import com.open.lcp.common.util.GsonUtil;
+import com.open.lcp.core.common.util.AESUtils;
+import com.open.lcp.core.common.util.Base64Utils;
+import com.open.lcp.core.common.util.GsonUtil;
 import com.open.lcp.core.framework.consts.HttpConstants;
 
 public class LcpUtil {
