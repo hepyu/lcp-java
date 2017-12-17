@@ -1,14 +1,10 @@
 /target
 
 /.git
-/.settings
-#.classpath
-#.project
 *.log
 .pydevproject
 /bin/
 /mvn.assembly.bat
 .idea
 .idea/*
-.gitignore
 xunlei-mcp.iml
