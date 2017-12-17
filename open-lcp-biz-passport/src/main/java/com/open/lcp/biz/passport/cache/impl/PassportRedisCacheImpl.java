@@ -9,14 +9,14 @@ import com.open.lcp.biz.passport.cache.PassportCache;
 import com.open.lcp.biz.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.lcp.biz.passport.ticket.Ticket;
-import com.open.lcp.core.api.LcpResource;
+import com.open.lcp.core.env.LcpResource;
 import com.open.lcp.dbs.cache.CacheX;
 import com.open.lcp.dbs.cache.redis.RedisXFactory;
 
 @Component
 public class PassportRedisCacheImpl implements PassportCache {
 
-	private final CacheX cache = RedisXFactory.loadRedisX(LcpResource.redis_lcp_passport);
+	private final CacheX cache = RedisXFactory.loadRedisX(LcpResource.redis_lcp_biz_passport);
 
 	// 1.secretKey set and get
 

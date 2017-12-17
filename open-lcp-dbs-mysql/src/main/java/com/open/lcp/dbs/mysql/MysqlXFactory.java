@@ -12,7 +12,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.gson.Gson;
-import com.open.lcp.core.api.LcpResource;
+import com.open.lcp.core.env.LcpResource;
+import com.open.lcp.core.env.finder.EnvFinder;
 import com.open.lcp.core.env.finder.ZKFinder;
 import com.open.lcp.core.register.mangocity.zk.ConfigChangeListener;
 import com.open.lcp.core.register.mangocity.zk.ConfigChangeSubscriber;
@@ -31,11 +32,12 @@ public class MysqlXFactory {
 
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
-	public static DataSourceFactory loadMysqlX(final LcpResource zkResourcePath) {
-		DataSourceHolder dsHolder = hierarchicalDataSourceFactory.getHolder(zkResourcePath.lcpAnnotationName());
+	public static DataSourceFactory loadMysqlX(final LcpResource lcpResource) {
+		String zkAbsolutePath = lcpResource.getAbsolutePath(EnvFinder.getProfile());
+		DataSourceHolder dsHolder = hierarchicalDataSourceFactory.getHolder(zkAbsolutePath);
 		if (dsHolder == null) {
 			synchronized (LOCK_OF_NEWPATH) {
-				dsHolder = hierarchicalDataSourceFactory.getHolder(zkResourcePath.lcpAnnotationName());
+				dsHolder = hierarchicalDataSourceFactory.getHolder(zkAbsolutePath);
 				if (dsHolder == null) {
 					ZkClient zkClient = null;
 					try {
@@ -53,16 +55,16 @@ public class MysqlXFactory {
 						});
 
 						ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient,
-								ZKFinder.findZKResourceParentPath(zkResourcePath));
-						sub.subscribe(zkResourcePath.zkNodeName(), new ConfigChangeListener() {
+								lcpResource.getAbsoluteParentPath(EnvFinder.getProfile()));
+						sub.subscribe(lcpResource.getNodeName(), new ConfigChangeListener() {
 
 							@Override
 							public void configChanged(String key, String value) {
 								MySQLDBConfig dbconfig = loadDBConfig(value);
-								DataSource newds = load(zkResourcePath, dbconfig);
+								DataSource newds = load(lcpResource, dbconfig);
 								
-								DataSourceHolder oldDSHolder = hierarchicalDataSourceFactory.getHolder(zkResourcePath.lcpAnnotationName());
-								hierarchicalDataSourceFactory.replaceHolder(zkResourcePath.lcpAnnotationName(),
+								DataSourceHolder oldDSHolder = hierarchicalDataSourceFactory.getHolder(zkAbsolutePath);
+								hierarchicalDataSourceFactory.replaceHolder(zkAbsolutePath,
 										newds);
 								
 								if(oldDSHolder!=null){
@@ -76,10 +78,10 @@ public class MysqlXFactory {
 							}
 						});
 
-						MySQLDBConfig dbconfig = loadDBConfig(zkResourcePath, zkClient);
-						DataSource ds = load(zkResourcePath, dbconfig);
+						MySQLDBConfig dbconfig = loadDBConfig(lcpResource, zkClient);
+						DataSource ds = load(lcpResource, dbconfig);
 
-						hierarchicalDataSourceFactory.registerDataSource(zkResourcePath.lcpAnnotationName(), ds);
+						hierarchicalDataSourceFactory.registerDataSource(zkAbsolutePath, ds);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 						System.exit(-1);
@@ -95,7 +97,7 @@ public class MysqlXFactory {
 	}
 
 	private static MySQLDBConfig loadDBConfig(LcpResource zkResourcePath, ZkClient zkClient) {
-		String ssdbStr = zkClient.readData(ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
+		String ssdbStr = zkClient.readData(zkResourcePath.getAbsolutePath(EnvFinder.getProfile()));
 		return loadDBConfig(ssdbStr);
 	}
 

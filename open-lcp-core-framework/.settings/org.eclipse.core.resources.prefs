@@ -9,6 +9,7 @@ encoding//src/main/java/com/open/lcp/core/framework/api/controller/ApiController
 encoding//src/main/java/com/open/lcp/core/framework/api/controller/DocController.java=UTF-8
 encoding//src/main/java/com/open/lcp/core/framework/api/controller/TestController.java=UTF-8
 encoding//src/main/java/com/open/lcp/core/framework/configuration/AsyncThreadPoolConfiguration.java=UTF-8
+encoding//src/main/java/com/open/lcp/core/framework/configuration/DataSourceConfiguration.java=UTF-8
 encoding//src/main/java/com/open/lcp/core/framework/facade/CommonResultResp.java=UTF-8
 encoding//src/main/java/com/open/lcp/core/framework/util/LcpMixEncUtil.java=UTF-8
 encoding//src/main/java/com/open/lcp/core/framework/util/LcpUtil.java=UTF-8

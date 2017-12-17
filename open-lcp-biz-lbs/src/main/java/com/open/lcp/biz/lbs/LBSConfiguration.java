@@ -3,7 +3,7 @@ package com.open.lcp.biz.lbs;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.open.lcp.core.api.LcpResource;
+import com.open.lcp.core.env.LcpResource;
 import com.open.lcp.dbs.cache.redis.RedisX;
 import com.open.lcp.dbs.cache.redis.RedisXFactory;
 

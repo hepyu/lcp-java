@@ -1,6 +1,6 @@
 package com.open.lcp.dbs.cache.ssdb;
 
-import com.open.lcp.core.api.LcpResource;
+import com.open.lcp.core.env.LcpResource;
 
 public class SSDBLoader {
 

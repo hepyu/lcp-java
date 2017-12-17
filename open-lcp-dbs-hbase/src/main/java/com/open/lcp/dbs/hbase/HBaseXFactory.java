@@ -2,7 +2,7 @@ package com.open.lcp.dbs.hbase;
 
 import org.apache.hadoop.hbase.client.Connection;
 
-import com.open.lcp.core.api.LcpResource;
+import com.open.lcp.core.env.LcpResource;
 
 public class HBaseXFactory {
 

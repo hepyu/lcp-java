@@ -28,7 +28,6 @@ import com.open.lcp.biz.comment.service.dao.hbase.impl.column.UserColumn;
 import com.open.lcp.biz.passport.api.AccountInfoApi;
 import com.open.lcp.biz.passport.service.dao.PassportUserAccountDAO;
 import com.open.lcp.core.common.util.HttpUtil;
-import com.open.lcp.core.api.LcpResource;
 import com.open.lcp.core.api.info.BaseUserAccountInfo;
 import com.open.lcp.core.framework.IdWorker;
 import com.open.lcp.core.framework.api.ApiException;

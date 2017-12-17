@@ -41,6 +41,10 @@
 			<artifactId>open-lcp-orm-jade</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.open.lcp</groupId>
+			<artifactId>open-lcp-core-app-init</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<exclusions>
@@ -193,4 +197,21 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
+	
+	<!-- 如果你使用maven，在pom中添加如果定义之后，你打出来的jar包就会被rose扫描到并且引入到上下文环境中： -->
+	<build>
+		<plugins>
+			<plugin>
+	                <groupId>org.apache.maven.plugins</groupId>
+	                <artifactId>maven-jar-plugin</artifactId>
+	                <configuration>
+	                    <archive>
+	                        <manifestEntries>
+	                            <Rose>*</Rose>
+	                        </manifestEntries>
+	                    </archive>
+	                </configuration>
+	            </plugin>
+		</plugins>
+	</build>
 </project>

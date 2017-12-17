@@ -19,23 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.open.lcp</groupId>
-			<artifactId>open-lcp-dbs-cache</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.open.lcp</groupId>
-			<artifactId>open-lcp-dbs-cache-redis</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.open.lcp</groupId>
-			<artifactId>open-lcp-dbs-cache-ssdb</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.open.lcp</groupId>
-			<artifactId>open-lcp-orm-jade</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.open.lcp</groupId>
-			<artifactId>open-lcp-core-api</artifactId>
+			<artifactId>open-lcp-core-framework</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

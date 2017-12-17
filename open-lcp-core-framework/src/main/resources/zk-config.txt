@@ -1,16 +1,20 @@
+mysql -uroot --socket=/tmp/mysql.sock -p111111
+mysql -uroot --socket=/tmp/mysql-3306.sock -p111111
+
 (1).各种开发环境的hosts主机列表配置
 create /lcp/dev/hosts {"hosts":["113.208.115.74"]}
 
 (2).ssdb配置，根据业务区分
-create /lcp/dev/ssdb/passport {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}		//废弃
-create /lcp/dev/ssdb/biz {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}		//废弃
+create /lcp/dev/ssdb/biz/passport {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
+create /lcp/dev/ssdb/biz {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}		
 
 (3).redis配置，根据业务区分
-create /lcp/dev/redis/passport {"redisHostAndPorts":"123.57.204.187:7001,123.57.204.187:7002,123.57.204.187:7003","timeout":"2000","maxRedirections":"500","password":"123456","isCluster":true}
+create /lcp/dev/redis/biz/passport {"redisHostAndPorts":"123.57.204.187:7001,123.57.204.187:7002,123.57.204.187:7003","timeout":"2000","maxRedirections":"500","password":"123456","isCluster":true}
 create /lcp/dev/redis/biz {"redisHostAndPorts":"123.57.204.187:7001,123.57.204.187:7002,123.57.204.187:7003","timeout":"2000","maxRedirections":"500","password":"123456","isCluster":true}
 
 (4).lcp_framework只存放lcp平台相关的参数，全部加载在JVM中，定时刷新，所以可以放到一个资源占用很小的db中.
 create /lcp/dev/mysql/master/framework {"url":"jdbc:mysql://123.57.204.187:3306/lcp_framework?useUnicode=true&characterEncoding=utf-8","userName":"root","userName":"root","password":"111111","driverClassName":"com.mysql.jdbc.Driver"}
 
-create /lcp/dev/mysql/master/passport {"url":"jdbc:mysql://123.57.204.187:3306/lcp_passport?useUnicode=true&characterEncoding=utf-8","userName":"root","userName":"root","password":"111111","driverClassName":"com.mysql.jdbc.Driver"}
 create /lcp/dev/mysql/master/biz {"url":"jdbc:mysql://123.57.204.187:3306/lcp_biz?useUnicode=true&characterEncoding=utf-8","userName":"root","userName":"root","password":"111111","driverClassName":"com.mysql.jdbc.Driver"}
+create /lcp/dev/mysql/master/biz/passport {"url":"jdbc:mysql://123.57.204.187:3306/lcp_passport?useUnicode=true&characterEncoding=utf-8","userName":"root","userName":"root","password":"111111","driverClassName":"com.mysql.jdbc.Driver"}
+create /lcp/dev/mysql/master/biz/lbs {"url":"jdbc:mysql://123.57.204.187:3306/lcp_biz?useUnicode=true&characterEncoding=utf-8","userName":"root","userName":"root","password":"111111","driverClassName":"com.mysql.jdbc.Driver"}

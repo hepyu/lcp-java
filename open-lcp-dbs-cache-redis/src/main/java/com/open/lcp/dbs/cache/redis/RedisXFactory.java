@@ -11,7 +11,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.gson.Gson;
-import com.open.lcp.core.api.LcpResource;
+import com.open.lcp.core.env.LcpResource;
+import com.open.lcp.core.env.finder.EnvEnum;
+import com.open.lcp.core.env.finder.EnvFinder;
 import com.open.lcp.core.env.finder.ZKFinder;
 import com.open.lcp.core.register.mangocity.zk.ConfigChangeListener;
 import com.open.lcp.core.register.mangocity.zk.ConfigChangeSubscriber;
@@ -22,16 +24,17 @@ import com.open.lcp.dbs.cache.redis.single.JedisPoolImpl;
 public class RedisXFactory {
 	private static final Log logger = LogFactory.getLog(RedisXFactory.class);
 
-	private static final ConcurrentMap<LcpResource, RedisX> redisMap = new ConcurrentHashMap<LcpResource, RedisX>();
+	private static final ConcurrentMap<String, RedisX> redisMap = new ConcurrentHashMap<String, RedisX>();
 
 	private static final Object INIT_REDISIMPL_MAP = new Object();
 
-	public static RedisX loadRedisX(final LcpResource zkResourcePath) {
-
-		RedisX instance = redisMap.get(zkResourcePath);
+	public static RedisX loadRedisX(final LcpResource lcpResource) {
+		String zkAbsolutePath = lcpResource.getAbsolutePath(EnvFinder.getProfile());
+		
+		RedisX instance = redisMap.get(zkAbsolutePath);
 		if (instance == null) {
 			synchronized (INIT_REDISIMPL_MAP) {
-				instance = redisMap.get(zkResourcePath);
+				instance = redisMap.get(zkAbsolutePath);
 				if (instance == null) {
 					ZkClient zkClient = null;
 					try {
@@ -49,22 +52,22 @@ public class RedisXFactory {
 						});
 
 						ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient,
-								ZKFinder.findZKResourceParentPath(zkResourcePath));
-						sub.subscribe(zkResourcePath.zkNodeName(), new ConfigChangeListener() {
+								lcpResource.getAbsoluteParentPath(EnvFinder.getProfile()));
+						sub.subscribe(lcpResource.getNodeName(), new ConfigChangeListener() {
 
 							@Override
 							public void configChanged(String key, String value) {
-								RedisX redisX = loadRedisX(zkResourcePath, value);
+								RedisX redisX = loadRedisX(lcpResource, value);
 
-								RedisX old = redisMap.get(zkResourcePath);
-								redisMap.put(zkResourcePath, redisX);
+								RedisX old = redisMap.get(zkAbsolutePath);
+								redisMap.put(zkAbsolutePath, redisX);
 								
 								old.close();
 							}
 						});
 
-						RedisX redisX = loadRedisX(zkResourcePath, zkClient);
-						redisMap.put(zkResourcePath, redisX);
+						RedisX redisX = loadRedisX(lcpResource, zkClient);
+						redisMap.put(zkAbsolutePath, redisX);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 						System.exit(-1);
@@ -77,12 +80,12 @@ public class RedisXFactory {
 			}
 		}
 		if (redisMap != null && redisMap.size() > 0) {
-			for (Entry<LcpResource, RedisX> entry : redisMap.entrySet()) {
+			for (Entry<String, RedisX> entry : redisMap.entrySet()) {
 				logger.debug("--RedisServiceImpl--" + entry.getKey() + "--" + entry.getValue());
 			}
 		}
 
-		return redisMap.get(zkResourcePath);
+		return redisMap.get(lcpResource);
 	}
 
 	private static RedisX loadRedisX(final LcpResource zkResourcePath, String jsonStr) {
@@ -91,7 +94,7 @@ public class RedisXFactory {
 	}
 
 	private static RedisX loadRedisX(final LcpResource zkResourcePath, ZkClient zkClient) {
-		String ssdbStr = zkClient.readData(ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
+		String ssdbStr = zkClient.readData(zkResourcePath.getAbsolutePath(EnvFinder.getProfile()));
 		ZKRedisConfig redisConfig = loadZKRedisConfig(ssdbStr);
 		return loadRedisX(zkResourcePath, redisConfig);
 	}

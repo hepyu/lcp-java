@@ -112,6 +112,7 @@
 		<open-lcp-core-common.version>2.0-SNAPSHOT</open-lcp-core-common.version>
 		<open-lcp-core-register.version>2.0-SNAPSHOT</open-lcp-core-register.version>
 		<open-lcp-core-env.version>2.0-SNAPSHOT</open-lcp-core-env.version>
+		<open-lcp-core-app-init.version>2.0-SNAPSHOT</open-lcp-core-app-init.version>
 
 		<open-lcp-biz-passport.version>2.0-SNAPSHOT</open-lcp-biz-passport.version>
 		<open-lcp-biz-passport.version>2.0-SNAPSHOT</open-lcp-biz-passport.version>

@@ -10,7 +10,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.gson.Gson;
-import com.open.lcp.core.api.LcpResource;
+import com.open.lcp.core.env.LcpResource;
+import com.open.lcp.core.env.finder.EnvFinder;
 import com.open.lcp.core.env.finder.ZKFinder;
 import com.open.lcp.core.register.mangocity.zk.ConfigChangeListener;
 import com.open.lcp.core.register.mangocity.zk.ConfigChangeSubscriber;
@@ -20,14 +21,15 @@ public class SSDBXFactory {
 
 	private static final Log logger = LogFactory.getLog(SSDBXFactory.class);
 
-	private static final Map<LcpResource, SSDBXImpl> ssdbxMap = new ConcurrentHashMap<LcpResource, SSDBXImpl>();
+	private static final Map<String, SSDBXImpl> ssdbxMap = new ConcurrentHashMap<String, SSDBXImpl>();
 
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
-	public static SSDBX getSSDBX(final LcpResource zkResourcePath) {
-		SSDBXImpl ssdbxImpl = ssdbxMap.get(zkResourcePath);
+	public static SSDBX getSSDBX(final LcpResource lcpResource) {
+		String zkAbsolutePath = lcpResource.getAbsolutePath(EnvFinder.getProfile());
+		SSDBXImpl ssdbxImpl = ssdbxMap.get(zkAbsolutePath);
 		if (ssdbxImpl == null) {
-			ssdbxImpl = ssdbxMap.get(zkResourcePath);
+			ssdbxImpl = ssdbxMap.get(zkAbsolutePath);
 			synchronized (LOCK_OF_NEWPATH) {
 				if (ssdbxImpl == null) {
 					ZkClient zkClient = null;
@@ -46,22 +48,22 @@ public class SSDBXFactory {
 						});
 
 						ConfigChangeSubscriber sub = new ZkConfigChangeSubscriberImpl(zkClient,
-								ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
-						sub.subscribe(zkResourcePath.zkNodeName(), new ConfigChangeListener() {
+								lcpResource.getAbsoluteParentPath(EnvFinder.getProfile()));
+						sub.subscribe(lcpResource.getNodeName(), new ConfigChangeListener() {
 
 							@Override
 							public void configChanged(String key, String value) {
 
 								ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(value);
-								ssdbxMap.get(zkResourcePath).getSSDBHolder().setSSDBConfig(ssdbConfig);
+								ssdbxMap.get(zkAbsolutePath).getSSDBHolder().setSSDBConfig(ssdbConfig);
 
 							}
 						});
 						// String initValue = sub.getInitValue(source);
 
 						// {"ip":"123.57.204.187","port":"8888","timeout":"200","cfg":{"maxActive":"100","testWhileIdle":true}}
-						ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(zkResourcePath, zkClient);
-						ssdbxMap.put(zkResourcePath, new SSDBXImpl(ssdbConfig));
+						ZKSSDBConfig ssdbConfig = loadSSDBCacheConfig(lcpResource, zkClient);
+						ssdbxMap.put(zkAbsolutePath, new SSDBXImpl(ssdbConfig));
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 						System.exit(-1);
@@ -73,11 +75,11 @@ public class SSDBXFactory {
 				}
 			}
 		}
-		return ssdbxMap.get(zkResourcePath);
+		return ssdbxMap.get(zkAbsolutePath);
 	}
 
-	private static ZKSSDBConfig loadSSDBCacheConfig(LcpResource zkResourcePath, ZkClient zkClient) {
-		String ssdbStr = zkClient.readData(ZKFinder.findAbsoluteZKResourcePath(zkResourcePath));
+	private static ZKSSDBConfig loadSSDBCacheConfig(LcpResource lcpResource, ZkClient zkClient) {
+		String ssdbStr = zkClient.readData(lcpResource.getAbsolutePath(EnvFinder.getProfile()));
 		return loadSSDBCacheConfig(ssdbStr);
 	}
 

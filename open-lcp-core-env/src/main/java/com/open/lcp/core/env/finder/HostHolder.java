@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.gson.Gson;
+import com.open.lcp.core.env.LcpResource;
 import com.open.lcp.core.env.finder.config.HostsConfig;
 import com.open.lcp.core.register.mangocity.zk.ConfigChangeListener;
 import com.open.lcp.core.register.mangocity.zk.ConfigChangeSubscriber;
@@ -45,7 +46,7 @@ public class HostHolder {
 			});
 
 			for (final EnvEnum envEnum : EnvEnum.values()) {
-				String envRoot = EnvConsts.ENV_ROOT + "/" + envEnum.name();
+				String envRoot = LcpResource.RESOURCE_ROOT + "/" + envEnum.name();
 				boolean isExist = zkClient.exists(envRoot + "/" + EnvConsts.KEY_HOSTS);
 				if (!isExist) {
 					continue;

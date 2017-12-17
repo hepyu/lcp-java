@@ -2,7 +2,7 @@ package com.open.lcp.core.env.finder;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.open.lcp.core.api.LcpResource;
+import com.open.lcp.core.env.LcpResource;
 
 public class ZKFinder {
 
@@ -33,27 +33,27 @@ public class ZKFinder {
 		return EnvConsts.ZK_SERVERS;
 	}
 
-	public static String findAbsoluteZKResourcePath(LcpResource zkResourcePath) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(EnvConsts.ENV_ROOT).append("/").append(EnvFinder.getProfile().name());
-		if (StringUtils.isEmpty(zkResourcePath.zkRelativePath())) {
-			sb.append("/").append(zkResourcePath.zkNodeName());
-		} else {
-			sb.append(zkResourcePath.zkRelativePath()).append("/").append(zkResourcePath.zkNodeName());
-		}
-		return sb.toString();
-	}
-
-	public static String findZKResourceParentPath(LcpResource zkResourcePath) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(EnvConsts.ENV_ROOT).append("/").append(EnvFinder.getProfile().name());
-		if (StringUtils.isEmpty(zkResourcePath.zkRelativePath())) {
-			// no doing
-		} else {
-			sb.append(zkResourcePath.zkRelativePath());
-		}
-		return sb.toString();
-	}
+//	public static String findAbsoluteZKResourcePath(LcpResource zkResourcePath) {
+//		StringBuilder sb = new StringBuilder();
+//		sb.append(EnvConsts.ENV_ROOT).append("/").append(EnvFinder.getProfile().name());
+//		if (StringUtils.isEmpty(zkResourcePath.zkRelativePath())) {
+//			sb.append("/").append(zkResourcePath.zkNodeName());
+//		} else {
+//			sb.append(zkResourcePath.zkRelativePath()).append("/").append(zkResourcePath.zkNodeName());
+//		}
+//		return sb.toString();
+//	}
+//
+//	public static String findZKResourceParentPath(LcpResource zkResourcePath) {
+//		StringBuilder sb = new StringBuilder();
+//		sb.append(EnvConsts.ENV_ROOT).append("/").append(EnvFinder.getProfile().name());
+//		if (StringUtils.isEmpty(zkResourcePath.zkRelativePath())) {
+//			// no doing
+//		} else {
+//			sb.append(zkResourcePath.zkRelativePath());
+//		}
+//		return sb.toString();
+//	}
 
 	// 2.find ssdb
 

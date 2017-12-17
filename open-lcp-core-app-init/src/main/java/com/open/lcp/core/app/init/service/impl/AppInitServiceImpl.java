@@ -7,10 +7,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
-import com.open.lcp.core.api.LcpResource;
 import com.open.lcp.core.app.init.service.AppInitService;
 import com.open.lcp.core.app.init.service.dao.AppInitInfoDAO;
 import com.open.lcp.core.app.init.service.dao.entity.AppInitInfoEntity;
+import com.open.lcp.core.env.LcpResource;
 import com.open.lcp.dbs.cache.redis.RedisX;
 import com.open.lcp.dbs.cache.redis.RedisXFactory;
 
