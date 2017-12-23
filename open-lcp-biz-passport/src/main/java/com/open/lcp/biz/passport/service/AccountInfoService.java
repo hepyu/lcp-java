@@ -10,10 +10,11 @@ import com.open.lcp.biz.passport.dto.LoginByOAuthResultDTO;
 import com.open.lcp.biz.passport.dto.ObtainMobileCodeDTO;
 import com.open.lcp.biz.passport.dto.PassportOAuthAccountDTO;
 import com.open.lcp.biz.passport.dto.RequestUploadAvatarResultDTO;
-import com.open.lcp.core.api.service.BaseUserAccountInfoService;
+import com.open.lcp.core.api.info.CoreFeatureUserAccountInfo;
+import com.open.lcp.core.api.service.CoreFeatureUserAccountInfoService;
 import com.open.lcp.core.common.enums.Gender;
 
-public interface AccountInfoService extends BaseUserAccountInfoService {
+public interface AccountInfoService extends CoreFeatureUserAccountInfoService {
 
 	public boolean suicide(String t);
 

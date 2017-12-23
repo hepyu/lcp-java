@@ -18,12 +18,12 @@ public class CommentConfiguration {
 
 	@Bean(name = BEAN_NAME_HBASE_COMMENT)
 	public Connection hbaseConnection() {
-		return HBaseXFactory.createConnection(LcpResource.hbase_lcp_biz_comment);
+		return HBaseXFactory.createConnection(LcpResource.lcp_hbase_biz_comment);
 	}
 
 	@Bean(name = BEAN_NAME_COMMENT_DISTRIBUTED_CACHE)
 	public RedisX getCommentListRedis() {
-		return RedisXFactory.loadRedisX(LcpResource.redis_lcp_biz_comment);
+		return RedisXFactory.loadRedisX(LcpResource.lcp_redis_biz_comment);
 	}
 
 	// @Bean(name = "commentSecureManager")

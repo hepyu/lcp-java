@@ -1,10 +1,11 @@
 package com.open.lcp.core.app.init.service.dao;
 
 import com.open.lcp.core.app.init.service.dao.entity.AppInitInfoEntity;
+import com.open.lcp.core.env.LcpResource;
 import com.open.lcp.orm.jade.annotation.DAO;
 import com.open.lcp.orm.jade.annotation.SQL;
 
-@DAO(catalog = "mysql_lcp_biz")
+@DAO(catalog = LcpResource.dbAnnotationName_lcp_mysql_core_framework_master)
 public interface AppInitInfoDAO {
 
 	@SQL("select device_id, miui_version, product_version, miui_type, language, country, screen_height, device, android_version, model, screen_resolution, screen_width, screen_density, mac, imei, mac_md5, imei_md5 from app_init_info where device_id=:1")

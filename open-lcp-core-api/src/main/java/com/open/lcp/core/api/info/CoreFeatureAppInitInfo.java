@@ -1,6 +1,6 @@
 package com.open.lcp.core.api.info;
 
-public interface BasicAppInitInfo {
+public interface CoreFeatureAppInitInfo {
 
 	public String getDeviceId();
 

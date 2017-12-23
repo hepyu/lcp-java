@@ -28,19 +28,19 @@ public class DataSourceConfiguration {
 	// </bean>
 	// @Bean(name = "jade.dataSourceFactory")
 	// @Bean(name = "jade.dataSourceFactory") // only master
-	@Bean(name = "mysql_lcp_framework") // only master
+	@Bean(name = LcpResource.dbAnnotationName_lcp_mysql_core_framework_master) // only master
 	public DataSourceFactory getFrameworkDataSource() {
-		return MysqlXFactory.loadMysqlX(LcpResource.mysql_lcp_framework_master);
+		return MysqlXFactory.loadMysqlX(LcpResource.lcp_mysql_core_framework_master);
 	}
 
-	@Bean(name = "mysql_lcp_passport") // only master
+	@Bean(name = LcpResource.dbAnnotationName_lcp_mysql_core_feature_user_master) // only master
 	public DataSourceFactory getPassportDataSource() {
-		return MysqlXFactory.loadMysqlX(LcpResource.mysql_lcp_passport_master);
+		return MysqlXFactory.loadMysqlX(LcpResource.lcp_mysql_core_feature_user_master);
 	}
 
-	@Bean(name = "mysql_lcp_biz") // only master
+	@Bean(name = LcpResource.dbAnnotationName_lcp_mysql_biz_master) // only master
 	public DataSourceFactory getBizDataSource() {
-		return MysqlXFactory.loadMysqlX(LcpResource.mysql_lcp_biz_master);
+		return MysqlXFactory.loadMysqlX(LcpResource.lcp_mysql_biz_master);
 	}
 
 	// @Bean(name = "lcpBiz") // master and slave

@@ -3,12 +3,11 @@ package com.open.lcp.biz.comment.service.dao.db;
 import java.util.List;
 
 import com.open.lcp.biz.comment.service.dao.db.entity.CommentUserSilencedLogEntity;
+import com.open.lcp.core.env.LcpResource;
 import com.open.lcp.orm.jade.annotation.DAO;
 import com.open.lcp.orm.jade.annotation.SQL;
 
-/**
- */
-@DAO(catalog = "lcp_biz_comment")
+@DAO(catalog = LcpResource.dbAnnotationName_lcp_mysql_biz_comment_master)
 public interface MysqlCommentUserSilencedLogDAO {
 
 	@SQL("insert into comment_user_silenced_log (user_id, silenced_days, reason, start, end, operator, ctime) values (:1.userId, :1.silencedDays, :1.reason, :1.start, :1.end, :1.operator, :1.ctime)")

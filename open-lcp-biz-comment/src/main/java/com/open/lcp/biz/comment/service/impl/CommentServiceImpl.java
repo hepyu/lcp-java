@@ -28,7 +28,7 @@ import com.open.lcp.biz.comment.service.dao.hbase.impl.column.UserColumn;
 import com.open.lcp.biz.passport.api.AccountInfoApi;
 import com.open.lcp.biz.passport.service.dao.PassportUserAccountDAO;
 import com.open.lcp.core.common.util.HttpUtil;
-import com.open.lcp.core.api.info.BasicUserAccountInfo;
+import com.open.lcp.core.api.info.CoreFeatureUserAccountInfo;
 import com.open.lcp.core.framework.IdWorker;
 import com.open.lcp.core.framework.api.ApiException;
 import com.open.lcp.core.framework.consts.LcpConstants;
@@ -127,7 +127,7 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public CommentAddResp addComment(int appId, final int typeId, String tid, final Long cid, String ip, String device,
-			String comment, BasicUserAccountInfo user, String sourceId, String triggerId, String clientPort,
+			String comment, CoreFeatureUserAccountInfo user, String sourceId, String triggerId, String clientPort,
 			String recommendPlatform, String downLoadSpeed, boolean isAnonymous, String bandwidth,
 			String extParamsJson) {
 		long userId = user.getUserId();
@@ -673,7 +673,7 @@ public class CommentServiceImpl implements CommentService {
 	/**
 	 * 评论用户列
 	 */
-	private UserColumn createUserColumn(BasicUserAccountInfo user) {
+	private UserColumn createUserColumn(CoreFeatureUserAccountInfo user) {
 		UserColumn userColumn = new UserColumn();
 		userColumn.setUid(user.getUserId());
 		userColumn.setName(user.getNickName());

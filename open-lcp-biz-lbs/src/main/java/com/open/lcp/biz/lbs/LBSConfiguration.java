@@ -12,11 +12,11 @@ public class LBSConfiguration {
 
 	// private final static String BEAN_NAME_HBASE_COMMENT = "hbase_comment";
 
-	public final static String BEAN_NAME_REDIS_LBS = "redis_lbs";
-
-	@Bean(name = BEAN_NAME_REDIS_LBS)
+	public final static String BEAN_NAME_REDIS_LBS = LcpResource.cacheAnnotationName_lcp_redis_biz_lbs;
+	
+	@Bean(name = LcpResource.cacheAnnotationName_lcp_redis_biz_lbs)
 	public RedisX getLBSRedis() {
-		return RedisXFactory.loadRedisX(LcpResource.redis_lcp_biz_comment);
+		return RedisXFactory.loadRedisX(LcpResource.lcp_redis_biz_lbs);
 	}
 
 	// @Bean(name = "commentSecureManager")

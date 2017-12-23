@@ -1,9 +1,9 @@
 package com.open.lcp.biz.passport.dto;
 
 import com.open.lcp.core.common.enums.Gender;
-import com.open.lcp.core.api.info.BasicUserAccountInfo;
+import com.open.lcp.core.api.info.CoreFeatureUserAccountInfo;
 
-public class PassportUserAccountDTO implements BasicUserAccountInfo {
+public class PassportUserAccountDTO implements CoreFeatureUserAccountInfo {
 
 	private Long userId;
 

@@ -14,7 +14,7 @@ import com.open.lcp.biz.comment.service.dao.db.MysqlCommentUserSilencedLogDAO;
 import com.open.lcp.biz.comment.service.dao.db.entity.CommentUserSilencedEntity;
 import com.open.lcp.biz.comment.service.dao.db.entity.CommentUserSilencedLogEntity;
 import com.open.lcp.biz.passport.service.AccountInfoService;
-import com.open.lcp.core.api.info.BasicUserAccountInfo;
+import com.open.lcp.core.api.info.CoreFeatureUserAccountInfo;
 
 import javax.annotation.Resource;
 import java.util.List;

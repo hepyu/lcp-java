@@ -15,7 +15,7 @@ import com.open.lcp.biz.passport.api.AccountInfoApi;
 import com.open.lcp.core.api.annotation.LcpHttpMethod;
 import com.open.lcp.core.api.command.CommandContext;
 import com.open.lcp.core.api.facade.ApiFacade;
-import com.open.lcp.core.api.info.BasicUserAccountInfo;
+import com.open.lcp.core.api.info.CoreFeatureUserAccountInfo;
 import com.open.lcp.core.framework.facade.CommonResultResp;
 
 import javax.annotation.Resource;

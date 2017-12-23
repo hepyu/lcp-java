@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.open.lcp.core.api.facade.ApiResult;
 import com.open.lcp.core.api.facade.ApiResultCode;
-import com.open.lcp.core.api.service.BaseAppInitService;
+import com.open.lcp.core.api.service.CoreFeatureAppInitService;
 import com.open.lcp.core.framework.api.BlockChecker;
 import com.open.lcp.core.framework.api.RequestChecker;
 import com.open.lcp.core.framework.api.service.ApiMaxThreadsService;
@@ -54,7 +54,7 @@ public abstract class AbstractApiCommand implements ApiCommand {
 	private static int blockLogPeriod = 60 * 1000;// 1分钟
 
 	@Autowired
-	private BaseAppInitService appInitService;
+	private CoreFeatureAppInitService appInitService;
 	@Autowired
 	private ApiMaxThreadsService apiMaxThreadsService;
 

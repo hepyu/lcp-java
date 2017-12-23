@@ -29,12 +29,12 @@ public class RedisXFactory {
 	private static final Object INIT_REDISIMPL_MAP = new Object();
 
 	public static RedisX loadRedisX(final LcpResource lcpResource) {
-		String zkAbsolutePath = lcpResource.getAbsolutePath(EnvFinder.getProfile());
+		//String zkAbsolutePath = lcpResource.getAbsolutePath(EnvFinder.getProfile());
 		
-		RedisX instance = redisMap.get(zkAbsolutePath);
+		RedisX instance = redisMap.get(lcpResource.getClassDeclaredDataSourceAnnotationName());
 		if (instance == null) {
 			synchronized (INIT_REDISIMPL_MAP) {
-				instance = redisMap.get(zkAbsolutePath);
+				instance = redisMap.get(lcpResource.getClassDeclaredDataSourceAnnotationName());
 				if (instance == null) {
 					ZkClient zkClient = null;
 					try {
@@ -59,15 +59,15 @@ public class RedisXFactory {
 							public void configChanged(String key, String value) {
 								RedisX redisX = loadRedisX(lcpResource, value);
 
-								RedisX old = redisMap.get(zkAbsolutePath);
-								redisMap.put(zkAbsolutePath, redisX);
+								RedisX old = redisMap.get(lcpResource.getClassDeclaredDataSourceAnnotationName());
+								redisMap.put(lcpResource.getClassDeclaredDataSourceAnnotationName(), redisX);
 								
 								old.close();
 							}
 						});
 
 						RedisX redisX = loadRedisX(lcpResource, zkClient);
-						redisMap.put(zkAbsolutePath, redisX);
+						redisMap.put(lcpResource.getClassDeclaredDataSourceAnnotationName(), redisX);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 						System.exit(-1);
@@ -85,7 +85,7 @@ public class RedisXFactory {
 			}
 		}
 
-		return redisMap.get(lcpResource);
+		return redisMap.get(lcpResource.getClassDeclaredDataSourceAnnotationName());
 	}
 
 	private static RedisX loadRedisX(final LcpResource zkResourcePath, String jsonStr) {

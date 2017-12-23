@@ -3,10 +3,11 @@ package com.open.lcp.biz.comment.service.dao.db;
 import java.util.List;
 
 import com.open.lcp.biz.comment.service.dao.db.entity.CommentConfigEntity;
+import com.open.lcp.core.env.LcpResource;
 import com.open.lcp.orm.jade.annotation.DAO;
 import com.open.lcp.orm.jade.annotation.SQL;
 
-@DAO(catalog = "lcp_biz_comment")
+@DAO(catalog = LcpResource.dbAnnotationName_lcp_mysql_biz_comment_master)
 public interface MysqlCommentConfigDAO {
 
 	@SQL("select app_id,app_comment_id,type,level,floor_level from comment_config")

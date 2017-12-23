@@ -33,11 +33,11 @@ public class MysqlXFactory {
 	private static final Object LOCK_OF_NEWPATH = new Object();
 
 	public static DataSourceFactory loadMysqlX(final LcpResource lcpResource) {
-		String zkAbsolutePath = lcpResource.getAbsolutePath(EnvFinder.getProfile());
-		DataSourceHolder dsHolder = hierarchicalDataSourceFactory.getHolder(zkAbsolutePath);
+		//String zkAbsolutePath = lcpResource.getAbsolutePath(EnvFinder.getProfile());
+		DataSourceHolder dsHolder = hierarchicalDataSourceFactory.getHolder(lcpResource.getClassDeclaredDataSourceAnnotationName());
 		if (dsHolder == null) {
 			synchronized (LOCK_OF_NEWPATH) {
-				dsHolder = hierarchicalDataSourceFactory.getHolder(zkAbsolutePath);
+				dsHolder = hierarchicalDataSourceFactory.getHolder(lcpResource.getClassDeclaredDataSourceAnnotationName());
 				if (dsHolder == null) {
 					ZkClient zkClient = null;
 					try {
@@ -63,8 +63,8 @@ public class MysqlXFactory {
 								MySQLDBConfig dbconfig = loadDBConfig(value);
 								DataSource newds = load(lcpResource, dbconfig);
 								
-								DataSourceHolder oldDSHolder = hierarchicalDataSourceFactory.getHolder(zkAbsolutePath);
-								hierarchicalDataSourceFactory.replaceHolder(zkAbsolutePath,
+								DataSourceHolder oldDSHolder = hierarchicalDataSourceFactory.getHolder(lcpResource.getClassDeclaredDataSourceAnnotationName());
+								hierarchicalDataSourceFactory.replaceHolder(lcpResource.getClassDeclaredDataSourceAnnotationName(),
 										newds);
 								
 								if(oldDSHolder!=null){
@@ -81,7 +81,7 @@ public class MysqlXFactory {
 						MySQLDBConfig dbconfig = loadDBConfig(lcpResource, zkClient);
 						DataSource ds = load(lcpResource, dbconfig);
 
-						hierarchicalDataSourceFactory.registerDataSource(zkAbsolutePath, ds);
+						hierarchicalDataSourceFactory.registerDataSource(lcpResource.getClassDeclaredDataSourceAnnotationName(), ds);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 						System.exit(-1);

@@ -1,6 +1,6 @@
 package com.open.lcp.core.api.info;
 
-public interface BasicUserAccountTicketInfo {
+public interface CoreFeatureUserAccountTicketInfo {
 
 	public String getUserSecretKey();
 

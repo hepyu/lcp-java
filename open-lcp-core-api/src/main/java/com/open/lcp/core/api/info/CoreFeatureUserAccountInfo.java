@@ -2,7 +2,7 @@ package com.open.lcp.core.api.info;
 
 import com.open.lcp.core.common.enums.Gender;
 
-public interface BasicUserAccountInfo {
+public interface CoreFeatureUserAccountInfo {
 
 	public Long getUserId();
 

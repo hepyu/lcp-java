@@ -48,10 +48,12 @@ public class PassportFacade implements ApiFacade {
 		return accountTicketService.getUserInfo(context.getTicket());
 	}
 
-	@LcpHttpMethod(name = "passport.user.unbind", ver = "1.0", desc = "解綁", logon = true)
-	public int unbindAccount(Long userId, UserAccountType userAccountType) {
-		return accountInfoService.unbindAccount(userId, userAccountType);
-	}
+	// @LcpHttpMethod(name = "passport.user.unbind", ver = "1.0", desc = "解綁",
+	// logon = true)
+	// public int unbindAccount(Long userId, UserAccountType userAccountType,
+	// CommandContext context) {
+	// return accountInfoService.unbindAccount(userId, userAccountType);
+	// }
 
 	@LcpHttpMethod(name = "passport.user.bindMobileAccount", ver = "1.0", desc = "绑定手机", logon = true)
 	public CommonResultResp bindMobileAccount(BindMobileAccountReq req, CommandContext context) {
@@ -61,43 +63,52 @@ public class PassportFacade implements ApiFacade {
 	}
 
 	@LcpHttpMethod(name = "passport.user.bindThirdAccount", ver = "1.0", desc = "绑定第三方账号", logon = true)
-	public BindAccountResultDTO bindThirdAccount(BindThirdAccountReq req,CommandContext context) {
-		return accountInfoService.bindThirdAccount(context.getAppInfo().getAppId(), req.getThirdAppId(), req.getOpenId(), req.getAccessToken(), context.getDeviceId(), context.getTicket(),
-				req.getAccountType(), context.getClientIp());
+	public BindAccountResultDTO bindThirdAccount(BindThirdAccountReq req, CommandContext context) {
+		return accountInfoService.bindThirdAccount(context.getAppInfo().getAppId(), req.getThirdAppId(),
+				req.getOpenId(), req.getAccessToken(), context.getDeviceId(), context.getTicket(), req.getAccountType(),
+				context.getClientIp());
 	}
 
-	@LcpHttpMethod(name = "passport.user.updateGender", ver = "1.0", desc = "更新性別", logon = true)
-	public CommonResultResp updateGender(Long userId, Gender gender) {
-		int result = accountInfoService.updateGender(userId, gender);
-		return result > 0 ? CommonResultResp.SUCCESS : CommonResultResp.FAILED;
-	}
-
-	@LcpHttpMethod(name = "passport.user.updateNickName", ver = "1.0", desc = "更新昵称", logon = true)
-	public CommonResultResp updateNickName(Long userId, String nickName) {
-		int result = accountInfoService.updateNickName(userId, nickName);
-		return result > 0 ? CommonResultResp.SUCCESS : CommonResultResp.FAILED;
-	}
-
-	@LcpHttpMethod(name = "passport.user.updateDescription", ver = "1.0", desc = "更新昵称", logon = true)
-	public CommonResultResp updateDescription(Long userId, String description) {
-		int result = accountInfoService.updateDescription(userId, description);
-		return result > 0 ? CommonResultResp.SUCCESS : CommonResultResp.FAILED;
-	}
-
-	@LcpHttpMethod(name = "passport.user.requestUploadAvatar", ver = "1.0", desc = "获取上传头像的token", logon = true)
-	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId) {
-		return accountInfoService.requestUploadAvatar(userId);
-	}
-
-	@LcpHttpMethod(name = "passport.user.commitUploadAvatar", ver = "1.0", desc = "提交头像URL", logon = true)
-	public CommonResultResp commitUploadAvatar(Long userId) {
-		String result = accountInfoService.commitUploadAvatar(userId);
-		return result == null ? CommonResultResp.FAILED : CommonResultResp.SUCCESS;
-	}
-
-	@LcpHttpMethod(name = "passport.user.getUserType", ver = "1.0", desc = "获取用户类型", logon = true)
-	public String getUserType(Long userId) {
-		return accountInfoService.getUserType(userId);
-	}
+	// @LcpHttpMethod(name = "passport.user.updateGender", ver = "1.0", desc =
+	// "更新性別", logon = true)
+	// public CommonResultResp updateGender(Long userId, Gender gender) {
+	// int result = accountInfoService.updateGender(userId, gender);
+	// return result > 0 ? CommonResultResp.SUCCESS : CommonResultResp.FAILED;
+	// }
+	//
+	// @LcpHttpMethod(name = "passport.user.updateNickName", ver = "1.0", desc =
+	// "更新昵称", logon = true)
+	// public CommonResultResp updateNickName(Long userId, String nickName) {
+	// int result = accountInfoService.updateNickName(userId, nickName);
+	// return result > 0 ? CommonResultResp.SUCCESS : CommonResultResp.FAILED;
+	// }
+	//
+	// @LcpHttpMethod(name = "passport.user.updateDescription", ver = "1.0",
+	// desc = "更新昵称", logon = true)
+	// public CommonResultResp updateDescription(Long userId, String
+	// description) {
+	// int result = accountInfoService.updateDescription(userId, description);
+	// return result > 0 ? CommonResultResp.SUCCESS : CommonResultResp.FAILED;
+	// }
+	//
+	// @LcpHttpMethod(name = "passport.user.requestUploadAvatar", ver = "1.0",
+	// desc = "获取上传头像的token", logon = true)
+	// public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId) {
+	// return accountInfoService.requestUploadAvatar(userId);
+	// }
+	//
+	// @LcpHttpMethod(name = "passport.user.commitUploadAvatar", ver = "1.0",
+	// desc = "提交头像URL", logon = true)
+	// public CommonResultResp commitUploadAvatar(Long userId) {
+	// String result = accountInfoService.commitUploadAvatar(userId);
+	// return result == null ? CommonResultResp.FAILED :
+	// CommonResultResp.SUCCESS;
+	// }
+	//
+	// @LcpHttpMethod(name = "passport.user.getUserType", ver = "1.0", desc =
+	// "获取用户类型", logon = true)
+	// public String getUserType(Long userId) {
+	// return accountInfoService.getUserType(userId);
+	// }
 
 }

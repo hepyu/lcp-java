@@ -84,14 +84,14 @@ public class CommandModelHolder {
 				}
 				Class<?>[] ps = m.getParameterTypes();
 				if (ps.length > 2) {// 超出两个入参一定是错的。最多只支持一个Req（对象或单值）和一个ctx
-					throw new RuntimeException(String.format("McpMethod load error: %s ps more than 2 @%s.%s",
+					throw new RuntimeException(String.format("LcpMethod load error: %s ps more than 2 @%s.%s",
 							ps.length, clazz.getName(), m.getName()));
 				}
 
 				if (ps.length == 2) {// 双参的第二个必须是ctx
 					if (ps[1] != CommandContext.class && ps[1] != ApiCommandContext.class) {
 						throw new RuntimeException(
-								String.format("McpMethod load error: 2/%s ps is not CommandContext @%s.%s", ps.length,
+								String.format("LcpMethod load error: 2/%s ps is not CommandContext @%s.%s", ps.length,
 										clazz.getName(), m.getName()));
 					}
 				}

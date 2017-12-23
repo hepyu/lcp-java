@@ -15,7 +15,7 @@ import com.open.lcp.biz.passport.service.dao.entity.PassportOAuthAccountEntity;
 import com.open.lcp.biz.passport.service.dao.entity.PassportUserAccountEntity;
 import com.open.lcp.biz.passport.ticket.Ticket;
 import com.open.lcp.biz.passport.util.AccountUtil;
-import com.open.lcp.core.api.info.BasicUserAccountTicketInfo;
+import com.open.lcp.core.api.info.CoreFeatureUserAccountTicketInfo;
 
 @Service
 public class AccountTicketServiceImpl extends AbstractAccountService implements AccountTicketService {
@@ -23,7 +23,7 @@ public class AccountTicketServiceImpl extends AbstractAccountService implements 
 	private final Log logger = LogFactory.getLog(AccountTicketServiceImpl.class);
 
 	@Override
-	public BasicUserAccountTicketInfo validateTicket(String t) {
+	public CoreFeatureUserAccountTicketInfo validateTicket(String t) {
 		try {
 			Ticket couple = super.checkTicket(t);
 

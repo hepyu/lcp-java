@@ -2,9 +2,9 @@ package com.open.lcp.core.api.command;
 
 import java.util.Map;
 
-import com.open.lcp.core.api.info.BasicAppInfo;
-import com.open.lcp.core.api.info.BasicAppInitInfo;
-import com.open.lcp.core.api.info.BasicUserAccountInfo;
+import com.open.lcp.core.api.info.CoreFrameworkAppInfo;
+import com.open.lcp.core.api.info.CoreFeatureAppInitInfo;
+import com.open.lcp.core.api.info.CoreFeatureUserAccountInfo;
 
 /**
  * 接口执行时的上下文信息
@@ -20,9 +20,9 @@ public interface CommandContext {
 	/** 登录的userId */
 	public long getUserId();
 
-	public BasicUserAccountInfo getUserAccountInfo();
+	public CoreFeatureUserAccountInfo getUserAccountInfo();
 
-	public BasicAppInfo getAppInfo();
+	public CoreFrameworkAppInfo getAppInfo();
 
 	public String getDeviceId();
 
@@ -72,5 +72,5 @@ public interface CommandContext {
 	public String getHttpHead(String name);
 
 	/** 仅当McpMethod注解中的loadAppInitData=true时，才加载 */
-	public BasicAppInitInfo getAppInitInfo();
+	public CoreFeatureAppInitInfo getAppInitInfo();
 }

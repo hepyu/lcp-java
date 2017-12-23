@@ -15,7 +15,7 @@ import com.open.lcp.dbs.cache.ssdb.SSDBX;
 // @Component
 public class PassportSSDBCacheImpl implements PassportCache {
 
-	private final SSDBX cache = SSDBLoader.loadSSDBX(LcpResource.ssdb_lcp_passport);
+	private final SSDBX cache = SSDBLoader.loadSSDBX(LcpResource.lcp_ssdb_core_feature_user);
 
 	// 1.secretKey set and get
 

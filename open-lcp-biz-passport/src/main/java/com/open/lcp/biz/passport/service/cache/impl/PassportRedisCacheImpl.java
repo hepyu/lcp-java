@@ -16,7 +16,7 @@ import com.open.lcp.dbs.cache.redis.RedisXFactory;
 @Component
 public class PassportRedisCacheImpl implements PassportCache {
 
-	private final CacheX cache = RedisXFactory.loadRedisX(LcpResource.redis_lcp_biz_passport);
+	private final CacheX cache = RedisXFactory.loadRedisX(LcpResource.lcp_redis_core_feature_user);
 
 	// 1.secretKey set and get
 

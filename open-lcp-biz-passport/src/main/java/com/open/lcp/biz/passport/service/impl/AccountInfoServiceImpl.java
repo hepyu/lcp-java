@@ -27,7 +27,7 @@ import com.open.lcp.biz.passport.service.sdk.ThirdAccountSDKPortrait;
 import com.open.lcp.biz.passport.ticket.Ticket;
 import com.open.lcp.biz.passport.util.AccountUtil;
 import com.open.lcp.biz.passport.util.NickNameUtil;
-import com.open.lcp.core.api.info.BasicUserAccountInfo;
+import com.open.lcp.core.api.info.CoreFeatureUserAccountInfo;
 import com.open.lcp.core.common.enums.Gender;
 import com.open.lcp.core.env.finder.EnvEnum;
 import com.open.lcp.core.env.finder.EnvFinder;
@@ -210,7 +210,7 @@ public class AccountInfoServiceImpl extends AbstractAccountService implements Ac
 	}
 
 	@Override
-	public BasicUserAccountInfo getUserAccountInfo(Long userId) {
+	public CoreFeatureUserAccountInfo getUserAccountInfo(Long userId) {
 		PassportUserAccountEntity entity = obtainPassportUserAccount(userId);
 		PassportUserAccountDTO dto = null;
 		if (entity != null) {

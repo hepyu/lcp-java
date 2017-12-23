@@ -4,10 +4,11 @@ import java.util.List;
 
 import com.open.lcp.biz.comment.service.dao.db.entity.CommentAuditDetailEntity;
 import com.open.lcp.biz.comment.service.dao.db.entity.CommentAuditDetailStat;
+import com.open.lcp.core.env.LcpResource;
 import com.open.lcp.orm.jade.annotation.DAO;
 import com.open.lcp.orm.jade.annotation.SQL;
 
-@DAO(catalog = "lcp_biz_comment")
+@DAO(catalog = LcpResource.dbAnnotationName_lcp_mysql_biz_comment_master)
 public interface MysqlCommentAuditDetailDAO {
 
 	@SQL("insert into comment_audit_detail(comment_id,comment_checker,comment_check_time,comment_ckeck_type) value (:1.commentId,:1.commentChecker,:1.checkTime,:1.checkType)")

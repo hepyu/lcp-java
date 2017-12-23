@@ -20,7 +20,7 @@ public class AppInitServiceImpl implements AppInitService {
 	private static final Log logger = LogFactory.getLog(AppInitServiceImpl.class);
 	private static final String APP_INIT_KEY = "app-init-";
 
-	private RedisX redis = RedisXFactory.loadRedisX(LcpResource.redis_lcp_biz);
+	private RedisX redis = RedisXFactory.loadRedisX(LcpResource.lcp_redis_biz);
 
 	@Resource
 	AppInitInfoDAO appInitDao;

@@ -3,11 +3,8 @@ package com.open.lcp;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
-
-import com.open.lcp.core.env.finder.EnvFinder;
 
 /**
  * @ComponentScan : 开启扫描，会扫描当前类的包及其子包
@@ -23,20 +20,9 @@ import com.open.lcp.core.env.finder.EnvFinder;
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, WebMvcAutoConfiguration.class })
 @ComponentScan
 @EnableCaching
-public class LcpMain {
+public class LcpCoreFrameworkMain extends AbstractLcpMain {
 
 	public static void main(String[] args) throws Exception {
-		// for (int i = 0; i < args.length; i++) {
-		// if ("adpre".equals(args[i])) {
-		// System.setProperty("adpre", "1");
-		// }
-		// }
-		final String proFileName = EnvFinder.getProfile().name();
-		System.setProperty("spring.profiles.active", proFileName);
-		// System.setProperty("com.open.lcp.dao.*", "1");
-		// logger.info(
-		// String.format("ApiMain: start @ %s, profile: %s",
-		// XunleiEnvFinder.getIpcfg().toString(), proFileName));
-		new SpringApplicationBuilder(LcpMain.class).run(args);
+		start(args);
 	}
 }

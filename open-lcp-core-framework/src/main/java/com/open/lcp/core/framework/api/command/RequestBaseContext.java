@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.open.lcp.core.common.enums.UserType;
-import com.open.lcp.core.api.info.BasicAppInfo;
+import com.open.lcp.core.api.info.CoreFrameworkAppInfo;
 
 public class RequestBaseContext {
 
@@ -20,7 +20,7 @@ public class RequestBaseContext {
 	private long userId;
 	private Map<String, String> requestParamMap;
 
-	private BasicAppInfo appInfo;
+	private CoreFrameworkAppInfo appInfo;
 
 	private String ticket;
 
@@ -67,11 +67,11 @@ public class RequestBaseContext {
 		this.secretKey = secretKey;
 	}
 
-	public BasicAppInfo getAppInfo() {
+	public CoreFrameworkAppInfo getAppInfo() {
 		return appInfo;
 	}
 
-	public void setAppInfo(BasicAppInfo appInfo) {
+	public void setAppInfo(CoreFrameworkAppInfo appInfo) {
 		this.appInfo = appInfo;
 	}
 

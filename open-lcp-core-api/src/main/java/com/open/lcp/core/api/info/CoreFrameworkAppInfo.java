@@ -1,6 +1,6 @@
 package com.open.lcp.core.api.info;
 
-public interface BasicAppInfo {
+public interface CoreFrameworkAppInfo {
 
 	public int getAppId();
 

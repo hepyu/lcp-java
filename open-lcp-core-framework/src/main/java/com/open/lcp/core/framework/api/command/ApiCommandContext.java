@@ -4,22 +4,26 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.boot.test.SpringApplicationContextLoader;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
 import com.open.lcp.core.common.enums.UserType;
 import com.open.lcp.core.api.command.CommandContext;
-import com.open.lcp.core.api.info.BasicAppInfo;
-import com.open.lcp.core.api.info.BasicAppInitInfo;
-import com.open.lcp.core.api.info.BasicUserAccountInfo;
-import com.open.lcp.core.api.service.BaseUserAccountInfoService;
+import com.open.lcp.core.api.info.CoreFrameworkAppInfo;
+import com.open.lcp.core.api.info.CoreFeatureAppInitInfo;
+import com.open.lcp.core.api.info.CoreFeatureUserAccountInfo;
+import com.open.lcp.core.api.service.CoreFeatureUserAccountInfoService;
 import com.open.lcp.core.framework.consts.LcpConstants;
 
-public class ApiCommandContext implements CommandContext {
+public class ApiCommandContext implements CommandContext, ApplicationContextAware {
 	private static final String KEY_EXT_STAT_USERID = "userId";
 	private static final String KEY_EXT_STAT_USERTYPE = "userType";
 	// private static final Log logger =
 	// LogFactory.getLog(ApiCommandContext.class);
 	// private final AccountApi accountApi;
-
-	private BaseUserAccountInfoService accountInfoService;
 
 	private long beginTime;
 
@@ -30,7 +34,7 @@ public class ApiCommandContext implements CommandContext {
 	private long userId;
 	private UserType userType;
 	/** 客户端接入授权信息 */
-	private BasicAppInfo appInfo;
+	private CoreFrameworkAppInfo appInfo;
 
 	/** 设备唯一标识 */
 	private String deviceId;
@@ -66,15 +70,15 @@ public class ApiCommandContext implements CommandContext {
 	private final String clientIp;
 	/** 用户的端口 */
 	private int clientPort;
-	private BasicAppInitInfo appInitInfo = null;
+	private CoreFeatureAppInitInfo appInitInfo = null;
 
 	private byte[] aesKey;
 	private byte[] octetBody;
 
-	public ApiCommandContext(long beginTime, BasicAppInfo appInfo, Map<String, String> stringParams,
+	public ApiCommandContext(long beginTime, CoreFrameworkAppInfo appInfo, Map<String, String> stringParams,
 			Map<String, Object> binaryParams, String ticket, String secretKey, String methodName,
 			Map<String, String> reqHeads, String clientIp, int clientPort,
-			BaseUserAccountInfoService userAccountService) {
+			CoreFeatureUserAccountInfoService userAccountService) {
 		this.beginTime = beginTime;
 		this.appInfo = appInfo;
 		this.reqHeads = reqHeads;
@@ -152,11 +156,11 @@ public class ApiCommandContext implements CommandContext {
 	}
 
 	@Override
-	public BasicAppInfo getAppInfo() {
+	public CoreFrameworkAppInfo getAppInfo() {
 		return appInfo;
 	}
 
-	public void setAppInfo(BasicAppInfo appInfo) {
+	public void setAppInfo(CoreFrameworkAppInfo appInfo) {
 		this.appInfo = appInfo;
 	}
 
@@ -294,11 +298,11 @@ public class ApiCommandContext implements CommandContext {
 	}
 
 	@Override
-	public BasicAppInitInfo getAppInitInfo() {
+	public CoreFeatureAppInitInfo getAppInitInfo() {
 		return appInitInfo;
 	}
 
-	public void setAppInitInfo(BasicAppInitInfo appInitInfo) {
+	public void setAppInitInfo(CoreFeatureAppInitInfo appInitInfo) {
 		this.appInitInfo = appInitInfo;
 	}
 
@@ -336,16 +340,17 @@ public class ApiCommandContext implements CommandContext {
 		return this.v;
 	}
 
-	private BasicUserAccountInfo userInfo = null;
+	private CoreFeatureUserAccountInfo userInfo = null;
 
 	@Override
-	public BasicUserAccountInfo getUserAccountInfo() {
+	public CoreFeatureUserAccountInfo getUserAccountInfo() {
 		if (this.userId <= 0) {
 			return null;
 		}
 		if (userInfo != null) {
 			return userInfo;
 		}
+
 		this.userInfo = accountInfoService.getUserAccountInfo(this.userId);// accountApi.getUserInfoByXlUserId(this.userId);
 		return this.userInfo;
 	}
@@ -353,6 +358,20 @@ public class ApiCommandContext implements CommandContext {
 	@Override
 	public int getClientPort() {
 		return this.clientPort;
+	}
+
+	private static volatile CoreFeatureUserAccountInfoService accountInfoService;
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		// init accountInfoService
+		if (accountInfoService == null) {
+			synchronized (ApiCommandContext.class) {
+				if (accountInfoService == null) {
+					accountInfoService = applicationContext.getBean(CoreFeatureUserAccountInfoService.class);
+				}
+			}
+		}
 	}
 
 }

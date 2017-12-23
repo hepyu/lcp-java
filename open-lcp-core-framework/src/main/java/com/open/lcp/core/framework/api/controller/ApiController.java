@@ -25,10 +25,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.open.lcp.core.common.enums.UserType;
 import com.open.lcp.core.api.facade.ApiResult;
 import com.open.lcp.core.api.facade.ApiResultCode;
-import com.open.lcp.core.api.info.BasicAppInfo;
-import com.open.lcp.core.api.info.BasicUserAccountTicketInfo;
-import com.open.lcp.core.api.service.BaseUserAccountInfoService;
-import com.open.lcp.core.api.service.BaseUserAccountTicketService;
+import com.open.lcp.core.api.info.CoreFrameworkAppInfo;
+import com.open.lcp.core.api.info.CoreFeatureUserAccountTicketInfo;
+import com.open.lcp.core.api.service.CoreFeatureUserAccountInfoService;
+import com.open.lcp.core.api.service.CoreFeatureUserAccountTicketService;
 import com.open.lcp.core.framework.api.LcpThreadLocal;
 import com.open.lcp.core.framework.api.command.ApiCommand;
 import com.open.lcp.core.framework.api.command.ApiCommandContext;
@@ -73,10 +73,10 @@ public class ApiController {
 	private ApiCommandLookupService commandLookupService;
 
 	@Autowired
-	private BaseUserAccountInfoService accountInfoService;
+	private CoreFeatureUserAccountInfoService accountInfoService;
 
 	@Autowired
-	private BaseUserAccountTicketService accountTicketService;
+	private CoreFeatureUserAccountTicketService accountTicketService;
 
 	@RequestMapping("/api/**")
 	public ApiResult apiV1() {
@@ -321,7 +321,7 @@ public class ApiController {
 			RequestBaseContext requestBaseContext, ApiResult apiResult, final String methodName) throws Exception {
 		Map<String, String> requestParamMap = requestBaseContext.getRequestParamMap();
 		final int appId = NumberUtils.toInt(requestParamMap.get(HttpConstants.PARAM_APP_ID));
-		final BasicAppInfo appInfo = appInfoService.getAppInfo(appId);
+		final CoreFrameworkAppInfo appInfo = appInfoService.getAppInfo(appId);
 		// 鎺ュ叆淇℃伅鏃犳晥
 		if (appInfo == null) {
 			apiResult.setCode(ApiResultCode.E_SYS_INVALID_APP_ID);
@@ -342,7 +342,7 @@ public class ApiController {
 		final String version = requestParamMap.get(LcpConstants.PARAM_V);
 		requestBaseContext.setTicket(t);
 		if (StringUtils.isNotEmpty(t)) {
-			BasicUserAccountTicketInfo ticket = null;
+			CoreFeatureUserAccountTicketInfo ticket = null;
 			try {
 				ticket = accountTicketService.validateTicket(t);
 			} catch (Exception e) {

@@ -1,6 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
-encoding//src/main/java/com/open/lcp/LcpMain.java=UTF-8
+encoding//src/main/java/com/open/lcp/LcpCoreFrameworkMain.java=UTF-8
 encoding//src/main/java/com/open/lcp/core/framework/LcpScheduler.java=UTF-8
 encoding//src/main/java/com/open/lcp/core/framework/api/ModelCastHolder.java=UTF-8
 encoding//src/main/java/com/open/lcp/core/framework/api/command/ApiCommandContext.java=UTF-8

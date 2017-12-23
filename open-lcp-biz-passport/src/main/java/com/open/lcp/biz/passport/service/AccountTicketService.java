@@ -1,12 +1,12 @@
 package com.open.lcp.biz.passport.service;
 
 import com.open.lcp.biz.passport.dto.PassportUserAccountDTO;
-import com.open.lcp.core.api.info.BasicUserAccountTicketInfo;
-import com.open.lcp.core.api.service.BaseUserAccountTicketService;
+import com.open.lcp.core.api.info.CoreFeatureUserAccountTicketInfo;
+import com.open.lcp.core.api.service.CoreFeatureUserAccountTicketService;
 
-public interface AccountTicketService extends BaseUserAccountTicketService {
+public interface AccountTicketService extends CoreFeatureUserAccountTicketService {
 
-	public BasicUserAccountTicketInfo validateTicket(String t);
+	public CoreFeatureUserAccountTicketInfo validateTicket(String t);
 
 	public boolean suicide(String t);
 
