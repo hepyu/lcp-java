@@ -10,7 +10,7 @@ import org.springframework.boot.test.SpringApplicationContextLoader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.open.lcp.core.common.enums.UserType;
+import com.open.lcp.core.common.enums.CoreUserType;
 import com.open.lcp.core.api.command.CommandContext;
 import com.open.lcp.core.api.info.CoreFrameworkAppInfo;
 import com.open.lcp.core.api.info.CoreFeatureAppInitInfo;
@@ -32,7 +32,7 @@ public class ApiCommandContext implements CommandContext, ApplicationContextAwar
 
 	/** 当前的用户编号 */
 	private long userId;
-	private UserType userType;
+	private CoreUserType userType;
 	/** 客户端接入授权信息 */
 	private CoreFrameworkAppInfo appInfo;
 
@@ -137,7 +137,7 @@ public class ApiCommandContext implements CommandContext, ApplicationContextAwar
 		return userId;
 	}
 
-	public UserType getUserType() {
+	public CoreUserType getUserType() {
 		return userType;
 	}
 
@@ -146,7 +146,7 @@ public class ApiCommandContext implements CommandContext, ApplicationContextAwar
 	 * 
 	 * @param userId
 	 */
-	public void setUser(UserType userType, long userId) {
+	public void setUser(CoreUserType userType, long userId) {
 		this.userType = userType;
 		this.userId = userId;
 		if (this.userId > 0) {

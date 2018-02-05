@@ -1,7 +1,7 @@
 package com.open.lcp.biz.passport.service.sdk;
 
 import com.open.lcp.core.common.enums.Gender;
-import com.open.lcp.core.common.enums.UserType;
+import com.open.lcp.core.feature.user.api.UserType;
 
 public class ThirdAccountSDKPortrait {
 

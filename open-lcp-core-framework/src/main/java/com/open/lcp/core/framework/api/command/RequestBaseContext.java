@@ -3,14 +3,14 @@ package com.open.lcp.core.framework.api.command;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.open.lcp.core.common.enums.UserType;
+import com.open.lcp.core.common.enums.CoreUserType;
 import com.open.lcp.core.api.info.CoreFrameworkAppInfo;
 
 public class RequestBaseContext {
 
 	private final Map<String, Object> stat = new LinkedHashMap<String, Object>();
 
-	private UserType userType;
+	private CoreUserType userType;
 	private final int apiV;
 	private final long time;
 	private final String httpMethod;
@@ -38,11 +38,11 @@ public class RequestBaseContext {
 		return userId;
 	}
 
-	public UserType getUserType() {
+	public CoreUserType getUserType() {
 		return userType;
 	}
 
-	public void setUser(UserType userType, long userId) {
+	public void setUser(CoreUserType userType, long userId) {
 		this.userType = userType;
 		this.userId = userId;
 	}
@@ -99,7 +99,7 @@ public class RequestBaseContext {
 		return clientIp;
 	}
 
-	public void setUserType(UserType userType) {
+	public void setUserType(CoreUserType userType) {
 		this.userType = userType;
 	}
 

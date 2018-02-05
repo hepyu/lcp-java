@@ -1,7 +1,7 @@
 package com.open.lcp.biz.passport.facade.req;
 
-import com.open.lcp.biz.passport.UserAccountType;
 import com.open.lcp.core.api.annotation.LcpParamRequired;
+import com.open.lcp.core.feature.user.api.UserType;
 
 public class BindThirdAccountReq {
 
@@ -10,13 +10,16 @@ public class BindThirdAccountReq {
 
 	@LcpParamRequired(value = true, desc = "openId")
 	private String openId;
-	
+
 	@LcpParamRequired(value = true, desc = "accessToken")
 	private String accessToken;
-	
+
 	@LcpParamRequired(value = true, desc = "accountType")
-	private UserAccountType accountType;
-	
+	private UserType accountType;
+
+	@LcpParamRequired(value = true, desc = "mobileCode")
+	private String mobileCode;
+
 	public String getThirdAppId() {
 		return thirdAppId;
 	}
@@ -41,12 +44,20 @@ public class BindThirdAccountReq {
 		this.accessToken = accessToken;
 	}
 
-	public UserAccountType getAccountType() {
+	public UserType getAccountType() {
 		return accountType;
 	}
 
-	public void setAccountType(UserAccountType accountType) {
+	public void setAccountType(UserType accountType) {
 		this.accountType = accountType;
+	}
+
+	public String getMobileCode() {
+		return mobileCode;
+	}
+
+	public void setMobileCode(String mobileCode) {
+		this.mobileCode = mobileCode;
 	}
 
 }

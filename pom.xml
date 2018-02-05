@@ -51,7 +51,7 @@
 
 		<module>open-lcp-orm-jade</module>
 		<module>open-lcp-orm-mybatis</module>
-		
+
 		<module>open-lcp-queue-kafka</module>
 
 
@@ -66,6 +66,8 @@
 		<module>open-lcp-biz-expression</module>
 		<module>open-lcp-biz-comment</module>
 
+		<module>open-lcp-core-feature-user</module>
+		<module>open-lcp-core-feature-user-api</module>
 	</modules>
 
 	<!-- snapshot库 <repositories> <repository> <id>ossrh-snapshots</id> <url>https://oss.sonatype.org/content/repositories/snapshots</url> 
@@ -113,15 +115,16 @@
 		<open-lcp-core-register.version>2.0-SNAPSHOT</open-lcp-core-register.version>
 		<open-lcp-core-env.version>2.0-SNAPSHOT</open-lcp-core-env.version>
 		<open-lcp-core-app-init.version>2.0-SNAPSHOT</open-lcp-core-app-init.version>
+		<open-lcp-core-feature-user.version>2.0-SNAPSHOT</open-lcp-core-feature-user.version>
+		<open-lcp-core-feature-user-api.version>2.0-SNAPSHOT</open-lcp-core-feature-user-api.version>
 
-		<open-lcp-biz-passport.version>2.0-SNAPSHOT</open-lcp-biz-passport.version>
 		<open-lcp-biz-passport.version>2.0-SNAPSHOT</open-lcp-biz-passport.version>
 
 		<open-lcp-dbs-hbase.version>2.0-SNAPSHOT</open-lcp-dbs-hbase.version>
 		<open-lcp-dbs-cache-ssdb.version>2.0-SNAPSHOT</open-lcp-dbs-cache-ssdb.version>
 		<open-lcp-dbs-cache.version>2.0-SNAPSHOT</open-lcp-dbs-cache.version>
 		<open-lcp-dbs-cache-redis.version>2.0-SNAPSHOT</open-lcp-dbs-cache-redis.version>
-		
+
 		<open-lcp-queue-kafka.version>2.0-SNAPSHOT</open-lcp-queue-kafka.version>
 
 	</properties>
@@ -167,6 +170,16 @@
 			</dependency>
 			<dependency>
 				<groupId>com.open.lcp</groupId>
+				<artifactId>open-lcp-core-feature-user</artifactId>
+				<version>${open-lcp-core-feature-user.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.open.lcp</groupId>
+				<artifactId>open-lcp-core-feature-user-api</artifactId>
+				<version>${open-lcp-core-feature-user-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.open.lcp</groupId>
 				<artifactId>open-lcp-dbs-hbase</artifactId>
 				<version>${open-lcp-dbs-hbase.version}</version>
 			</dependency>
@@ -195,7 +208,7 @@
 				<artifactId>open-lcp-queue-kafka</artifactId>
 				<version>${open-lcp-queue-kafka.version}</version>
 			</dependency>
-			
+
 
 			<dependency>
 				<groupId>jdk.tools</groupId>

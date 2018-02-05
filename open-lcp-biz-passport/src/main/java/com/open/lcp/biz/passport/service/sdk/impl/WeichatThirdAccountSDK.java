@@ -15,10 +15,9 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.open.lcp.biz.passport.PassportException;
-import com.open.lcp.biz.passport.UserAccountType;
 import com.open.lcp.biz.passport.service.sdk.ThirdAccountSDKPortrait;
 import com.open.lcp.core.common.enums.Gender;
-import com.open.lcp.core.common.enums.UserType;
+import com.open.lcp.core.feature.user.api.UserType;
 
 @Component("weichatThirdAccountSDK")
 public class WeichatThirdAccountSDK extends AbstractThirdAccountSDK {
@@ -60,7 +59,7 @@ public class WeichatThirdAccountSDK extends AbstractThirdAccountSDK {
 			dto.setNickname(temp.getNickname());
 			dto.setGender(Gender.get(temp.getSex()));
 			dto.setUsername(temp.getNickname());
-			dto.setUserType(UserType.valueOf(UserAccountType.weichat.category()));
+			dto.setUserType(UserType.valueOf(UserType.weichat.category()));
 
 			return dto;
 		} catch (PassportException pae) {

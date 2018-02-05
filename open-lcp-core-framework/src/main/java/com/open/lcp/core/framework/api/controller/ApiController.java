@@ -22,7 +22,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import com.open.lcp.core.common.enums.UserType;
+import com.open.lcp.core.common.enums.CoreUserType;
 import com.open.lcp.core.api.facade.ApiResult;
 import com.open.lcp.core.api.facade.ApiResultCode;
 import com.open.lcp.core.api.info.CoreFrameworkAppInfo;
@@ -349,7 +349,7 @@ public class ApiController {
 				logger.error(String.format("accountApi.validateTicket(%s) sig:%s", t, sig), e); //$NON-NLS-1$
 			}
 			if (ticket != null && ticket.getUserId() != null && ticket.getUserId() > 0) {
-				requestBaseContext.setUser(UserType.user, ticket.getUserId());
+				requestBaseContext.setUser(CoreUserType.user, ticket.getUserId());
 				final String userSecretKey = ticket.getUserSecretKey();// TOTO:缂哄瘑閽�
 				if (userSecretKey == null || userSecretKey.isEmpty()) {// 鍏煎鍙兘鍋剁幇鐨勫彇瀵嗛挜澶辫触
 					requestBaseContext.setSecretKey(null);

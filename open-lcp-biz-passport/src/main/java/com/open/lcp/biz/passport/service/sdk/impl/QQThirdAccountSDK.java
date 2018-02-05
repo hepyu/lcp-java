@@ -9,11 +9,10 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.open.lcp.biz.passport.PassportException;
-import com.open.lcp.biz.passport.UserAccountType;
 import com.open.lcp.biz.passport.service.sdk.ThirdAccountSDKPortrait;
 import com.open.lcp.core.common.enums.Gender;
-import com.open.lcp.core.common.enums.UserType;
 import com.open.lcp.core.common.util.HttpUtil;
+import com.open.lcp.core.feature.user.api.UserType;
 
 @Component("qqThirdAccountSDK")
 public class QQThirdAccountSDK extends AbstractThirdAccountSDK {
@@ -75,7 +74,7 @@ public class QQThirdAccountSDK extends AbstractThirdAccountSDK {
 				dto.setAvatar(temp.getFigureurl_qq_1());
 				dto.setNickname(temp.getNickname());
 				dto.setUsername(temp.getNickname());
-				dto.setUserType(UserType.valueOf(UserAccountType.qq.category()));
+				dto.setUserType(UserType.valueOf(UserType.qq.category()));
 
 				if ("男".equals(temp.getGender())) {
 					dto.setGender(Gender.male);

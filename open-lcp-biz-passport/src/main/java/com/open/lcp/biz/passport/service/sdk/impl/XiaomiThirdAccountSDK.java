@@ -14,11 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.open.lcp.biz.passport.PassportException;
-import com.open.lcp.biz.passport.UserAccountType;
 import com.open.lcp.biz.passport.service.sdk.ThirdAccountSDKPortrait;
 import com.open.lcp.biz.passport.util.PlaceholderAvatarUtil;
 import com.open.lcp.core.common.enums.Gender;
-import com.open.lcp.core.common.enums.UserType;
+import com.open.lcp.core.feature.user.api.UserType;
 
 @Component("xiaomiThirdAccountSDK")
 public class XiaomiThirdAccountSDK extends AbstractThirdAccountSDK {

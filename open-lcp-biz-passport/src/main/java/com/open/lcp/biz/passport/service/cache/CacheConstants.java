@@ -14,7 +14,7 @@ package com.open.lcp.biz.passport.service.cache;
  */
 public class CacheConstants {
 
-	public static final String PRE = "4passport";
+	public static final String PRE = "passport";
 
 	/**
 	 * 

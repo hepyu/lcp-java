@@ -12,12 +12,11 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.open.lcp.biz.passport.PassportException;
-import com.open.lcp.biz.passport.UserAccountType;
 import com.open.lcp.biz.passport.service.sdk.ThirdAccountSDKPortrait;
 import com.open.lcp.biz.passport.util.PlaceholderAvatarUtil;
 import com.open.lcp.core.common.enums.Gender;
-import com.open.lcp.core.common.enums.UserType;
 import com.open.lcp.core.common.util.HttpUtil;
+import com.open.lcp.core.feature.user.api.UserType;
 
 @Component("weiboThirdAccountSDK")
 public class WeiboThirdAccountSDK extends AbstractThirdAccountSDK {
@@ -95,7 +94,7 @@ public class WeiboThirdAccountSDK extends AbstractThirdAccountSDK {
 			dto.setNickname(temp.getScreen_name());
 			dto.setGender(Gender.get(WeiboSexEnum.valueOf(temp.getGender()).value()));
 			dto.setUsername(temp.getScreen_name());
-			dto.setUserType(UserType.valueOf(UserAccountType.weibo.category()));
+			dto.setUserType(UserType.valueOf(UserType.weibo.category()));
 
 			return dto;
 		} catch (PassportException pae) {

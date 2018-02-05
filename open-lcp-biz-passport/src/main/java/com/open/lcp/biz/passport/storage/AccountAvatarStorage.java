@@ -1,15 +1,15 @@
 package com.open.lcp.biz.passport.storage;
 
-import com.open.lcp.biz.passport.UserAccountType;
+import com.open.lcp.core.feature.user.api.UserType;
 
 public interface AccountAvatarStorage {
 
-	public String getOAuthAvatarKey(long userId, UserAccountType accountType);
+	public String getOAuthAvatarKey(long userId, UserType accountType);
 
 	// public String getOAuthAvatarKey(String prefix, long userId,
 	// UserAccountType accountType);
 
-	public String getOAuthAvatarUrl(long userId, UserAccountType accountType);
+	public String getOAuthAvatarUrl(long userId, UserType accountType);
 
 	// public String getOAuthAvatarUrl(String prefix, long userId,
 	// UserAccountType accountType);

@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
-import com.open.lcp.biz.passport.UserAccountType;
 import com.open.lcp.biz.passport.storage.AccountAvatarStorage;
 import com.open.lcp.core.common.util.HttpUtil;
 import com.open.lcp.core.env.finder.EnvFinder;
+import com.open.lcp.core.feature.user.api.UserType;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;
@@ -37,13 +37,13 @@ public class QiniuStorage implements AccountAvatarStorage {
 	}
 
 	@Override
-	public String getOAuthAvatarKey(long userId, UserAccountType accountType) {
+	public String getOAuthAvatarKey(long userId, UserType accountType) {
 		String key = "avatar_" + userId + "_" + EnvFinder.getProfile().name() + "_" + accountType.name();
 		return key;
 	}
 
 	@Override
-	public String getOAuthAvatarUrl(long userId, UserAccountType accountType) {
+	public String getOAuthAvatarUrl(long userId, UserType accountType) {
 		String key = getOAuthAvatarKey(userId, accountType);
 		String url = "http://" + qiniuConfig.getQiniu_image_upload_url() + "/" + key;
 		return url + "?v=" + System.currentTimeMillis();
