@@ -15,11 +15,4 @@ public interface PassportService {
 	public BindThirdAccountResultDTO bindThirdAccount(int appId, String oauthAppId, String openId, String accessToken,
 			String deviceId, String t, UserType accountType, String ip, String mobileCode);
 
-	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId);
-
-	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId, UserType accountType);
-
-	public ObtainMobileCodeResultDTO obtainMobileCode(String ip, String deviceId, int appId, String mobile,
-			MobileCodeType type);
-
 }

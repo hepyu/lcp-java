@@ -2,19 +2,14 @@ package com.open.lcp.biz.passport.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.open.lcp.biz.passport.PassportException;
 import com.open.lcp.biz.passport.dto.LoginResultDTO;
-import com.open.lcp.biz.passport.dto.ObtainMobileCodeResultDTO;
-import com.open.lcp.biz.passport.dto.RequestUploadAvatarResultDTO;
 import com.open.lcp.biz.passport.service.AbstractAccountService;
 import com.open.lcp.biz.passport.service.PassportService;
 import com.open.lcp.biz.passport.service.cache.MobileCodeCache;
 import com.open.lcp.biz.passport.service.sdk.ThirdAccountSDKPortrait;
 import com.open.lcp.biz.passport.util.NickNameUtil;
 import com.open.lcp.core.common.enums.Gender;
-import com.open.lcp.core.env.finder.EnvEnum;
-import com.open.lcp.core.env.finder.EnvFinder;
 import com.open.lcp.core.feature.user.api.MobileCodeType;
 import com.open.lcp.core.feature.user.api.UserType;
 import com.open.lcp.core.feature.user.api.dto.BindThirdAccountResultDTO;
@@ -22,8 +17,8 @@ import com.open.lcp.core.feature.user.api.dto.GetUserIdResultDTO;
 import com.open.lcp.core.feature.user.api.dto.NewUserResultDTO;
 import com.open.lcp.core.feature.user.api.dto.UserDetailInfoDTO;
 import com.open.lcp.core.feature.user.api.dto.UserTicketDTO;
+import com.open.lcp.core.feature.user.api.facade.UserFacadeProxy;
 import com.open.lcp.core.feature.user.api.rpc.UserDubboRPC;
-import com.open.lcp.core.feature.user.api.rpc.UserHttpRPC;
 import com.open.lcp.core.feature.user.api.rpc.UserTicketDubboRPC;
 import com.open.lcp.core.framework.api.ApiException;
 
@@ -34,7 +29,7 @@ public class PassportServiceImpl extends AbstractAccountService implements Passp
 	private UserDubboRPC userDubboRPC;
 
 	@Autowired
-	private UserHttpRPC userHttpRPC;
+	private UserFacadeProxy userFacadeProxy;
 
 	@Autowired
 	private UserTicketDubboRPC userTicketDubboRPC;
@@ -74,7 +69,7 @@ public class PassportServiceImpl extends AbstractAccountService implements Passp
 		}
 
 		if (userId == null) {
-			NewUserResultDTO dto = userHttpRPC.newUser(openId, ip, accountType, avatar, userPortrait.getNickname(),
+			NewUserResultDTO dto = userFacadeProxy.newUser(openId, ip, accountType, avatar, userPortrait.getNickname(),
 					userPortrait.getUsername(), userPortrait.getGender());
 			if (dto != null) {
 				userId = dto.getUserId();
@@ -131,54 +126,9 @@ public class PassportServiceImpl extends AbstractAccountService implements Passp
 		} else {
 			userPortrait = obtainThirdAccountSDK(oauthAppId, openId, accessToken, accountType);
 		}
-		return userHttpRPC.bindThirdAccount(appId, oauthAppId, openId, deviceId, accessToken, accountType, ip,
+		return userFacadeProxy.bindThirdAccount(appId, oauthAppId, openId, deviceId, accessToken, accountType, ip,
 				userPortrait.getAvatar(), userPortrait.getNickname(), userPortrait.getUsername(),
 				userPortrait.getGender());
-	}
-
-	@Override
-	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId) {
-		String key = accountAvatarStorage.getUserAvatarKey(userId);
-		String uploadToken = accountAvatarStorage.requestUploadToken(key);
-
-		RequestUploadAvatarResultDTO result = new RequestUploadAvatarResultDTO();
-		result.setKey(key);
-		result.setUploadToken(uploadToken);
-		return result;
-	}
-
-	@Override
-	public RequestUploadAvatarResultDTO requestUploadAvatar(Long userId, UserType accountType) {
-		String key = accountAvatarStorage.getOAuthAvatarKey(userId, accountType);
-		String uploadToken = accountAvatarStorage.requestUploadToken(key);
-
-		RequestUploadAvatarResultDTO result = new RequestUploadAvatarResultDTO();
-		result.setKey(key);
-		result.setUploadToken(uploadToken);
-		return result;
-	}
-
-	@Override
-	public ObtainMobileCodeResultDTO obtainMobileCode(String ip, String deviceId, int appId, String mobile,
-			MobileCodeType type) {
-		EnvEnum env = EnvFinder.getProfile();
-		String validateCode = null;
-
-		if (env == EnvEnum.dev) {
-			validateCode = "123456";
-		} else if (env == EnvEnum.test) {
-			validateCode = "123456";
-		} else if (env == EnvEnum.pre || env == EnvEnum.product) {
-			// TODO
-			validateCode = "123456";
-		} else {
-			throw new PassportException(PassportException.EXCEPTION_SEND_MOBILE_CODE_FAILED, "invalid env.", null);
-		}
-
-		String msg = validateCode + "（动态验证码），请在30分钟内填写【LCP】";
-		ObtainMobileCodeResultDTO dto = new ObtainMobileCodeResultDTO();
-		dto.setMsg(msg);
-		return dto;
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.open.lcp.biz.passport.service.cache.impl;
 
-import com.open.lcp.biz.passport.service.cache.CacheConstants;
 import com.open.lcp.biz.passport.service.cache.MobileCodeCache;
 import com.open.lcp.core.env.LcpResource;
 import com.open.lcp.core.feature.user.api.MobileCodeType;
@@ -15,14 +14,14 @@ public class MobileCodeSSDBCacheImpl implements MobileCodeCache {
 
 	@Override
 	public Boolean setMobileCode(String mobile, String deviceId, int appId, MobileCodeType type, String mobileCode) {
-		String key = CacheConstants.KEY_PRE_MOBILE_CODE + mobile + ":" + deviceId + ":" + appId + ":" + type.name()
+		String key = KEY_PRE_MOBILE_CODE + mobile + ":" + deviceId + ":" + appId + ":" + type.name()
 				+ ":" + mobileCode;
-		return cache.set(key, 0, CacheConstants.EXPIRE_MOBILE_CODE) > 0;
+		return cache.set(key, 0, EXPIRE_MOBILE_CODE) > 0;
 	}
 
 	@Override
 	public Boolean existMobileCode(String mobile, String deviceId, int appId, MobileCodeType type, String mobileCode) {
-		String key = CacheConstants.KEY_PRE_MOBILE_CODE + mobile + ":" + deviceId + ":" + appId + ":" + type.name()
+		String key = KEY_PRE_MOBILE_CODE + mobile + ":" + deviceId + ":" + appId + ":" + type.name()
 				+ ":" + mobileCode;
 		Integer count = cache.get(key, Integer.class);
 		if (count == null) {
